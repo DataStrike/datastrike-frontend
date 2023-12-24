@@ -1,10 +1,26 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
+import Home from "./pages/Home.tsx";
 import "./index.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Dashboard from "./pages/Dashboard.tsx";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-);
+export default function App() {
+  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+  return (
+    <div className="m-4">
+      <GoogleOAuthProvider clientId={clientId!}>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Home />}></Route>
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Routes>
+        </BrowserRouter>
+      </GoogleOAuthProvider>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root")!);
+root.render(<App />);
