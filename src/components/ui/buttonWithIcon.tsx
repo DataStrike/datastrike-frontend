@@ -10,8 +10,6 @@ interface Props {
 export function ButtonWithIcon({ icon, label, route }: Props) {
   const login = useGoogleLogin({
     onSuccess: async (res) => {
-      console.log(res);
-      // REFRESH SERVER TOKEN
       const response = await ky(`${BASE_URL}/${route}/callback`, {
         method: "GET",
         headers: {
