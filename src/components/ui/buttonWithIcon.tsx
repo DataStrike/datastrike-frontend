@@ -8,13 +8,25 @@ interface Props {
   route: string;
 }
 
+interface Url {
+  url: string;
+}
+
 export function ButtonWithIcon({ icon, label, route }: Props) {
   const authenticateWithRoute = async (route: string) => {
     try {
-      const { url } = await ky.get(`${BASE_URL}/${route}/redirect`).json();
-      window.location.href = url; // Redirect to oauth provider
+      // Check if user is already logged in
+      const res = await ky.get(`${BASE_URL}/me`, {
+        credentials: "include",
+      });
+      if (res.status === 200) {
+        window.location.href = "/dashboard";
+        return;
+      }
     } catch (error) {
-      console.error("Error authenticating with route:", error);
+      const res = await ky.get(`${BASE_URL}/${route}/redirect`);
+      const url: Url = await res.json();
+      window.location.href = url.url;
     }
   };
 
