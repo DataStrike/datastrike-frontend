@@ -1,7 +1,8 @@
 import "../globals.css";
 import { ButtonWithIcon } from "@/components/ui/buttonWithIcon.tsx";
+import React from "react";
 
-function Home() {
+const Home: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center gap-2">
       <h1 className="text-4xl font-semibold mb-3">Login</h1>
@@ -11,6 +12,6 @@ function Home() {
       </div>
     </div>
   );
-}
+};
 
 export default Home;
