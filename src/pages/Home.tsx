@@ -7,6 +7,7 @@ function Home() {
       <h1 className="text-4xl font-semibold mb-3">Login</h1>
       <div className="flex gap-2">
         <ButtonWithIcon icon={"google"} label={"Google"} route={"google"} />
+        <ButtonWithIcon icon={"discord"} label={"Discord"} route={"discord"} />
       </div>
     </div>
   );
