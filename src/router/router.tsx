@@ -1,32 +1,28 @@
-import { Outlet } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
+import Dashboard from "@/pages/Dashboard.tsx";
+import Home from "@/pages/Home.tsx";
+import { AuthLayout } from "@/pages/AuthLayout.tsx";
+import { Layout } from "@/pages/Layout.tsx";
 
-function Layout() {
-    return (
-        <>
-            <Header />
-        <Outlet />
-        <Footer />
-        </>
-    );
-}
-
-const router = createBrowserRouter([
-    {
-        element: <Layout/>,
-        errorElement: <ErrorPage />,
+export const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Home />,
+  },
+  {
+    path: "",
+    element: <Layout />,
+    children: [
+      {
+        path: "/dashboard",
+        element: <AuthLayout />,
         children: [
-            {
-                path: '/',
-                element: <Root />
-            },
-            {
-                path: '/products',
-                element: <ProductsList />
-            },
-            {
-                path: '/products/:productId',
-                element: <SingleProductPage />
-            }
-        ]
-    }
-])
+          {
+            path: "",
+            element: <Dashboard />,
+          },
+        ],
+      },
+    ],
+  },
+]);
