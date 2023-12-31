@@ -10,15 +10,15 @@ export const router = createBrowserRouter([
     element: <Home />,
   },
   {
-    path: "",
+    path: "/",
     element: <Layout />,
     children: [
       {
-        path: "/dashboard",
+        path: "/",
         element: <AuthLayout />,
         children: [
           {
-            path: "",
+            path: "/dashboard",
             element: <Dashboard />,
           },
         ],
