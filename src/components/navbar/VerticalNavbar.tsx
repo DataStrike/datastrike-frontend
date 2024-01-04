@@ -6,18 +6,19 @@ import { User } from "@/models/models.ts";
 import ky from "ky";
 import { BASE_URL } from "@/utils/constants.ts";
 import overwatch from "@/assets/overwatch.svg";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   user: User | null;
 }
 export function VerticalNavbar(props: Props) {
+  let navigate = useNavigate();
   const logout = async () => {
     try {
       await ky.get(`${BASE_URL}/logout`, {
         credentials: "include",
       });
-      // redirect to home page
-      window.location.href = "/";
+      navigate("/");
     } catch (error) {
       console.error("Error logging out:", error);
     }
