@@ -20,13 +20,22 @@ export function ButtonWithIcon({ icon, label, route }: Props) {
         credentials: "include",
       });
       if (res.status === 200) {
-        window.location.href = "/dashboard";
+        window.location.href = "/tracker";
         return;
       }
     } catch (error) {
       const res = await ky.get(`${BASE_URL}/${route}/redirect`);
       const url: Url = await res.json();
-      window.location.href = url.url;
+      switch (route) {
+        case "discord":
+          window.location.href = url.url + "&prompt=none";
+          break;
+        case "google":
+          window.location.href = url.url + "&prompt=consent";
+          break;
+        default:
+          break;
+      }
     }
   };
 
