@@ -9,7 +9,7 @@ export function NavbarButton(props: Props) {
   return (
     <a
       href={props.route}
-      className="text-lg flex font-semibold hover:font-black"
+      className="text-lg flex font-semibold hover:underline"
     >
       <div className="align-baseline w-6 h-6 mr-2">{props.children}</div>
       <span>{props.label}</span>

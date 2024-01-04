@@ -1,51 +1,9 @@
 import { Outlet } from "react-router-dom";
 import { VerticalNavbar } from "@/components/navbar/VerticalNavbar.tsx";
-import ky from "ky";
-import { BASE_URL } from "@/utils/constants.ts";
-import { useEffect, useState } from "react";
-interface User {
-  avatarUrl: string;
-  name: string;
-  email: string;
-}
+import { useAuth } from "@/hooks/useAuth.ts";
 export function Layout() {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  const logout = async () => {
-    try {
-      await ky.get(`${BASE_URL}/logout`, {
-        credentials: "include",
-      });
-      setUser(null);
-      // redirect to home page
-      window.location.href = "/";
-    } catch (error) {
-      console.error("Error logging out:", error);
-    }
-  };
-
-  const getMe = async () => {
-    try {
-      setLoading(true);
-      const res = await ky
-        .get(`${BASE_URL}/me`, {
-          credentials: "include",
-        })
-        .json<User>();
-
-      setUser(res);
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getMe();
-  }, []);
-
+  // Get user
+  const { user } = useAuth();
   return (
     <div className="w-full h-full flex">
       <VerticalNavbar user={user} />
