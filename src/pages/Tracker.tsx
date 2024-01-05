@@ -30,12 +30,12 @@ export function Tracker() {
     <div className="flex flex-col gap-4">
       <div className="text-2xl font-semibold">Tracker</div>
       <div className="flex flex-col gap-3 w-full lg:flex-row">
-        <Card className="w-full lg:w-1/3">
+        <Card className="w-full h-full overflow-auto lg:w-1/3">
           <CardHeader>
             <CardTitle>Add a result</CardTitle>
             <CardDescription>Add a result to your stats</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="h-full">
             <AutoForm
               formSchema={formSchema}
               fieldConfig={{

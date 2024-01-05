@@ -24,7 +24,7 @@ export function VerticalNavbar(props: Props) {
     }
   };
   return (
-    <div className="bg-neutral-800 w-56 h-full mr-8 p-2 pr-8 flex flex-col">
+    <div className="bg-neutral-800 w-56 h-full p-2 pr-8 flex flex-col">
       <div className="flex justify-end pt-4">
         <img src={overwatch} alt="Datastrike" className="w-10 h-10 " />
       </div>
