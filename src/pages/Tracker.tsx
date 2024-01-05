@@ -5,20 +5,27 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card.tsx";
-import { Input } from "@/components/ui/input.tsx";
-import { DatePicker } from "@/components/ui/datepicker.tsx";
-import { Textarea } from "@/components/ui/textarea.tsx";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { z } from "zod";
+import AutoForm from "@/components/ui/auto-form";
+import { Separator } from "@/components/ui/separator.tsx";
+import { MapsContainer } from "@/components/ui/mapsContainer.tsx";
+import { Button } from "@/components/ui/button.tsx";
+import { PlusIcon } from "@radix-ui/react-icons";
+import { useState } from "react";
+import { SaveIcon } from "lucide-react";
+
+const formSchema = z.object({
+  teamName: z.string(),
+  date: z.coerce.date(),
+  info: z.string().optional(),
+});
 
 export function Tracker() {
+  const [nbMaps, setNbMaps] = useState(1);
+
+  const addMap = () => {
+    setNbMaps(nbMaps + 1);
+  };
   return (
     <div className="flex flex-col gap-4">
       <div className="text-2xl font-semibold">Tracker</div>
@@ -29,26 +36,22 @@ export function Tracker() {
             <CardDescription>Add a result to your stats</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-2">
-              <Input placeholder="Team name" />
-              <DatePicker />
-              <Textarea placeholder="Info" />
-              <div className="flex gap-2">
-                <Select>
-                  <SelectTrigger className="w-1/2">
-                    <SelectValue placeholder="Select a map" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>KOTH</SelectLabel>
-                      <SelectItem value="lijiang">Lijiang</SelectItem>
-                      <SelectItem value="nepal">Nepal</SelectItem>
-                      <SelectItem value="oasis">Oasis</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
+            <AutoForm
+              formSchema={formSchema}
+              fieldConfig={{
+                info: { fieldType: "textarea" },
+              }}
+            ></AutoForm>
+            <MapsContainer nbMaps={nbMaps} />
+            <Button variant="outline" onClick={addMap} className="my-2">
+              <PlusIcon className="mr-2 h-4 w-4" />
+              Add a map
+            </Button>
+            <Separator />
+            <Button className="mt-2">
+              <SaveIcon className="mr-2 h-4 w-4" />
+              Save
+            </Button>
           </CardContent>
         </Card>
         <Card className="w-full lg:grow">
