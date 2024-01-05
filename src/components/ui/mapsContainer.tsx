@@ -7,7 +7,7 @@ export function MapsContainer({ nbMaps }: Props) {
   return (
     <div id="maps-container" className="flex flex-col ">
       <label className="text-sm mt-3 mb-2 font-medium ">Maps</label>
-      <div className="flex flex-col min-h-fit max-h-[180px] overflow-auto gap-2">
+      <div className="flex flex-col gap-2">
         {Array.from({ length: nbMaps }, (_, i) => (
           <div key={i}>
             <Map />
