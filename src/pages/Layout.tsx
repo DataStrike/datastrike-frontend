@@ -7,7 +7,7 @@ export function Layout() {
   return (
     <div className="w-full h-full flex">
       <VerticalNavbar user={user} />
-      <div className="pt-4">
+      <div className="p-6 w-full overflow-auto">
         <Outlet />
       </div>
     </div>

@@ -24,7 +24,7 @@ export function VerticalNavbar(props: Props) {
     }
   };
   return (
-    <div className="bg-neutral-800 w-56 h-full mr-8 p-2 pr-8 relative">
+    <div className="bg-neutral-800 w-56 h-full p-2 pr-8 flex flex-col">
       <div className="flex justify-end pt-4">
         <img src={overwatch} alt="Datastrike" className="w-10 h-10 " />
       </div>
@@ -38,8 +38,8 @@ export function VerticalNavbar(props: Props) {
         </NavbarButton>
       </div>
 
-      <div className="text-white inline-flex justify-between items-end pl-2 w-48 absolute bottom-4">
-        <div className="flex flex-col">
+      <div className="text-white inline-flex justify-between items-end pl-2 mt-auto">
+        <div className="flex flex-col mr-4">
           <img
             src={props.user?.avatarUrl}
             alt="Avatar"
@@ -48,8 +48,8 @@ export function VerticalNavbar(props: Props) {
           <div>{props.user?.name}</div>
         </div>
 
-        <Button onClick={logout} className="p-2 bg-red-700 hover:bg-red-800">
-          <LogOut className="w-5 h-5" />
+        <Button onClick={logout} className="px-2 bg-red-700 hover:bg-red-800">
+          <LogOut className="w-4 h-4" />
         </Button>
       </div>
     </div>
