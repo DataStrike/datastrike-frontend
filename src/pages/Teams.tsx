@@ -10,20 +10,13 @@ import { Button } from "@/components/ui/button.tsx";
 import { ChangeEvent, useState } from "react";
 import { Plus } from "lucide-react";
 import { DataTable } from "@/models/teams/data-table.tsx";
-import { columns, Team } from "@/models/teams/columns.tsx";
+import { columns } from "@/models/teams/columns.tsx";
 import ky from "ky";
 import { BASE_URL } from "@/utils/constants.ts";
 import { useQuery } from "@tanstack/react-query";
 import { queryClient } from "@/pages/Layout.tsx";
 import { toast } from "sonner";
-
-async function getTeams(): Promise<Team[]> {
-  return await ky
-    .get(`${BASE_URL}/teams`, {
-      credentials: "include",
-    })
-    .json();
-}
+import { getTeams } from "@/services/teams-service.ts";
 
 export function Teams() {
   const [code, setCode] = useState("");

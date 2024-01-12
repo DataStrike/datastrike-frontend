@@ -13,6 +13,9 @@ import { Button } from "@/components/ui/button.tsx";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
 import { SaveIcon } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { getTeams } from "@/services/teams-service.ts";
+import { SelectTeamComponent } from "@/components/team/SelectTeamComponent.tsx";
 
 const formSchema = z.object({
   teamName: z.string(),
@@ -22,13 +25,29 @@ const formSchema = z.object({
 
 export function Tracker() {
   const [nbMaps, setNbMaps] = useState(1);
+  const { data: teams } = useQuery({
+    queryKey: ["teams"],
+    queryFn: getTeams,
+  });
 
+  const [team, setTeam] = useState("");
+
+  if (teams && team === "") {
+    setTeam(teams[0].name);
+  }
   const addMap = () => {
     setNbMaps(nbMaps + 1);
   };
   return (
     <div className="flex flex-col gap-4">
-      <div className="text-2xl font-semibold">Tracker</div>
+      <div className="flex justify-between">
+        <div className="text-2xl font-semibold">Tracker</div>
+        <SelectTeamComponent
+          teams={teams}
+          team={team}
+          setTeam={(team) => setTeam(team)}
+        />
+      </div>
       <div className="flex flex-col gap-3 w-full lg:flex-row">
         <Card className="w-full h-full lg:w-1/3">
           <CardHeader>
