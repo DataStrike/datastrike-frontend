@@ -5,6 +5,7 @@ import { AuthLayout } from "@/pages/AuthLayout.tsx";
 import { Layout } from "@/pages/Layout.tsx";
 import { Tracker } from "@/pages/Tracker.tsx";
 import { Analysis } from "@/pages/Analysis.tsx";
+import { Teams } from "@/pages/Teams.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ export const router = createBrowserRouter([
           {
             path: "/analysis",
             element: <Analysis />,
+          },
+          {
+            path: "/teams",
+            element: <Teams />,
           },
         ],
       },

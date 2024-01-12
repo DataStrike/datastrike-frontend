@@ -1,5 +1,5 @@
 import { TableIcon } from "@radix-ui/react-icons";
-import { LogOut, ScatterChart } from "lucide-react";
+import { LogOut, ScatterChart, UsersRoundIcon } from "lucide-react";
 import { NavbarButton } from "@/components/navbar/NavbarButton.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { User } from "@/models/models.ts";
@@ -29,12 +29,15 @@ export function VerticalNavbar(props: Props) {
         <img src={overwatch} alt="Datastrike" className="w-10 h-10 " />
       </div>
 
-      <div className="flex flex-col items-end gap-2 mt-16 text-white">
+      <div className="flex flex-col items-end gap-3 mt-16 text-white">
         <NavbarButton label="Tracker" route="tracker">
           <TableIcon className="w-6 h-6 mr-2" />
         </NavbarButton>
         <NavbarButton label="Analysis" route="analysis">
           <ScatterChart className="w-6 h-6 mr-2" />
+        </NavbarButton>
+        <NavbarButton label="Teams" route="teams">
+          <UsersRoundIcon className="w-6 h-6 mr-2" />
         </NavbarButton>
       </div>
 
