@@ -1,8 +1,11 @@
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import MapList from "@/components/analysis/MapList"
-import MapGraph from "@/components/analysis/MapGraph"
+import AnalysisList from "@/components/analysis/AnalysisList"
+import MapList from "@/components/analysis/map/MapList"
+import MapGraph from "@/components/analysis/map/MapGraph"
+
+
 import { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 
@@ -163,30 +166,28 @@ export function Analysis() {
 
   return (
     <div>
-      <div className="text-2xl font-semibold">Analysis</div>
-      <div className="grid grid-cols-2 gap-4 w-full">
-        <div className="lg:max-w-sm">
-          <Label htmlFor="picture">Picture</Label>
-          <div className="flex items-center justify-center">
-            <Input
-              id="picture"
-              type="file"
-              onChange={handleFileChange}
-              className="file:bg-gray-200 file:text-black-700 hover:file:bg-blue-100"
-              multiple
-            />
-            <Button onClick={handleFileUpload}> Upload files</Button>
-          </div>
-          <MapList maps={maps} onMapClick={handleMapClick} />
-        </div>
-        <div>
-          {selectedMap && <MapGraph mapData={selectedMap} />}
+    <div className="text-2xl font-semibold">Analysis</div>
+
+    <div className="flex gap-4 mb-4">
+      <div className="w-1/3">
+        <Label htmlFor="picture">Picture</Label>
+        <div className="flex items-center justify-center mr-4">
+          <Input
+            id="picture"
+            type="file"
+            onChange={handleFileChange}
+            className="file:bg-gray-200 file:text-black-700 hover:file:bg-blue-100 mr-4"
+            multiple
+          />
+          <Button onClick={handleFileUpload}> Upload files</Button>
         </div>
       </div>
-      <div>
-    <div className="text-2xl font-semibold">Analysis</div>
-    {/* ... autres éléments du composant ... */}
-  </div>
     </div>
+
+    {/* AnalysisList prend toute la largeur */}
+    <div>
+      <AnalysisList maps={maps} />
+    </div>
+  </div>
   );
 }

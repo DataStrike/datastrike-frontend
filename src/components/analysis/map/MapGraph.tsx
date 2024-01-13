@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Chart from 'chart.js/auto';
-
 import zoomPlugin from 'chartjs-plugin-zoom';
 import killIcon from '@/assets/kill.png';
 import objectiveIcon from '@/assets/objectif.png';
@@ -13,7 +12,10 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
   const chartRef = useRef(null);
   const [chartInstance, setChartInstance] = useState<any>(null);
 
+  Chart.register(zoomPlugin)
+
   useEffect(() => {
+
     if (chartInstance) {
       chartInstance.destroy();
     }
@@ -36,7 +38,7 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
           pointRadius: mapData.data.events.map((event) => (event.type === 'kill' ? 10 : 5)),
           pointStyle: mapData.data.events.map((event) => (event.type === 'kill' ? killPoint : objectivePoint)),
           showLine: false,
-          data: mapData.data.events.map((event) => event.value),
+          data: mapData.data.events.map((event) => ({ x: parseFloat(event.timestamp), y: event.value })), // Utiliser les timestamps convertis pour les données x
         },
       ];
 
@@ -51,11 +53,6 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
             x: {
               type: 'linear',
               position: 'bottom',
-              ticks: {
-                callback: (value) => {
-                  return Math.floor(value / 1000);
-                },
-              },
               beginAtZero: true,
             },
             y: {
@@ -75,7 +72,7 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
                 },
                 label: (context) => {
                   const event = mapData.data.events[context.dataIndex];
-                  return `${event.type}: ${event.description}`;
+                  return `${event.timestamp}: ${event.description}`;
                 },
               },
             },
@@ -88,6 +85,8 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
                   enabled: true,
                 },
                 mode: 'xy',
+                x: { min: 'original', max: 'original' },
+                y: { min: 'original', max: 'original' },
               },
               pan: {
                 enabled: true,
@@ -110,24 +109,9 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
     };
   }, [mapData]);
 
-  // Fonction pour zoomer sur l'axe x
-  const zoomInX = () => {
-    if (chartInstance) {
-      chartInstance.zoom('x', 1.1);
-    }
-  };
-
-  // Fonction pour dézoomer sur l'axe x
-  const zoomOutX = () => {
-    if (chartInstance) {
-      chartInstance.zoom('x', 0.9);
-    }
-  };
 
   return (
     <div>
-      <button onClick={zoomInX}>Zoom In X</button>
-      <button onClick={zoomOutX}>Zoom Out X</button>
       <canvas ref={chartRef} />
     </div>
   );
