@@ -1,32 +1,28 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Chart from 'chart.js/auto';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
+
+import zoomPlugin from 'chartjs-plugin-zoom';
 import killIcon from '@/assets/kill.png';
 import objectiveIcon from '@/assets/objectif.png';
-
 
 interface MapGraphProps {
   mapData: any;
 }
 
 const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
-
   const chartRef = useRef(null);
   const [chartInstance, setChartInstance] = useState<any>(null);
 
-
   useEffect(() => {
     if (chartInstance) {
-      // Si le graphique existe déjà, le détruire avant de créer un nouveau graphique
       chartInstance.destroy();
     }
 
-    var killPoint = new Image();
+    const killPoint = new Image();
     killPoint.src = killIcon;
 
     const objectivePoint = new Image();
     objectivePoint.src = objectiveIcon;
-    
 
     if (mapData && mapData.data) {
       const labels = mapData.data.events.map((event) => event.timestamp);
@@ -37,10 +33,9 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
           backgroundColor: 'rgba(75, 192, 192, 0.2)',
           borderColor: 'rgba(75, 192, 192, 1)',
           borderWidth: 1,
-          pointRadius: mapData.data.events.map((event) => (event.type === 'kill' ? 10 : 5)), // Définir le rayon du point en fonction du type
+          pointRadius: mapData.data.events.map((event) => (event.type === 'kill' ? 10 : 5)),
           pointStyle: mapData.data.events.map((event) => (event.type === 'kill' ? killPoint : objectivePoint)),
           showLine: false,
-        //   pointStyle: map.data.events.map((event) => (event.type === 'kill' ? kill : 'circle')),
           data: mapData.data.events.map((event) => event.value),
         },
       ];
@@ -57,8 +52,11 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
               type: 'linear',
               position: 'bottom',
               ticks: {
-                callback: (value) => new Date(value).toLocaleTimeString(),
+                callback: (value) => {
+                  return Math.floor(value / 1000);
+                },
               },
+              beginAtZero: true,
             },
             y: {
               min: 0,
@@ -68,11 +66,32 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
           plugins: {
             tooltip: {
               callbacks: {
-                title: (context) => "kill",
+                title: (context) => {
+                  if (context[0]) {
+                    const event = mapData.data.events[context[0].dataIndex];
+                    return event.type || "";
+                  }
+                  return "";
+                },
                 label: (context) => {
                   const event = mapData.data.events[context.dataIndex];
                   return `${event.type}: ${event.description}`;
                 },
+              },
+            },
+            zoom: {
+              zoom: {
+                wheel: {
+                  enabled: true,
+                },
+                pinch: {
+                  enabled: true,
+                },
+                mode: 'xy',
+              },
+              pan: {
+                enabled: true,
+                mode: 'xy',
               },
             },
           },
@@ -84,7 +103,6 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
       setChartInstance(newChartInstance);
     }
 
-    // Nettoyer le graphique lors du démontage du composant
     return () => {
       if (chartInstance) {
         chartInstance.destroy();
@@ -92,9 +110,27 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
     };
   }, [mapData]);
 
-  // ...
+  // Fonction pour zoomer sur l'axe x
+  const zoomInX = () => {
+    if (chartInstance) {
+      chartInstance.zoom('x', 1.1);
+    }
+  };
 
-  return <canvas ref={chartRef} />;
+  // Fonction pour dézoomer sur l'axe x
+  const zoomOutX = () => {
+    if (chartInstance) {
+      chartInstance.zoom('x', 0.9);
+    }
+  };
+
+  return (
+    <div>
+      <button onClick={zoomInX}>Zoom In X</button>
+      <button onClick={zoomOutX}>Zoom Out X</button>
+      <canvas ref={chartRef} />
+    </div>
+  );
 };
 
 export default MapGraph;

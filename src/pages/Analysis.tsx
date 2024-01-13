@@ -47,7 +47,7 @@ export function Analysis() {
       },
     };
     if (map_data) {
-    map_data.data.events = adjustEventValues(map_data.data.events, 10);
+    map_data.data.events = adjustEventValues(map_data.data.events, 15);
     setSelectedMap(map_data);
 
     console.info('Map selected:', map_data);
@@ -56,35 +56,33 @@ export function Analysis() {
 
   function adjustEventValues(events, thresholdSeconds) {
     events.sort((a, b) => parseFloat(a.timestamp) - parseFloat(b.timestamp));
-
+  
     // Parcourir les événements
-    let lastEvent: Event | null = null;
+    let lastEvent = null;
     let index = 1; // Compteur pour attribuer des valeurs distinctes
+  
     for (const event of events) {
-      event.value += 1;
       // Vérifier s'il y a un événement précédent
       if (lastEvent !== null) {
         // Convertir les horodatages en objets Date
         const currentTimestamp = new Date(parseFloat(event.timestamp) * 1000);
         const lastTimestamp = new Date(parseFloat(lastEvent.timestamp) * 1000);
-        // event.timestamp = currentTimestamp.toISOString();
+  
         // Calculer la différence en secondes entre les horodatages
         const timeDifferenceSeconds = (currentTimestamp.getTime() - lastTimestamp.getTime()) / 1000;
-        
+  
         // Vérifier si la différence est inférieure à la limite
         if (timeDifferenceSeconds < thresholdSeconds) {
-          // Augmenter la valeur du deuxième événement
-          event.value = index;
+          // Augmenter la valeur de l'événement actuel
           index += 1;
         } else {
           // Réinitialiser le compteur si la différence est supérieure à la limite
           index = 1;
         }
-      } else {
-        // Attribuer la première valeur
-        event.value = index;
-        index += 1;
       }
+  
+      // Attribuer la valeur à l'événement actuel
+      event.value = index;
   
       // Mettre à jour l'événement précédent
       lastEvent = event;
