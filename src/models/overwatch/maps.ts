@@ -39,9 +39,15 @@ export type MapData = {
   [key in MapType]: MapName[];
 };
 
+export type FormDataTrackerResult = {
+  opponentTeam: string;
+  info: string;
+  date: Date;
+  maps: MapResult[];
+};
+
 export type MapResult = {
   map_name: MapName | "";
-  map_type: MapType | "";
   us_score: number;
   them_score: number;
 };
