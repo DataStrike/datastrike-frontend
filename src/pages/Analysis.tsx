@@ -59,21 +59,21 @@ export function Analysis() {
 
   function adjustEventValues(events, thresholdSeconds) {
     events.sort((a, b) => parseFloat(a.timestamp) - parseFloat(b.timestamp));
-  
+
     // Parcourir les événements
     let lastEvent = null;
     let index = 1; // Compteur pour attribuer des valeurs distinctes
-  
+
     for (const event of events) {
       // Vérifier s'il y a un événement précédent
       if (lastEvent !== null) {
         // Convertir les horodatages en objets Date
         const currentTimestamp = new Date(parseFloat(event.timestamp) * 1000);
         const lastTimestamp = new Date(parseFloat(lastEvent.timestamp) * 1000);
-  
+
         // Calculer la différence en secondes entre les horodatages
         const timeDifferenceSeconds = (currentTimestamp.getTime() - lastTimestamp.getTime()) / 1000;
-  
+
         // Vérifier si la différence est inférieure à la limite
         if (timeDifferenceSeconds < thresholdSeconds) {
           // Augmenter la valeur de l'événement actuel
@@ -83,23 +83,23 @@ export function Analysis() {
           index = 1;
         }
       }
-  
+
       // Attribuer la valeur à l'événement actuel
       event.value = index;
-  
+
       // Mettre à jour l'événement précédent
       lastEvent = event;
     }
-  
+
     return events;
   }
 
   const fetchMapsFromAPI = async () => {
     try {
-      const response = await fetch('http://localhost:3333/maps'); 
+      const response = await fetch('http://localhost:3333/maps');
       if (response.ok) {
         const data = await response.json();
-        setMaps(data); 
+        setMaps(data);
         console.log('Maps fetched from API:', data);
       } else {
         console.error('Failed to fetch maps from API');
@@ -121,19 +121,19 @@ export function Analysis() {
       console.log('Aucun fichier sélectionné');
       return;
     }
-  
+
     const formData = new FormData();
     files.forEach((file, index) => {
       formData.append(`files[${index}]`, file);
     });
     formData.append('teamId', 'FakeTeamId');
-  
+
     try {
       const response = await fetch('http://localhost:3333/new_overwatch_analysis', {
         method: 'POST',
         body: formData,
       });
-  
+
       if (response.ok) {
         console.log('Fichiers téléversés avec succès');
         // Traiter la réponse du backend si nécessaire
@@ -148,7 +148,7 @@ export function Analysis() {
   const generateRandomEvents = () => {
     const numberOfEvents = Math.floor(Math.random() * 50) + 1; // Générer un nombre aléatoire d'événements (entre 1 et 10)
     const events = [];
-  
+
     for (let i = 0; i < numberOfEvents; i++) {
       const event = {
         timestamp: i, // Utiliser une date au format ISO pour le timestamp
@@ -156,10 +156,10 @@ export function Analysis() {
         description: `Event ${i + 1}`, // Description générique
         value: Math.floor(Math.random() * 50)
       };
-  
+
       events.push(event);
     }
-  
+
     return events;
   };
 
