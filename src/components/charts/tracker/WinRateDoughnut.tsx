@@ -6,7 +6,7 @@ interface Props {
   data: TrackerResult[];
 }
 
-export function WinRateTrackerChart({ data }: Props) {
+export function WinRateDoughnut({ data }: Props) {
   const chartRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -16,8 +16,6 @@ export function WinRateTrackerChart({ data }: Props) {
       const wins = data.filter((result) => result.result === "W").length;
       const losses = data.filter((result) => result.result === "L").length;
       const draws = data.filter((result) => result.result === "D").length;
-
-      const winRate = (wins / data.length) * 100;
 
       const ctx = chartRef.current.getContext("2d");
       if (ctx) {
@@ -36,13 +34,6 @@ export function WinRateTrackerChart({ data }: Props) {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-              title: {
-                display: true,
-                text: `Win Rate: ${winRate.toFixed(2)}%`,
-                font: {
-                  size: 16,
-                },
-              },
               legend: {
                 display: false,
               },
@@ -67,4 +58,4 @@ export function WinRateTrackerChart({ data }: Props) {
   );
 }
 
-export default WinRateTrackerChart;
+export default WinRateDoughnut;
