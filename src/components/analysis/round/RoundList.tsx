@@ -15,11 +15,11 @@ const RoundList: React.FC<RoundListProps> = ({ rounds, onRoundClick }) => {
   }
   );
   return (
-    <div className="rounded-lg border border-gray-300 p-4">
+    <div className="rounded-md border border-gray-300 p-4">
       {rounds.map((round, index) => (
         <div
           key={round.id}
-          className="rounded-md bg-gray-100 p-2 mb-2 cursor-pointer transition duration-300 hover:bg-gray-200"
+          className="cursor-pointer hover:bg-gray-100 p-2 rounded-md"
           onClick={() => onRoundClick(round)}
         >
           Round {index + 1}
