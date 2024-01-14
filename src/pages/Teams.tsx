@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { ChangeEvent, useState } from "react";
 import { Plus } from "lucide-react";
-import { DataTable } from "@/models/teams/data-table.tsx";
+import { TeamDatatable } from "@/models/teams/team-datatable.tsx";
 import { columns } from "@/models/teams/columns.tsx";
 import ky from "ky";
 import { BASE_URL } from "@/utils/constants.ts";
@@ -17,6 +17,7 @@ import { useQuery } from "@tanstack/react-query";
 import { queryClient } from "@/pages/Layout.tsx";
 import { toast } from "sonner";
 import { getTeams } from "@/services/teams-service.ts";
+import { Skeleton } from "@/components/ui/skeleton.tsx";
 
 export function Teams() {
   const [code, setCode] = useState("");
@@ -112,9 +113,9 @@ export function Teams() {
             <CardContent className="flex flex-col items-center max-h-[600px] overflow-auto">
               <div className="w-full h-full">
                 {isFetching ? (
-                  <div> Loading... </div>
+                  <Skeleton className="h-4 w-[250px]" />
                 ) : (
-                  <DataTable columns={columns} data={data!} />
+                  <TeamDatatable columns={columns} data={data!} />
                 )}
               </div>
             </CardContent>

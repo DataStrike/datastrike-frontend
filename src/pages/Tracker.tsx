@@ -16,10 +16,14 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getTeams } from "@/services/teams-service";
 import { SelectTeamComponent } from "@/components/team/SelectTeamComponent";
-import { MapResult } from "@/models/overwatch/maps.ts";
-import { DataTable } from "@/models/teams/data-table.tsx";
+import { FormDataTrackerResult, MapResult } from "@/models/overwatch/maps.ts";
 import { columns } from "@/models/tracker/columns.tsx";
-import { getTrackerResults } from "@/services/tracker-service.ts";
+import { trackerService } from "@/services/tracker-service.ts";
+import { toast } from "sonner";
+import { queryClient } from "@/pages/Layout.tsx";
+import { Team } from "@/models/teams/columns.tsx";
+import { TrackerDatatable } from "@/models/tracker/tracker-datatable.tsx";
+import { Skeleton } from "@/components/ui/skeleton.tsx";
 
 const formSchema = z.object({
   opponentTeamName: z.string(),
@@ -29,52 +33,82 @@ const formSchema = z.object({
 
 export function Tracker() {
   const [maps, setMaps] = useState<MapResult[]>([]);
-  const { data: teams } = useQuery({
+  const [values, setValues] = useState<Partial<z.infer<typeof formSchema>>>({});
+  const [team, setTeam] = useState({} as Team);
+
+  const { data: teams, isFetching: teamsFetching } = useQuery({
     queryKey: ["teams"],
     queryFn: getTeams,
   });
 
-  const [team, setTeam] = useState("");
-
-  if (teams && team === "") {
-    setTeam(teams[0].name);
+  if (teams && teams.length > 0 && !team.id) {
+    setTeam(teams[0]);
   }
 
+  const { data, isFetching } = useQuery({
+    queryKey: ["tracker", team.id],
+    queryFn: () => trackerService.getTrackerResults(team.id),
+  });
+
+  const updateTeam = async (team: Team) => {
+    setTeam(team);
+
+    // Invalidate the query so that it refetches with the new team
+    await queryClient.invalidateQueries({ queryKey: ["tracker", team.id] });
+  };
+
+  const updateMap = (index: number, field: string, value: any) => {
+    const updatedMaps = [...maps];
+    updatedMaps[index] = {
+      ...updatedMaps[index],
+      [field]: value,
+    };
+    setMaps(updatedMaps);
+  };
   const addMap = () => {
     const updatedMaps = [...maps];
     updatedMaps.push({
       map_name: "",
-      map_type: "",
       us_score: 0,
       them_score: 0,
     });
     setMaps(updatedMaps);
   };
-
   const deleteMap = (i: number) => {
     const updatedMaps = [...maps];
     updatedMaps.splice(i, 1);
     setMaps(updatedMaps);
   };
+  const addTrackerResults = async (values: z.infer<typeof formSchema>) => {
+    if (maps.length === 0) {
+      toast.error("You must add at least one map");
+    }
+    setValues(values);
+    const trackerResults: FormDataTrackerResult = {
+      opponentTeam: values.opponentTeamName,
+      info: values.info ? values.info : "",
+      date: values.date ? values.date : new Date(),
+      maps,
+    };
 
-  const addTrackerResults = () => {
-    console.log(maps);
+    await trackerService.addTrackerResult(team.id, trackerResults);
+
+    await queryClient.invalidateQueries({ queryKey: ["tracker", team.id] });
   };
-
-  const { data, isFetching } = useQuery({
-    queryKey: ["tracker", team],
-    queryFn: () => getTrackerResults(team),
-  });
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between">
         <div className="text-2xl font-semibold">Tracker</div>
-        <SelectTeamComponent
-          teams={teams}
-          team={team}
-          setTeam={(team) => setTeam(team)}
-        />
+        {teamsFetching ? (
+          <Skeleton className="h-4 w-[250px]" />
+        ) : (
+          <SelectTeamComponent
+            teams={teams!}
+            team={team.name}
+            setTeam={(team: Team) => updateTeam(team)}
+          />
+        )}
       </div>
       <div className="flex flex-col gap-3 w-full lg:flex-row">
         <Card className="w-full h-full lg:w-1/3">
@@ -87,18 +121,31 @@ export function Tracker() {
               formSchema={formSchema}
               fieldConfig={{
                 info: { fieldType: "textarea" },
+                date: { fieldType: "date" },
               }}
-            ></AutoForm>
-            <MapsContainer maps={maps} deleteMap={deleteMap} />
-            <Button variant="outline" onClick={addMap} className="my-2">
-              <PlusIcon className="mr-2 h-4 w-4" />
-              Add a map
-            </Button>
-            <Separator />
-            <Button onClick={addTrackerResults} className="mt-2">
-              <SaveIcon className="mr-2 h-4 w-4" />
-              Save
-            </Button>
+              values={values}
+              onSubmit={(values) => addTrackerResults(values)}
+            >
+              <MapsContainer
+                maps={maps}
+                deleteMap={deleteMap}
+                updateMap={updateMap}
+              />
+              <Button
+                type={"button"}
+                variant="add"
+                onClick={addMap}
+                className="my-2 w-full"
+              >
+                <PlusIcon className="mr-2 h-4 w-4" />
+                Add a map
+              </Button>
+              <Separator />
+              <Button type={"submit"} className="mt-2 w-full">
+                <SaveIcon className="mr-2 h-4 w-4" />
+                Save
+              </Button>
+            </AutoForm>
           </CardContent>
         </Card>
         <Card className="w-full h-[700px] lg:grow">
@@ -111,9 +158,9 @@ export function Tracker() {
           <CardContent>
             <div className="w-full">
               {isFetching ? (
-                <div> Loading... </div>
+                <Skeleton className="h-4 w-[250px]" />
               ) : (
-                <DataTable columns={columns} data={data!} />
+                <TrackerDatatable columns={columns} data={data!} />
               )}
             </div>
           </CardContent>
