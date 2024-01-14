@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button.tsx";
-import { ClipboardIcon, LogOutIcon } from "lucide-react";
+import { ArrowUpDown, ClipboardIcon, LogOutIcon } from "lucide-react";
 import { toast } from "sonner";
 import { User } from "@/models/models.ts";
 import ky from "ky";
@@ -8,6 +8,7 @@ import { BASE_URL } from "@/utils/constants.ts";
 import { queryClient } from "@/pages/Layout.tsx";
 
 export type Team = {
+  id: number;
   name: string;
   players: User[];
   code: string;
@@ -29,7 +30,17 @@ const leaveTeam = async (code: string) => {
 export const columns: ColumnDef<Team>[] = [
   {
     accessorKey: "name",
-    header: "Name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Name
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
   },
   {
     accessorKey: "players",

@@ -26,7 +26,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
 }
 
-export function DataTable<TData, TValue>({
+export function TeamDatatable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -49,10 +49,10 @@ export function DataTable<TData, TValue>({
     <div className="rounded-md border overflow-auto">
       <div className="flex items-center m-2 p-2 w-80">
         <Input
-          placeholder="Filter"
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter by team name"
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+            table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
