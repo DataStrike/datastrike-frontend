@@ -5,29 +5,33 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select.tsx";
-import { ChangeEvent } from "react";
+import { Team } from "@/models/teams/columns.tsx";
 
 interface Props {
-  teams: any;
+  teams: Team[];
   team: string;
-  setTeam: (team: string) => void;
+  setTeam: (teamName: Team) => void;
 }
+
 export function SelectTeamComponent({ teams, team, setTeam }: Props) {
+  const teamNames = teams.map((team) => team.name);
+
   return (
-    <Select>
+    <Select
+      onValueChange={(value) => {
+        const selectedTeam = teams.find((t) => t.name === value);
+        if (selectedTeam) {
+          setTeam(selectedTeam);
+        }
+      }}
+    >
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder={team} />
       </SelectTrigger>
       <SelectContent>
-        {teams?.map((team: any) => (
-          <SelectItem
-            key={team.id}
-            onSelect={(e: ChangeEvent<HTMLInputElement>) =>
-              setTeam(e.target.value)
-            }
-            value={team.name.toString()}
-          >
-            {team.name}
+        {teamNames?.map((name: string) => (
+          <SelectItem key={name} value={name}>
+            {name}
           </SelectItem>
         ))}
       </SelectContent>

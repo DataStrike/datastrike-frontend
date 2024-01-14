@@ -16,9 +16,14 @@ import {
 import { OW_MAPS } from "@/models/overwatch/maps";
 import { capitalize } from "@/utils/functions.ts";
 
-export function MapSelector() {
+interface Props {
+  selectedMap: string;
+  onSelect: (value: string) => void;
+}
+
+export function MapSelector({ selectedMap, onSelect }: Props) {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState<string | "">("");
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -28,7 +33,7 @@ export function MapSelector() {
           aria-expanded={open}
           className="w-full justify-between"
         >
-          {value ? capitalize(value) : "Select map..."}
+          {selectedMap ? capitalize(selectedMap) : "Select map..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -44,7 +49,9 @@ export function MapSelector() {
                     key={mapName}
                     value={mapName}
                     onSelect={(currentValue) => {
-                      setValue(currentValue === value ? "" : currentValue);
+                      onSelect(
+                        currentValue === selectedMap ? "" : currentValue,
+                      );
                       setOpen(false);
                     }}
                   >
