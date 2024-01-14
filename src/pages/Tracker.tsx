@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { MapsContainer } from "@/components/ui/MapsContainer";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "@radix-ui/react-icons";
-import { SaveIcon } from "lucide-react";
+import { KanbanSquare, PercentIcon, SaveIcon } from "lucide-react";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getTeams } from "@/services/teams-service";
@@ -24,6 +24,17 @@ import { queryClient } from "@/pages/Layout.tsx";
 import { Team } from "@/models/teams/columns.tsx";
 import { TrackerDatatable } from "@/models/tracker/tracker-datatable.tsx";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs.tsx";
+import { WinRateDoughnut } from "@/components/charts/tracker/WinRateDoughnut.tsx";
+import { WinRateOverTime } from "@/components/charts/tracker/WinRateOverTime.tsx";
+import ChartContainer from "@/components/charts/ChartContainer.tsx";
+import { StatsContainer } from "@/components/stats/StatsContainer.tsx";
+import { winRate } from "@/utils/stats.ts";
 
 const formSchema = z.object({
   opponentTeamName: z.string(),
@@ -56,7 +67,6 @@ export function Tracker() {
     // Invalidate the query so that it refetches with the new team
     await queryClient.invalidateQueries({ queryKey: ["tracker", team.id] });
   };
-
   const updateMap = (index: number, field: string, value: any) => {
     const updatedMaps = [...maps];
     updatedMaps[index] = {
@@ -110,8 +120,8 @@ export function Tracker() {
           />
         )}
       </div>
-      <div className="flex flex-col gap-3 w-full lg:flex-row">
-        <Card className="w-full h-full lg:w-1/3">
+      <div className="flex flex-col gap-4 w-full lg:flex-row">
+        <Card className="w-full h-full min-w-fit lg:w-60">
           <CardHeader>
             <CardTitle>Add a result</CardTitle>
             <CardDescription>Add a result to your stats</CardDescription>
@@ -148,23 +158,62 @@ export function Tracker() {
             </AutoForm>
           </CardContent>
         </Card>
-        <Card className="w-full h-[700px] lg:grow">
-          <CardHeader>
-            <CardTitle>Results</CardTitle>
-            <CardDescription>
-              View your results and stats in a table
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="w-full">
-              {isFetching ? (
-                <Skeleton className="h-4 w-[250px]" />
-              ) : (
-                <TrackerDatatable columns={columns} data={data!} />
-              )}
-            </div>
-          </CardContent>
-        </Card>
+        <Tabs defaultValue="datatable" className="grow">
+          <TabsList className="w-[400px]">
+            <TabsTrigger className="w-full" value="datatable">
+              Table
+            </TabsTrigger>
+            <TabsTrigger className="w-full" value="stats">
+              Stats
+            </TabsTrigger>
+            <TabsTrigger className="w-full" value="charts">
+              Charts
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent className="w-full h-[800px]" value="datatable">
+            {isFetching ? (
+              <Skeleton className="h-4 w-[250px]" />
+            ) : (
+              <TrackerDatatable columns={columns} data={data!} />
+            )}
+          </TabsContent>
+          <TabsContent className="w-full h-[800px]" value="stats">
+            {isFetching ? (
+              <Skeleton className="h-4 w-[250px]" />
+            ) : (
+              <div className="flex gap-4">
+                <StatsContainer
+                  cardTitle="Win Rate"
+                  value={winRate(data)}
+                  description="Win rate overall "
+                >
+                  <PercentIcon className="h-4 w-4" />
+                </StatsContainer>
+                <StatsContainer
+                  cardTitle="Total Games"
+                  value={data!.length}
+                  description="Total games played"
+                >
+                  <KanbanSquare className="h-4 w-4" />
+                </StatsContainer>
+              </div>
+            )}
+          </TabsContent>
+          <TabsContent className="w-full h-[800px]" value="charts">
+            {isFetching ? (
+              <Skeleton className="h-4 w-[250px]" />
+            ) : (
+              <div className="flex flex-col gap-4">
+                <ChartContainer cardTitle="Win Rate">
+                  <WinRateDoughnut data={data!} />
+                </ChartContainer>
+                <ChartContainer cardTitle="Win Rate over time">
+                  <WinRateOverTime data={data!} />
+                </ChartContainer>
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
