@@ -66,7 +66,7 @@ export const columns: ColumnDef<Team>[] = [
     cell: ({ row }) => {
       const team = row.original;
       return (
-        <div className="flex gap-2">
+        <div className="flex justify-center gap-2">
           <Button
             variant="outline"
             size="icon"
