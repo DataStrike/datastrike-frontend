@@ -1,4 +1,4 @@
-import { Map } from "@/components/ui/Map";
+import { Map } from "@/components/ui/Map.tsx";
 import { Separator } from "@/components/ui/separator";
 import { MapResult } from "@/models/overwatch/maps.ts";
 

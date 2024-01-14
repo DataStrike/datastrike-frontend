@@ -8,7 +8,7 @@ import {
 import { z } from "zod";
 import AutoForm from "@/components/ui/auto-form";
 import { Separator } from "@/components/ui/separator";
-import { MapsContainer } from "@/components/ui/MapsContainer";
+import { MapsContainer } from "@/components/ui/MapsContainer.tsx";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { KanbanSquare, PercentIcon, SaveIcon } from "lucide-react";
