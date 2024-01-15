@@ -44,12 +44,14 @@ export type FormDataTrackerResult = {
   info: string;
   date: Date;
   maps: MapResult[];
+  vodLink: string;
 };
 
 export type MapResult = {
   map_name: MapName | "";
   us_score: number;
   them_score: number;
+  replay_code: string;
 };
 
 export const OW_MAPS: MapData = {
