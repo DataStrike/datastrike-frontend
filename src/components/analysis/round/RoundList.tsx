@@ -1,5 +1,5 @@
 // RoundList.tsx
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 
 interface RoundListProps {
   rounds: any[]; // Ajoutez le type correct pour les rounds
@@ -7,15 +7,11 @@ interface RoundListProps {
 }
 
 const RoundList: React.FC<RoundListProps> = ({ rounds, onRoundClick }) => {
-
-
   useEffect(() => {
-
-    console.info('Rounds:', rounds);
-  }
-  );
+    console.info("Rounds:", rounds);
+  });
   return (
-    <div className="rounded-md border border-gray-300 p-4">
+    <div className="rounded-md border border-gray-300 w-fit p-4">
       {rounds.map((round, index) => (
         <div
           key={round.id}
@@ -27,6 +23,6 @@ const RoundList: React.FC<RoundListProps> = ({ rounds, onRoundClick }) => {
       ))}
     </div>
   );
-}
+};
 
 export default RoundList;
