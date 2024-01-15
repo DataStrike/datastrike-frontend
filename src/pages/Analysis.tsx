@@ -1,16 +1,44 @@
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import AnalysisList from "@/components/analysis/AnalysisList";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import io from "socket.io-client";
+import { Skeleton } from "@/components/ui/skeleton.tsx";
+import { SelectTeamComponent } from "@/components/team/SelectTeamComponent.tsx";
+import { Team } from "@/models/teams/columns.tsx";
+import { useQuery } from "@tanstack/react-query";
+import { getTeams } from "@/services/teams-service.ts";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card.tsx";
+import { Plus } from "lucide-react";
 
 export function Analysis() {
   const [files, setFiles] = useState<File[]>([]);
   const [maps, setMaps] = useState<any[]>([]);
   const [selectedMap, setSelectedMap] = useState<any | null>(null);
+  const [team, setTeam] = useState({} as Team);
 
+  const { data: teams, isFetching: teamsFetching } = useQuery({
+    queryKey: ["teams"],
+    queryFn: getTeams,
+  });
+
+  if (teams && teams.length > 0 && !team.id) {
+    setTeam(teams[0]);
+  }
+
+  const updateTeam = async (team: Team) => {
+    setTeam(team);
+
+    // Invalidate the query so that it refetches with the new team
+    // await queryClient.invalidateQueries({ queryKey: ["tracker", team.id] });
+  };
   useEffect(() => {
     fetchMapsFromAPI();
     const socket = io("http://localhost:3333");
@@ -160,28 +188,48 @@ export function Analysis() {
   };
 
   return (
-    <div>
-      <div className="text-2xl font-semibold">Analysis</div>
-
-      <div className="flex gap-4 mb-4">
-        <div className="w-1/3">
-          <Label htmlFor="picture">Picture</Label>
-          <div className="flex items-center justify-center mr-4">
-            <Input
-              id="picture"
-              type="file"
-              onChange={handleFileChange}
-              className="file:bg-gray-200 file:text-black-700 hover:file:bg-blue-100 mr-4"
-              multiple
-            />
-            <Button onClick={handleFileUpload}> Upload files</Button>
-          </div>
-        </div>
+    <div className="flex flex-col gap-4">
+      <div className="flex justify-between">
+        <div className="text-2xl font-semibold">Tracker</div>
+        {teamsFetching ? (
+          <Skeleton className="h-4 w-[250px]" />
+        ) : (
+          <SelectTeamComponent
+            teams={teams!}
+            team={team.name}
+            setTeam={(team: Team) => updateTeam(team)}
+          />
+        )}
       </div>
 
+      {!teams || (teams.length == 0 && <div>No team detected.</div>)}
       {/* AnalysisList prend toute la largeur */}
-      <div>
-        <AnalysisList maps={maps} />
+      <div className="flex flex-col gap-4">
+        <div className="flex">
+          <Input
+            id="picture"
+            type="file"
+            onChange={handleFileChange}
+            className="file:bg-gray-200 file:text-black-700 w-fit hover:file:bg-blue-100 mr-4"
+            multiple
+          />
+          <Button onClick={handleFileUpload}> Upload files</Button>
+        </div>
+
+        <div className="flex h-[600px] gap-4">
+          <div className="w-56">
+            <Card className="w-full h-full">
+              <CardHeader className="pt-4 px-4">
+                <CardTitle>Filters</CardTitle>
+                <CardDescription>Add filters to your research</CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col items-center">
+                <Input placeholder="Name" />
+              </CardContent>
+            </Card>
+          </div>
+          <AnalysisList maps={maps} />
+        </div>
       </div>
     </div>
   );
