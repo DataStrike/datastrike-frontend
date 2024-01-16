@@ -40,6 +40,7 @@ const formSchema = z.object({
   opponentTeamName: z.string(),
   date: z.coerce.date(),
   info: z.string().optional(),
+  vodLink: z.string().optional(),
 });
 
 export function Tracker() {
@@ -81,6 +82,7 @@ export function Tracker() {
       map_name: "",
       us_score: 0,
       them_score: 0,
+      replay_code: "",
     });
     setMaps(updatedMaps);
   };
@@ -94,16 +96,27 @@ export function Tracker() {
       toast.error("You must add at least one map");
     }
     setValues(values);
+    if (!values.date) {
+      return;
+    } else {
+      // Avoid GMT / CET errors
+      values.date.setHours(12, 0, 0, 0);
+    }
     const trackerResults: FormDataTrackerResult = {
       opponentTeam: values.opponentTeamName,
       info: values.info ? values.info : "",
-      date: values.date ? values.date : new Date(),
+      date: values.date,
+      vodLink: values.vodLink ? values.vodLink : "",
       maps,
     };
+
+    console.log("Tracker results:", trackerResults);
 
     await trackerService.addTrackerResult(team.id, trackerResults);
 
     await queryClient.invalidateQueries({ queryKey: ["tracker", team.id] });
+    // Clear all inputs and maps
+    setMaps([]);
   };
 
   return (
@@ -120,101 +133,109 @@ export function Tracker() {
           />
         )}
       </div>
-      <div className="flex flex-col gap-4 w-full lg:flex-row">
-        <Card className="w-full h-full min-w-fit lg:w-60">
-          <CardHeader>
-            <CardTitle>Add a result</CardTitle>
-            <CardDescription>Add a result to your stats</CardDescription>
-          </CardHeader>
-          <CardContent className="h-full">
-            <AutoForm
-              formSchema={formSchema}
-              fieldConfig={{
-                info: { fieldType: "textarea" },
-                date: { fieldType: "date" },
-              }}
-              values={values}
-              onSubmit={(values) => addTrackerResults(values)}
-            >
-              <MapsContainer
-                maps={maps}
-                deleteMap={deleteMap}
-                updateMap={updateMap}
-              />
-              <Button
-                type={"button"}
-                variant="add"
-                onClick={addMap}
-                className="my-2 w-full"
+
+      {!teams || (teams.length == 0 && <div>No team detected.</div>)}
+
+      {teams && teams.length > 0 && (
+        <div className="flex flex-col gap-4 w-full lg:flex-row">
+          <Card className="h-full w-64 lg:w-60">
+            <CardHeader>
+              <CardTitle>Add a result</CardTitle>
+              <CardDescription>Add a result to your stats</CardDescription>
+            </CardHeader>
+            <CardContent className="h-full">
+              <AutoForm
+                formSchema={formSchema}
+                fieldConfig={{
+                  info: { fieldType: "textarea" },
+                  date: { fieldType: "date" },
+                }}
+                values={values}
+                onSubmit={(values) => addTrackerResults(values)}
               >
-                <PlusIcon className="mr-2 h-4 w-4" />
-                Add a map
-              </Button>
-              <Separator />
-              <Button type={"submit"} className="mt-2 w-full">
-                <SaveIcon className="mr-2 h-4 w-4" />
-                Save
-              </Button>
-            </AutoForm>
-          </CardContent>
-        </Card>
-        <Tabs defaultValue="datatable" className="grow">
-          <TabsList className="w-[400px]">
-            <TabsTrigger className="w-full" value="datatable">
-              Table
-            </TabsTrigger>
-            <TabsTrigger className="w-full" value="stats">
-              Stats
-            </TabsTrigger>
-            <TabsTrigger className="w-full" value="charts">
-              Charts
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent className="w-full h-[800px]" value="datatable">
-            {isFetching ? (
-              <Skeleton className="h-4 w-[250px]" />
-            ) : (
-              <TrackerDatatable columns={columns} data={data!} />
-            )}
-          </TabsContent>
-          <TabsContent className="w-full h-[800px]" value="stats">
-            {isFetching ? (
-              <Skeleton className="h-4 w-[250px]" />
-            ) : (
-              <div className="flex gap-4">
-                <StatsContainer
-                  cardTitle="Win Rate"
-                  value={winRate(data)}
-                  description="Win rate overall "
+                <MapsContainer
+                  maps={maps}
+                  deleteMap={deleteMap}
+                  updateMap={updateMap}
+                />
+                <Button
+                  type={"button"}
+                  variant="add"
+                  onClick={addMap}
+                  className="my-2 w-full"
                 >
-                  <PercentIcon className="h-4 w-4" />
-                </StatsContainer>
-                <StatsContainer
-                  cardTitle="Total Games"
-                  value={data!.length}
-                  description="Total games played"
-                >
-                  <KanbanSquare className="h-4 w-4" />
-                </StatsContainer>
-              </div>
-            )}
-          </TabsContent>
-          <TabsContent className="w-full h-[800px]" value="charts">
-            {isFetching ? (
-              <Skeleton className="h-4 w-[250px]" />
-            ) : (
-              <div className="flex flex-col gap-4">
-                <ChartContainer cardTitle="Win Rate">
-                  <WinRateDoughnut data={data!} />
-                </ChartContainer>
-                <ChartContainer cardTitle="Win Rate over time">
-                  <WinRateOverTime data={data!} />
-                </ChartContainer>
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
-      </div>
+                  <PlusIcon className="mr-2 h-4 w-4" />
+                  Add a map
+                </Button>
+                <Separator />
+                <Button type={"submit"} className="mt-2 w-full">
+                  <SaveIcon className="mr-2 h-4 w-4" />
+                  Save
+                </Button>
+              </AutoForm>
+            </CardContent>
+          </Card>
+          <Tabs defaultValue="datatable" className="grow">
+            <TabsList className="w-[400px]">
+              <TabsTrigger className="w-full" value="datatable">
+                Table
+              </TabsTrigger>
+              <TabsTrigger className="w-full" value="stats">
+                Stats
+              </TabsTrigger>
+              <TabsTrigger className="w-full" value="charts">
+                Charts
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent
+              className="w-full h-[80vh] overflow-auto"
+              value="datatable"
+            >
+              {isFetching ? (
+                <Skeleton className="h-4 w-[250px]" />
+              ) : (
+                <TrackerDatatable columns={columns} data={data!} />
+              )}
+            </TabsContent>
+            <TabsContent className="w-full h-[800px]" value="stats">
+              {isFetching ? (
+                <Skeleton className="h-4 w-[250px]" />
+              ) : (
+                <div className="flex gap-4">
+                  <StatsContainer
+                    cardTitle="Win Rate"
+                    value={winRate(data)}
+                    description="Win rate overall "
+                  >
+                    <PercentIcon className="h-4 w-4" />
+                  </StatsContainer>
+                  <StatsContainer
+                    cardTitle="Total Games"
+                    value={data!.length}
+                    description="Total games played"
+                  >
+                    <KanbanSquare className="h-4 w-4" />
+                  </StatsContainer>
+                </div>
+              )}
+            </TabsContent>
+            <TabsContent className="w-full h-[800px]" value="charts">
+              {isFetching ? (
+                <Skeleton className="h-4 w-[250px]" />
+              ) : (
+                <div className="flex flex-col gap-4">
+                  <ChartContainer cardTitle="Win Rate">
+                    <WinRateDoughnut data={data!} />
+                  </ChartContainer>
+                  <ChartContainer cardTitle="Win Rate over time">
+                    <WinRateOverTime data={data!} />
+                  </ChartContainer>
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
+        </div>
+      )}
     </div>
   );
 }

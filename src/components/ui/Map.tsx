@@ -47,6 +47,13 @@ export function Map({ deleteMap, isLast, map, updateMap }: Props) {
           onChange={(e) => updateMap("them_score", e.target.value)}
         />
       </div>
+      <Input
+        className="px-2"
+        type="text"
+        placeholder="Replay code"
+        value={map.replay_code}
+        onChange={(e) => updateMap("replay_code", e.target.value)}
+      />
     </div>
   );
 }

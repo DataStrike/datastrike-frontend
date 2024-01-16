@@ -2,7 +2,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { RESULT } from "@/models/overwatch/maps.ts";
 import { capitalize } from "@/utils/functions.ts";
 import { Button } from "@/components/ui/button.tsx";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, LinkIcon } from "lucide-react";
 
 export type TrackerResult = {
   opponentTeamName: string;
@@ -12,6 +12,8 @@ export type TrackerResult = {
   themScore: number;
   result: RESULT;
   info: string;
+  replayCode: string;
+  vodLink: string;
 };
 export const columns: ColumnDef<TrackerResult>[] = [
   {
@@ -83,6 +85,49 @@ export const columns: ColumnDef<TrackerResult>[] = [
         >
           Result
           <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const result: string = row.original.result;
+
+      return result === "W" ? (
+        <div className="text-xl">🟢</div>
+      ) : result === "D" ? (
+        <div className="text-xl">🟠</div>
+      ) : (
+        <div className="text-xl">🔴</div>
+      );
+    },
+  },
+  {
+    accessorKey: "replayCode",
+    header: "Code",
+    cell: ({ row }) => {
+      const code: string = row.original.replayCode;
+
+      return code ? <div>{code}</div> : <></>;
+    },
+  },
+  {
+    accessorKey: "vodLink",
+    header: "Link",
+    cell: ({ row }) => {
+      const vodLink = row.original.vodLink;
+
+      const openLinkInNewTab = () => {
+        window.open(vodLink, "_blank");
+      };
+
+      return (
+        <Button
+          className="disabled:opacity-10"
+          variant="outline"
+          size="icon"
+          onClick={openLinkInNewTab}
+          disabled={!vodLink}
+        >
+          <LinkIcon />
         </Button>
       );
     },

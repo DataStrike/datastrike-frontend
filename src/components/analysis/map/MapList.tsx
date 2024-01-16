@@ -1,6 +1,6 @@
 // MapList.tsx
-import React from 'react';
-import MapCard from './MapCard';
+import React from "react";
+import MapCard from "./MapCard";
 
 interface MapListProps {
   maps: any[]; // Ajoutez le type correct pour les maps
@@ -9,12 +9,12 @@ interface MapListProps {
 
 const MapList: React.FC<MapListProps> = ({ maps, onMapClick }) => {
   return (
-    <div className="map-list">
+    <div className="flex flex-col gap-2">
       {maps.map((map) => (
         <MapCard key={map.id} map={map} onClick={() => onMapClick(map)} />
       ))}
     </div>
   );
-}
+};
 
 export default MapList;
