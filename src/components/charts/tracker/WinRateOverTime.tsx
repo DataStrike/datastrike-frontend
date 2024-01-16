@@ -51,7 +51,7 @@ export function WinRateOverTime({ data }: Props) {
 
         const cumulativeWinRates = Object.values(groupedData).map((dayData) => {
           cumulativeWins += dayData.wins;
-          cumulativeTotal += dayData.total;
+          cumulativeTotal += dayData.total - dayData.losses;
           return (cumulativeWins / cumulativeTotal) * 100;
         });
 

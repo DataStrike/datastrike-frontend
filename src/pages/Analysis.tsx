@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import AnalysisList from "@/components/analysis/AnalysisList";
 
-import { useState, useEffect, ChangeEvent } from "react";
+import { useState, useEffect } from "react";
 import io from "socket.io-client";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
 import { SelectTeamComponent } from "@/components/team/SelectTeamComponent.tsx";
@@ -16,12 +16,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card.tsx";
-import { Plus } from "lucide-react";
-
 export function Analysis() {
   const [files, setFiles] = useState<File[]>([]);
   const [maps, setMaps] = useState<any[]>([]);
-  const [selectedMap, setSelectedMap] = useState<any | null>(null);
   const [team, setTeam] = useState({} as Team);
 
   const { data: teams, isFetching: teamsFetching } = useQuery({
@@ -56,64 +53,6 @@ export function Analysis() {
       socket.disconnect();
     };
   }, []);
-
-  const handleMapClick = (map_data: any) => {
-    const fictiveMapData = {
-      map_name: "Map fictive",
-      date: "2022-01-01",
-      team1_name: "Team A",
-      team2_name: "Team B",
-      team1_score: 5,
-      team2_score: 3,
-      data: {
-        events: generateRandomEvents(),
-      },
-    };
-    if (map_data) {
-      map_data.data.events = adjustEventValues(map_data.data.events, 15);
-      setSelectedMap(map_data);
-
-      console.info("Map selected:", map_data);
-    }
-  };
-
-  function adjustEventValues(events, thresholdSeconds) {
-    events.sort((a, b) => parseFloat(a.timestamp) - parseFloat(b.timestamp));
-
-    // Parcourir les événements
-    let lastEvent = null;
-    let index = 1; // Compteur pour attribuer des valeurs distinctes
-
-    for (const event of events) {
-      // Vérifier s'il y a un événement précédent
-      if (lastEvent !== null) {
-        // Convertir les horodatages en objets Date
-        const currentTimestamp = new Date(parseFloat(event.timestamp) * 1000);
-        const lastTimestamp = new Date(parseFloat(lastEvent.timestamp) * 1000);
-
-        // Calculer la différence en secondes entre les horodatages
-        const timeDifferenceSeconds =
-          (currentTimestamp.getTime() - lastTimestamp.getTime()) / 1000;
-
-        // Vérifier si la différence est inférieure à la limite
-        if (timeDifferenceSeconds < thresholdSeconds) {
-          // Augmenter la valeur de l'événement actuel
-          index += 1;
-        } else {
-          // Réinitialiser le compteur si la différence est supérieure à la limite
-          index = 1;
-        }
-      }
-
-      // Attribuer la valeur à l'événement actuel
-      event.value = index;
-
-      // Mettre à jour l'événement précédent
-      lastEvent = event;
-    }
-
-    return events;
-  }
 
   const fetchMapsFromAPI = async () => {
     try {
@@ -167,24 +106,6 @@ export function Analysis() {
     } catch (error) {
       console.error("Erreur lors du téléversement des fichiers :", error);
     }
-  };
-
-  const generateRandomEvents = () => {
-    const numberOfEvents = Math.floor(Math.random() * 50) + 1; // Générer un nombre aléatoire d'événements (entre 1 et 10)
-    const events = [];
-
-    for (let i = 0; i < numberOfEvents; i++) {
-      const event = {
-        timestamp: i, // Utiliser une date au format ISO pour le timestamp
-        type: Math.random() > 0.5 ? "kill" : "objective", // Alternance aléatoire entre 'kill' et 'objective'
-        description: `Event ${i + 1}`, // Description générique
-        value: Math.floor(Math.random() * 50),
-      };
-
-      events.push(event);
-    }
-
-    return events;
   };
 
   return (

@@ -96,17 +96,27 @@ export function Tracker() {
       toast.error("You must add at least one map");
     }
     setValues(values);
+    if (!values.date) {
+      return;
+    } else {
+      // Avoid GMT / CET errors
+      values.date.setHours(12, 0, 0, 0);
+    }
     const trackerResults: FormDataTrackerResult = {
       opponentTeam: values.opponentTeamName,
       info: values.info ? values.info : "",
-      date: values.date ? values.date : new Date(),
+      date: values.date,
       vodLink: values.vodLink ? values.vodLink : "",
       maps,
     };
 
+    console.log("Tracker results:", trackerResults);
+
     await trackerService.addTrackerResult(team.id, trackerResults);
 
     await queryClient.invalidateQueries({ queryKey: ["tracker", team.id] });
+    // Clear all inputs and maps
+    setMaps([]);
   };
 
   return (
@@ -128,7 +138,7 @@ export function Tracker() {
 
       {teams && teams.length > 0 && (
         <div className="flex flex-col gap-4 w-full lg:flex-row">
-          <Card className="w-full h-full min-w-fit lg:w-60">
+          <Card className="h-full w-64 lg:w-60">
             <CardHeader>
               <CardTitle>Add a result</CardTitle>
               <CardDescription>Add a result to your stats</CardDescription>
