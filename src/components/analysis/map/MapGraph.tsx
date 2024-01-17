@@ -28,16 +28,11 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
     backgroundColor: `rgba(135, 137, 140, ${0.1 + 0.1 * index})`,
   }));
  
-  console.info('Annotation options:', annotationOptions);
-
-
   useEffect(() => {
 
     if (chartInstance) {
       chartInstance.destroy();
     }
-
-    console.info('Map data:', mapData)
 
     const killTeam1Point = new Image();
     killTeam1Point.src = killTeam1;
@@ -48,37 +43,70 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
     const objectivePoint = new Image();
     objectivePoint.src = objectiveIcon;
 
+
+    console.info('Map data:', mapData)
+
+    const FirstRound = mapData.data.rounds[0];
+
+    var playerNames: any[] = []
+    
+
+    Object.values(FirstRound.teams).map((team) => (
+      
+
+      Object.values(team.players).map((player) => (
+    
+        playerNames.push(player.name))
+        
+
+    )))
+
+  
+
+
     if (mapData && mapData.data) {
+
+// Mapper les noms de joueurs aux données individuelles
+        const playerData = playerNames.map((playerName, index) => {
+          const playerEvents = mapData.data.events.filter((event: { player: string }) => event.player === playerName);
+          console.info('Player events:', playerEvents);
+          return {
+            label: playerName,
+            backgroundColor: `rgba(75, 192, 192, 0.2)`,
+            borderColor: `rgba(75, 192, 192, 1)`,
+            borderWidth: 1,
+            pointRadius: playerEvents.map((event: { type: string }) => (event.type === 'kill' ? 10 : 5)),
+            pointStyle: playerEvents.map((event: { type: string }) => {
+              if (event.type === 'kill_team1') {
+                return killTeam1Point;
+              } else if (event.type === 'kill_team2') {
+                return killTeam2Point;
+              } else if (event.type === 'objective') {
+                return objectivePoint;
+              } else {
+                return null;
+              }
+            }),
+            showLine: false,
+            data: playerEvents.map((event: { timestamp: string; value: any }) => ({
+              x: parseFloat(event.timestamp),
+              y: playerName, // Utiliser les indices des joueurs comme catégories y
+              description: event.description,
+              type: event.type,
+            })),
+          };
+        });
+
       const labels = mapData.data.events.map((event: { timestamp: any; }) => event.timestamp);
 
-      const datasets = [
-        {
-          label: 'Timeline',
-          backgroundColor: 'rgba(75, 192, 192, 0.2)',
-          borderColor: 'rgba(75, 192, 192, 1)',
-          borderWidth: 1,
-          pointRadius: mapData.data.events.map((event: { type: string; }) => (event.type === 'kill' ? 10 : 5)),
-          pointStyle: mapData.data.events.map((event: { type: string; }) => {
-            if (event.type === 'kill_team1') {
-              return killTeam1Point;
-            } else if (event.type === 'kill_team2') {
-              return killTeam2Point;
-            } else if (event.type === 'objective') {
-              return objectivePoint;
-            } else {
-              return null;
-            }
-          }),
-          showLine: false,
-          data: mapData.data.events.map((event: { timestamp: string; value: any; }) => ({ x: parseFloat(event.timestamp), y: event.value })), // Utiliser les timestamps convertis pour les données x
-        },
-      ];
+      console.info('Labels:', labels);
+      console.info('Player Data:', playerData);
 
       const config = {
         type: 'line',
         data: {
           labels: labels,
-          datasets: datasets,
+          datasets: playerData,
         },
         options: {
           scales: {
@@ -88,23 +116,33 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
               beginAtZero: true,
             },
             y: {
-              min: 0,
-              max: Math.max(...mapData.data.events.map((event: { value: any; }) => event.value)) + 1,
+              type: 'category', // Utiliser le type 'category' pour l'axe y
+              labels: playerNames,
+              beginAtZero: true,
+              offset: true,
+              // min: 10,
+
             },
           },
           plugins: {
+
+            legend: {
+              display: false,
+            },
+
             tooltip: {
               callbacks: {
                 title: (context: { dataIndex: string | number; }[]) => {
-                  if (context[0]) {
-                    const event = mapData.data.events[context[0].dataIndex];
-                    return event.type || "";
-                  }
-                  return "";
+                  
+                  const playerIndex = context // Get the index of the playerData array
+                  const playerEvent = context[0].dataset.data[context[0].dataIndex]; 
+
+                  return playerEvent.type || "";
                 },
                 label: (context: { dataIndex: string | number; }) => {
-                  const event = mapData.data.events[context.dataIndex];
-                  return `${event.timestamp}: ${event.description}`;
+                  const playerIndex = context.datasetIndex; // Get the index of the playerData array
+                  const playerEvent = playerData[playerIndex].data[context.dataIndex]; 
+                  return `${playerEvent.x}: ${playerEvent.description}`;
                 },
               },
             },
@@ -116,7 +154,7 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
                 pinch: {
                   enabled: true,
                 },
-                mode: 'xy',
+                mode: 'x',
                 x: { min: 'original', max: 'original' },
                 y: { min: 'original', max: 'original' },
               },
