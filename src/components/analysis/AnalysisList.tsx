@@ -21,7 +21,7 @@ const AnalysisList: React.FC<AnalysisListProps> = ({ maps }) => {
 
   const handleMapClick = (map_data: any) => {
     if (map_data) {
-      map_data.data.events = adjustEventValues(map_data.data.events, 15);
+      // map_data.data.events = adjustEventValues(map_data.data.events, 15);
       setSelectedMap(map_data);
       setSelectedRound(null);
       setSelectedPlayer(null);
