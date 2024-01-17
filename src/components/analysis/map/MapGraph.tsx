@@ -5,6 +5,7 @@ import zoomPlugin from 'chartjs-plugin-zoom';
 import annotationPlugin from 'chartjs-plugin-annotation';
 import deathIcon from '@/assets/analysis/death.png';
 import killIcon from '@/assets/analysis/kill.png';
+import ultimateIcon from '@/assets/analysis/ultimate.png';
 // import killTeam2 from '@/assets/analysis/kill_team2.png';
 import objectiveIcon from '@/assets/analysis/objectif.png';
 
@@ -43,6 +44,9 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
 
     const objectivePoint = new Image();
     objectivePoint.src = objectiveIcon;
+
+    const ultimatePoint = new Image();
+    ultimatePoint.src = ultimateIcon;
 
 
     console.info('Map data:', mapData)
@@ -84,7 +88,11 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
                 return killPoint;
               } else if (event.type === 'objective') {
                 return objectivePoint;
-              } else {
+              } else if (event.type === 'ultimate') {
+                return ultimatePoint;
+              }
+              
+              else {
                 return null;
               }
             }),
