@@ -3,8 +3,9 @@ import Chart from 'chart.js/auto';
 import zoomPlugin from 'chartjs-plugin-zoom';
 
 import annotationPlugin from 'chartjs-plugin-annotation';
-import killTeam1 from '@/assets/analysis/kill_team1.png';
-import killTeam2 from '@/assets/analysis/kill_team2.png';
+import deathIcon from '@/assets/analysis/death.png';
+import killIcon from '@/assets/analysis/kill.png';
+// import killTeam2 from '@/assets/analysis/kill_team2.png';
 import objectiveIcon from '@/assets/analysis/objectif.png';
 
 interface MapGraphProps {
@@ -34,11 +35,11 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
       chartInstance.destroy();
     }
 
-    const killTeam1Point = new Image();
-    killTeam1Point.src = killTeam1;
+    const DeathPoint = new Image();
+    DeathPoint.src = deathIcon;
 
-    const killTeam2Point = new Image();
-    killTeam2Point.src = killTeam2;
+    const killPoint = new Image();
+    killPoint.src = killIcon;
 
     const objectivePoint = new Image();
     objectivePoint.src = objectiveIcon;
@@ -77,10 +78,10 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
             borderWidth: 1,
             pointRadius: playerEvents.map((event: { type: string }) => (event.type === 'kill' ? 10 : 5)),
             pointStyle: playerEvents.map((event: { type: string }) => {
-              if (event.type === 'kill_team1') {
-                return killTeam1Point;
-              } else if (event.type === 'kill_team2') {
-                return killTeam2Point;
+              if (event.type === 'death') {
+                return DeathPoint;
+              } else if (event.type === 'kill') {
+                return killPoint;
               } else if (event.type === 'objective') {
                 return objectivePoint;
               } else {
