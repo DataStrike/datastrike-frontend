@@ -48,9 +48,6 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
     const ultimatePoint = new Image();
     ultimatePoint.src = ultimateIcon;
 
-
-    console.info('Map data:', mapData)
-
     const FirstRound = mapData.data.rounds[0];
 
     var playerNames: any[] = []
@@ -74,7 +71,6 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
 // Mapper les noms de joueurs aux données individuelles
         const playerData = playerNames.map((playerName, index) => {
           const playerEvents = mapData.data.events.filter((event: { player: string }) => event.player === playerName);
-          console.info('Player events:', playerEvents);
           return {
             label: playerName,
             backgroundColor: `rgba(75, 192, 192, 0.2)`,
@@ -108,8 +104,6 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
 
       const labels = mapData.data.events.map((event: { timestamp: any; }) => event.timestamp);
 
-      console.info('Labels:', labels);
-      console.info('Player Data:', playerData);
 
       const config = {
         type: 'line',
