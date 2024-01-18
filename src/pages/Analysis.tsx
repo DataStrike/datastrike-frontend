@@ -43,23 +43,32 @@ export function Analysis() {
     await queryClient.invalidateQueries({ queryKey: ["maps", team.id] });
   };
 
+  const socket = io("http://localhost:3333");
+
   useEffect(() => {
-    const socket = io("http://localhost:3333");
+    // Connect to the server only if there is a team id
+    if (team.id) {
+      socket.connect();
 
-    socket.on("connect", () => {
       console.log("Connected to server");
-    });
 
-    socket.on("analysisData", async (data: any) => {
-      console.log("Received data from server :", data);
+      const handleAnalysisData = async (data) => {
+        console.log("Received data from server:", data);
+        // Assuming queryClient and invalidateQueries are defined elsewhere
+        await queryClient.invalidateQueries({ queryKey: ["maps", team.id] });
+      };
 
-      await queryClient.invalidateQueries({ queryKey: ["maps", team.id] });
-    });
+      // Attach event listener for analysisData
+      socket.on("analysisData", handleAnalysisData);
 
-    return () => {
-      socket.disconnect();
-    };
-  }, [maps]);
+      return () => {
+        // Disconnect when the component is unmounted or when team.id changes
+        socket.disconnect();
+        // Remove the event listener to prevent memory leaks
+        socket.off("analysisData", handleAnalysisData);
+      };
+    }
+  }, [team.id]);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = event.target.files;
