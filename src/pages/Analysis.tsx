@@ -52,7 +52,7 @@ export function Analysis() {
 
       console.log("Connected to server");
 
-      const handleAnalysisData = async (data) => {
+      const handleAnalysisData = async (data: any) => {
         console.log("Received data from server:", data);
         // Assuming queryClient and invalidateQueries are defined elsewhere
         await queryClient.invalidateQueries({ queryKey: ["maps", team.id] });
@@ -127,15 +127,15 @@ export function Analysis() {
           <Button onClick={handleFileUpload}> Upload files</Button>
         </div>
 
-        <div className="flex h-[600px] gap-4">
+        <div className="flex h-full gap-4">
           <div className="w-56">
-            <Card className="w-full h-full">
-              <CardHeader className="pt-4 px-4">
+            <Card className="w-full h-[600px]">
+              <CardHeader className="pt-4 px-4 ">
                 <CardTitle>Filters</CardTitle>
                 <CardDescription>Add filters to your research</CardDescription>
               </CardHeader>
-              <CardContent className="flex flex-col items-center">
-                <Input placeholder="Name" />
+              <CardContent className="flex flex-col">
+                <span className="opacity-40 text-sm">Filters coming soon...</span>
               </CardContent>
             </Card>
           </div>

@@ -60,7 +60,7 @@ const AnalysisList: React.FC<AnalysisListProps> = ({ maps }) => {
   };
 
   return (
-    <div className="flex flex-1 overflow-auto h-full">
+    <div className="flex flex-1 overflow-auto">
       {/* Ajustez la largeur selon vos besoins */}
       {!selectedMap &&
         !selectedRound &&
