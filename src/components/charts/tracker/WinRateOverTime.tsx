@@ -24,24 +24,39 @@ export function WinRateOverTime({ data }: Props) {
               total: 0,
               wins: 0,
               losses: 0,
+              draws: 0,
               winRates: [],
             };
 
             dayData.total++;
-            if (result.result === "W") {
-              dayData.wins++;
-            } else if (result.result === "L") {
-              dayData.losses++;
+            switch (result.result) {
+              case "W":
+                dayData.wins++;
+                break;
+              case "L":
+                dayData.losses++;
+                break;
+              case "D":
+                dayData.draws++;
+                break;
             }
 
-            dayData.winRates.push((dayData.wins / dayData.total) * 100);
+            dayData.winRates.push(
+              (dayData.wins / (dayData.total - dayData.draws)) * 100,
+            );
             acc[date] = dayData;
 
             return acc;
           },
           {} as Record<
             string,
-            { total: number; wins: number; losses: number; winRates: number[] }
+            {
+              total: number;
+              wins: number;
+              draws: number;
+              losses: number;
+              winRates: number[];
+            }
           >,
         );
 

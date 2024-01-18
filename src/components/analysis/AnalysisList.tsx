@@ -7,11 +7,11 @@ import PlayerList from "./player/PlayerList";
 import CharacterList from "./character/CharacterList";
 import PlayerDetails from "./player/PlayerDetails";
 import { Button } from "../ui/button";
+import { AnalysisMap } from "@/models/analysis/analysismaps.ts";
 import PlayerStatsGraph from "./dynamicGraph/PlayerStatsGraph";
 
-
 interface AnalysisListProps {
-  maps: any[]; // Ajoutez le type correct pour les maps
+  maps: AnalysisMap[]; // Ajoutez le type correct pour les maps
 }
 
 const AnalysisList: React.FC<AnalysisListProps> = ({ maps }) => {

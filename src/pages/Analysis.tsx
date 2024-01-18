@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import AnalysisList from "@/components/analysis/AnalysisList";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import io from "socket.io-client";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
 import { SelectTeamComponent } from "@/components/team/SelectTeamComponent.tsx";
@@ -16,9 +16,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card.tsx";
+import { mapsService } from "@/services/maps-service.ts";
+import { queryClient } from "@/pages/Layout.tsx";
 export function Analysis() {
   const [files, setFiles] = useState<File[]>([]);
-  const [maps, setMaps] = useState<any[]>([]);
   const [team, setTeam] = useState({} as Team);
 
   const { data: teams, isFetching: teamsFetching } = useQuery({
@@ -26,53 +27,54 @@ export function Analysis() {
     queryFn: getTeams,
   });
 
-  if (teams && teams.length > 0 && !team.id) {
-    setTeam(teams[0]);
-  }
+  const { data: maps } = useQuery({
+    queryKey: ["maps", team.id],
+    queryFn: () => mapsService.getMaps(team.id),
+  });
+
+  useEffect(() => {
+    if (teams && teams.length > 0 && !team.id) {
+      setTeam(teams[0]);
+    }
+  }, [teams, team]);
 
   const updateTeam = async (team: Team) => {
     setTeam(team);
-
-    // Invalidate the query so that it refetches with the new team
-    // await queryClient.invalidateQueries({ queryKey: ["tracker", team.id] });
+    await queryClient.invalidateQueries({ queryKey: ["maps", team.id] });
   };
+
+  const socket = io("http://localhost:3333");
+
   useEffect(() => {
-    fetchMapsFromAPI();
-    const socket = io("http://localhost:3333");
+    // Connect to the server only if there is a team id
+    if (team.id) {
+      socket.connect();
 
-    socket.on("connect", () => {
       console.log("Connected to server");
-    });
 
-    socket.on("analysisData", (data: any) => {
-      console.info("Received event: ", data);
-      fetchMapsFromAPI();
-    });
+      const handleAnalysisData = async (data) => {
+        console.log("Received data from server:", data);
+        // Assuming queryClient and invalidateQueries are defined elsewhere
+        await queryClient.invalidateQueries({ queryKey: ["maps", team.id] });
+      };
 
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
+      // Attach event listener for analysisData
+      socket.on("analysisData", handleAnalysisData);
 
-  const fetchMapsFromAPI = async () => {
-    try {
-      const response = await fetch("http://localhost:3333/maps");
-      if (response.ok) {
-        const data = await response.json();
-        setMaps(data);
-        console.log("Maps fetched from API:", data);
-      } else {
-        console.error("Failed to fetch maps from API");
-      }
-    } catch (error) {
-      console.error("Error fetching maps from API:", error);
+      return () => {
+        // Disconnect when the component is unmounted or when team.id changes
+        socket.disconnect();
+        // Remove the event listener to prevent memory leaks
+        socket.off("analysisData", handleAnalysisData);
+      };
     }
-  };
+  }, [team.id]);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = event.target.files;
     if (selectedFiles && selectedFiles.length > 0) {
-      setFiles(Array.from(selectedFiles));
+      const filesArray = Array.from(selectedFiles);
+      setFiles(filesArray);
     }
   };
 
@@ -86,23 +88,11 @@ export function Analysis() {
     files.forEach((file, index) => {
       formData.append(`files[${index}]`, file);
     });
-    formData.append("teamId", "FakeTeamId");
+    formData.append("teamId", team.id.toString());
 
     try {
-      const response = await fetch(
-        "http://localhost:3333/new_overwatch_analysis",
-        {
-          method: "POST",
-          body: formData,
-        },
-      );
-
-      if (response.ok) {
-        console.log("Fichiers téléversés avec succès");
-        // Traiter la réponse du backend si nécessaire
-      } else {
-        console.error("Échec du téléversement des fichiers");
-      }
+      const response = await mapsService.addAnalysisMaps(team.id, formData);
+      console.log("Réponse de l'API :", response);
     } catch (error) {
       console.error("Erreur lors du téléversement des fichiers :", error);
     }
@@ -149,7 +139,7 @@ export function Analysis() {
               </CardContent>
             </Card>
           </div>
-          <AnalysisList maps={maps} />
+          {maps && <AnalysisList maps={maps} />}
         </div>
       </div>
     </div>
