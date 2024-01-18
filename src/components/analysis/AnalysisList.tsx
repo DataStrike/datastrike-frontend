@@ -8,6 +8,7 @@ import CharacterList from "./character/CharacterList";
 import PlayerDetails from "./player/PlayerDetails";
 import { Button } from "../ui/button";
 import { AnalysisMap } from "@/models/analysis/analysismaps.ts";
+import PlayerStatsGraph from "./dynamicGraph/PlayerStatsGraph";
 
 interface AnalysisListProps {
   maps: AnalysisMap[]; // Ajoutez le type correct pour les maps
@@ -18,6 +19,7 @@ const AnalysisList: React.FC<AnalysisListProps> = ({ maps }) => {
   const [selectedRound, setSelectedRound] = useState<any | null>(null);
   const [selectedPlayer, setSelectedPlayer] = useState<any | null>(null);
   const [selectedCharacter, setSelectedCharacter] = useState<any | null>(null);
+  const [displayMode, setDisplayMode] = useState<string>("map");
 
   const handleMapClick = (map_data: any) => {
     if (map_data) {
@@ -33,7 +35,7 @@ const AnalysisList: React.FC<AnalysisListProps> = ({ maps }) => {
     setSelectedRound(round);
     setSelectedPlayer(null);
     setSelectedCharacter(null);
-    console.info("Player selected:", round);
+
   };
 
   const handlePlayerClick = (player: any) => {
@@ -78,6 +80,11 @@ const AnalysisList: React.FC<AnalysisListProps> = ({ maps }) => {
               onRoundClick={handleRoundClick}
             />
             <Button onClick={handleBackButtonClick}>Back</Button>
+            <div className="flex flex-col gap-2">
+            {displayMode === "playerStats" && <Button onClick={() => setDisplayMode("map")}>Afficher Map</Button>}
+            {displayMode === "map" && <Button onClick={() => setDisplayMode("playerStats")}>Afficher Stats</Button>}
+
+            </div>
           </div>
         )}
       {selectedRound && !selectedPlayer && !selectedCharacter && (
@@ -101,13 +108,20 @@ const AnalysisList: React.FC<AnalysisListProps> = ({ maps }) => {
 
       <div className="flex-1">
         {" "}
-        {/* Utilisez flex-1 pour occuper tout l'espace disponible */}
-        {selectedMap &&
-          !selectedRound &&
-          !selectedPlayer &&
-          !selectedCharacter && <MapGraph mapData={selectedMap} />}
-      </div>
+        {displayMode === "map" && selectedMap && !selectedRound && !selectedPlayer && !selectedCharacter && (
+        <div className="flex-1">
+          <MapGraph mapData={selectedMap} />
+        </div>
+      )}
+
+      {displayMode === "playerStats" && selectedMap && !selectedRound && !selectedPlayer && !selectedCharacter && (
+        <div className="flex-1">
+          <PlayerStatsGraph mapData={selectedMap} />
+        </div>
+      )}
       {selectedPlayer && <PlayerDetails player={selectedPlayer} />}
+        
+    </div>
     </div>
   );
 };
