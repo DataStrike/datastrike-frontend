@@ -1,10 +1,11 @@
 // MapList.tsx
 import React from "react";
 import MapCard from "./MapCard";
+import { AnalysisMap } from "@/models/analysis/analysismaps.ts";
 
 interface MapListProps {
-  maps: any[]; // Ajoutez le type correct pour les maps
-  onMapClick: (map: any) => void;
+  maps: AnalysisMap[]; // Ajoutez le type correct pour les maps
+  onMapClick: (map: AnalysisMap) => void;
 }
 
 const MapList: React.FC<MapListProps> = ({ maps, onMapClick }) => {
