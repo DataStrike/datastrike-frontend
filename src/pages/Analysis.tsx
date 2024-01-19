@@ -101,7 +101,7 @@ export function Analysis() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between">
-        <div className="text-2xl font-semibold">Tracker</div>
+        <div className="text-2xl font-semibold">Analysis</div>
         {teamsFetching ? (
           <Skeleton className="h-4 w-[250px]" />
         ) : (

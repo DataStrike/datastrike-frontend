@@ -6,6 +6,7 @@ import { Layout } from "@/pages/Layout.tsx";
 import { Tracker } from "@/pages/Tracker.tsx";
 import { Analysis } from "@/pages/Analysis.tsx";
 import { Teams } from "@/pages/Teams.tsx";
+import Profile from "@/pages/Profile.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -36,6 +37,10 @@ export const router = createBrowserRouter([
             path: "/teams",
             element: <Teams />,
           },
+          {
+            path: "/profile",
+            element: <Profile />,
+          }
         ],
       },
     ],
