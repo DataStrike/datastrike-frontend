@@ -8,13 +8,13 @@ async function getMaps(teamId: number): Promise<AnalysisMap[]> {
   }
 
   return await ky
-    .get(`${BASE_URL}/maps/${teamId}`, {
+    .get(`${BASE_URL}/teams/${teamId}/maps`, {
       credentials: "include",
     })
     .json();
 }
 async function addAnalysisMaps(teamId: number, maps: FormData): Promise<void> {
-  await ky.post(`${BASE_URL}/maps/${teamId}`, {
+  await ky.post(`${BASE_URL}/teams/${teamId}/maps`, {
     credentials: "include",
     body: maps,
   });
