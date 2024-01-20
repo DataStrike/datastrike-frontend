@@ -43,18 +43,16 @@ export function Analysis() {
     await queryClient.invalidateQueries({ queryKey: ["maps", team.id] });
   };
 
-  const socket = io("http://localhost:3333");
-
   useEffect(() => {
     // Connect to the server only if there is a team id
     if (team.id) {
+      const socket = io("http://localhost:3333");
+
       socket.connect();
 
       console.log("Connected to server");
 
-      const handleAnalysisData = async (data: any) => {
-        console.log("Received data from server:", data);
-        // Assuming queryClient and invalidateQueries are defined elsewhere
+      const handleAnalysisData = async () => {
         await queryClient.invalidateQueries({ queryKey: ["maps", team.id] });
       };
 
