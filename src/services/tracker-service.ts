@@ -9,7 +9,7 @@ async function getTrackerResults(teamId: number): Promise<TrackerResult[]> {
   }
 
   return await ky
-    .get(`${BASE_URL}/tracker/${teamId}`, {
+    .get(`${BASE_URL}/teams/${teamId}/tracker`, {
       credentials: "include",
     })
     .json();
@@ -20,9 +20,19 @@ async function addTrackerResult(
   trackerResult: FormDataTrackerResult,
 ): Promise<void> {
   return await ky
-    .post(`${BASE_URL}/tracker/${teamId}`, {
+    .post(`${BASE_URL}/teams/${teamId}/tracker`, {
       credentials: "include",
       json: trackerResult,
+    })
+    .json();
+}
+
+async function deleteTrackerResult(
+  trackerResultId: number,
+): Promise<void> {
+  return await ky
+    .delete(`${BASE_URL}/tracker/${trackerResultId}`, {
+      credentials: "include",
     })
     .json();
 }
@@ -30,4 +40,5 @@ async function addTrackerResult(
 export const trackerService = {
   getTrackerResults,
   addTrackerResult,
+  deleteTrackerResult,
 };

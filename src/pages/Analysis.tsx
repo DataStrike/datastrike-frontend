@@ -29,7 +29,7 @@ export function Analysis() {
 
   const { data: maps } = useQuery({
     queryKey: ["maps", team.id],
-    queryFn: () => mapsService.getMaps(team.id),
+    queryFn: () => mapsService.getMapList(team.id),
   });
 
   useEffect(() => {
@@ -43,18 +43,16 @@ export function Analysis() {
     await queryClient.invalidateQueries({ queryKey: ["maps", team.id] });
   };
 
-  const socket = io("http://localhost:3333");
-
   useEffect(() => {
     // Connect to the server only if there is a team id
     if (team.id) {
+      const socket = io("http://localhost:3333");
+
       socket.connect();
 
       console.log("Connected to server");
 
-      const handleAnalysisData = async (data: any) => {
-        console.log("Received data from server:", data);
-        // Assuming queryClient and invalidateQueries are defined elsewhere
+      const handleAnalysisData = async () => {
         await queryClient.invalidateQueries({ queryKey: ["maps", team.id] });
       };
 
@@ -101,7 +99,7 @@ export function Analysis() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between">
-        <div className="text-2xl font-semibold">Tracker</div>
+        <div className="text-2xl font-semibold">Analysis</div>
         {teamsFetching ? (
           <Skeleton className="h-4 w-[250px]" />
         ) : (
@@ -135,7 +133,9 @@ export function Analysis() {
                 <CardDescription>Add filters to your research</CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col">
-                <span className="opacity-40 text-sm">Filters coming soon...</span>
+                <span className="opacity-40 text-sm">
+                  Filters coming soon...
+                </span>
               </CardContent>
             </Card>
           </div>

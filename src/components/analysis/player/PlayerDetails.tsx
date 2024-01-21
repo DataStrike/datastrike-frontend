@@ -1,53 +1,89 @@
 // PlayerDetails.tsx
-import React, { useMemo } from 'react';
+import React, { useMemo } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Character, Player } from "@/models/analysis/analysismaps";
 
 interface PlayerDetailsProps {
-  player: any; // Ajoutez le type correct pour les joueurs
+  player: Player;
 }
 
 const PlayerDetails: React.FC<PlayerDetailsProps> = ({ player }) => {
   const statKeys = useMemo(() => {
     const keysSet = new Set<string>();
-    Object.values(player.characters).forEach((character: any) => {
+    Object.values(player.characters).forEach((character: Character) => {
       Object.keys(character.stats).forEach((key) => keysSet.add(key));
     });
     return Array.from(keysSet);
   }, [player]);
 
-  return (
-    <div className="bg-white p-4 rounded shadow overflow-x-auto">
-      <h2 className="text-lg font-bold mb-4">Player Details</h2>
-      <table className="table-auto min-w-full">
-        <thead>
-          <tr>
-            <th className="border px-4 py-2">Character</th>
-            {statKeys.map((statKey) => (
-              <th key={statKey} className="border px-4 py-2">{statKey}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {Object.entries(player.characters).map(([charKey, character]) => {
-            // Vérifier si les statistiques du personnage sont vides
-            const statsNotEmpty = Object.values(character.stats).some((value) => value !== null && value !== undefined);
-            
-            // Si les statistiques ne sont pas vides, afficher la ligne
-            if (statsNotEmpty) {
-              return (
-                <tr key={charKey}>
-                  <td className="border px-4 py-2">{charKey}</td>
-                  {statKeys.map((statKey) => (
-                    <td key={statKey} className="border px-4 py-2">{character.stats[statKey]}</td>
-                  ))}
-                </tr>
-              );
-            }
+  const statValues = useMemo(() => {
+    const valuesMap: { [key: string]: number[] } = {};
+    statKeys.forEach((key) => {
+      valuesMap[key] = [];
+    });
 
-            // Sinon, retourner null pour ne pas créer la ligne
-            return null;
-          })}
-        </tbody>
-      </table>
+    Object.values(player.characters).forEach((character: Character) => {
+      Object.entries(character.stats).forEach(([key, value]) => {
+        valuesMap[key].push(value ?? 0);
+      });
+    });
+
+    return valuesMap;
+  }, [player, statKeys]);
+
+  return (
+    <div className="bg-white p-4 rounded flex flex-col gap-2">
+      <h2 className="text-lg font-bold mb-4">Player Details</h2>
+      <ScrollArea className="whitespace-nowrap rounded-md border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="border px-4 py-2">Character</TableHead>
+              {statKeys.map((statKey) => (
+                <TableHead key={statKey} className="border px-4 py-2">
+                  {statKey}
+                </TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {Object.entries(player.characters).map(([charKey, character]) => {
+              // Check if the character stats are not empty
+              const statsNotEmpty = Object.values(character.stats).some(
+                (value) => value !== null && value !== undefined,
+              );
+
+              // If stats are not empty, display the row
+              if (statsNotEmpty) {
+                return (
+                  <TableRow className="overflow-auto" key={charKey}>
+                    <TableCell className="border px-4 py-2">
+                      {charKey}
+                    </TableCell>
+                    {statKeys.map((statKey) => (
+                      <TableCell key={statKey} className="border px-4 py-2">
+                        {statValues[statKey].shift()}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                );
+              }
+
+              // Otherwise, return null to skip creating the row
+              return null;
+            })}
+          </TableBody>
+        </Table>
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
     </div>
   );
 };

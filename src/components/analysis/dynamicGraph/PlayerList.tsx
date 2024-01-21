@@ -1,55 +1,89 @@
 // PlayerList.tsx
-
-import React, { useEffect, useState } from 'react';
-
+import React, { useEffect, useState } from "react";
+import { AnalysisMap, Player, Team } from "@/models/analysis/analysismaps";
+import { Checkbox } from "@/components/ui/checkbox.tsx";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card.tsx";
 
 interface PlayerListProps {
-  mapData: any; // Remplacez "any" par le type approprié pour vos données
-  onPlayersSelected: (selectedPlayers: string[]) => void;
+  mapData: AnalysisMap;
+  onPlayersSelected: (selectedPlayers: Player[]) => void;
 }
 
-const PlayerList: React.FC<PlayerListProps> = ({ mapData, onPlayersSelected }) => {
-  const players = {};
-  const [selectedPlayers, setSelectedPlayers] = useState<string[]>([]);
+const PlayerList: React.FC<PlayerListProps> = ({
+  mapData,
+  onPlayersSelected,
+}) => {
+  const [selectedPlayers, setSelectedPlayers] = useState<Player[]>([]);
+  const [players, setPlayers] = useState<Player[]>([]);
 
-  Object.values(mapData.data.rounds[0].teams).map((team: any) => (
+  useEffect(() => {
+    const uniquePlayers = extractUniquePlayers(mapData);
+    setPlayers(uniquePlayers);
+  }, [mapData]);
 
-    Object.values(team.players).map((player: any) => (
+  const extractUniquePlayers = (mapData: AnalysisMap): Player[] => {
+    const uniquePlayers: Player[] = [];
 
-      players[player.name] = player.name
+    mapData.data.rounds.forEach((round) => {
+      Object.values(round.teams).forEach((team: Team) => {
+        Object.values(team.players).forEach((player: Player) => {
+          if (!uniquePlayers.some((p) => p.name === player.name)) {
+            uniquePlayers.push(player);
+          }
+        });
+      });
+    });
 
-    )))
-  );
-
-
-  const handleStatsCheckboxChange = (statsKey: string) => {
-    // Mise à jour de la liste des statistiques sélectionnées
-    const updatedSelectedStats = selectedPlayers.includes(statsKey)
-      ? selectedPlayers.filter((key) => key !== statsKey)
-      : [...selectedPlayers, statsKey];
-
-    setSelectedPlayers(updatedSelectedStats);
-    onPlayersSelected(updatedSelectedStats);
+    return uniquePlayers;
   };
 
+  const handlePlayerCheckboxChange = (playerName: string) => {
+    const updatedSelectedPlayers: Player[] = [...selectedPlayers];
+    const playerIndex = updatedSelectedPlayers.findIndex(
+      (player) => player.name === playerName,
+    );
+
+    if (playerIndex === -1) {
+      updatedSelectedPlayers.push(
+        players.find((player) => player.name === playerName) as Player,
+      );
+    } else {
+      updatedSelectedPlayers.splice(playerIndex, 1);
+    }
+
+    setSelectedPlayers(updatedSelectedPlayers);
+    onPlayersSelected(updatedSelectedPlayers);
+  };
 
   return (
-    <div>
-      <h2>Liste des Joueurs</h2>
-      <ul>
-        {Object.keys(players).map((key) => (
-          <li key={key}>
-                <input
-                type="checkbox"
-                id={key}
-                checked={selectedPlayers.includes(key)}
-                onChange={() => handleStatsCheckboxChange(key)}
-              />
-            <label htmlFor={key}>{key}</label>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <Card className="w-fit h-fit">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-4">
+        <CardTitle>Players list</CardTitle>
+      </CardHeader>
+      <CardContent className="h-fit">
+        {players.length > 0 && (
+          <ul>
+            {players.map((player) => (
+              <li key={player.name}>
+                <Checkbox
+                  id={player.name}
+                  name={player.name}
+                  value={player.name}
+                  checked={selectedPlayers.some((p) => p.name === player.name)}
+                  onClick={() => handlePlayerCheckboxChange(player.name)}
+                />
+                <label htmlFor={player.name}>{player.name}</label>
+              </li>
+            ))}
+          </ul>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 

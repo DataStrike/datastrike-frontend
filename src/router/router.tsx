@@ -6,6 +6,8 @@ import { Layout } from "@/pages/Layout.tsx";
 import { Tracker } from "@/pages/Tracker.tsx";
 import { Analysis } from "@/pages/Analysis.tsx";
 import { Teams } from "@/pages/Teams.tsx";
+import Profile from "@/pages/Profile.tsx";
+import { AnalysisDetailed } from "@/pages/AnalysisDetailed.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -33,8 +35,16 @@ export const router = createBrowserRouter([
             element: <Analysis />,
           },
           {
+            path: "/analysis/:mapId",
+            element: <AnalysisDetailed />,
+          },
+          {
             path: "/teams",
             element: <Teams />,
+          },
+          {
+            path: "/profile",
+            element: <Profile />,
           },
         ],
       },

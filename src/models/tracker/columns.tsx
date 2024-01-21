@@ -2,9 +2,12 @@ import { ColumnDef } from "@tanstack/react-table";
 import { RESULT } from "@/models/overwatch/maps.ts";
 import { capitalize } from "@/utils/functions.ts";
 import { Button } from "@/components/ui/button.tsx";
-import { ArrowUpDown, LinkIcon } from "lucide-react";
+import { ArrowUpDown, LinkIcon, Trash } from "lucide-react";
+import { toast } from "sonner";
+import { trackerService } from "@/services/tracker-service.ts";
 
 export type TrackerResult = {
+  id: number;
   opponentTeamName: string;
   date: string;
   mapName: string;
@@ -14,6 +17,14 @@ export type TrackerResult = {
   info: string;
   replayCode: string;
   vodLink: string;
+};
+
+const onDeleteTrackerResult = async (trackerResultId: number) => {
+  await trackerService.deleteTrackerResult(trackerResultId);
+  toast.success("Map result deleted successfully");
+  // Reload the page to refetch the data
+  // TODO : Find a better way to do this without reloading the page
+  window.location.reload();
 };
 export const columns: ColumnDef<TrackerResult>[] = [
   {
@@ -135,5 +146,25 @@ export const columns: ColumnDef<TrackerResult>[] = [
   {
     accessorKey: "info",
     header: "Info",
+  },
+  {
+    id: "actions",
+    header: "Actions",
+    cell: ({ row }) => {
+      const trackerResult = row.original;
+      return (
+        <div className="flex justify-center gap-2">
+          <Button
+            variant="destructive"
+            size="icon"
+            onClick={async () => {
+              await onDeleteTrackerResult(trackerResult.id);
+            }}
+          >
+            <Trash className="h-4 w-4" />
+          </Button>
+        </div>
+      );
+    },
   },
 ];
