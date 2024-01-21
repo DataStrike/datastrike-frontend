@@ -7,21 +7,37 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table.tsx";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area.tsx";
+} from "@/components/ui/table";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Character, Player } from "@/models/analysis/analysismaps";
 
 interface PlayerDetailsProps {
-  player: any; // Ajoutez le type correct pour les joueurs
+  player: Player;
 }
 
 const PlayerDetails: React.FC<PlayerDetailsProps> = ({ player }) => {
   const statKeys = useMemo(() => {
     const keysSet = new Set<string>();
-    Object.values(player.characters).forEach((character: any) => {
+    Object.values(player.characters).forEach((character: Character) => {
       Object.keys(character.stats).forEach((key) => keysSet.add(key));
     });
     return Array.from(keysSet);
   }, [player]);
+
+  const statValues = useMemo(() => {
+    const valuesMap: { [key: string]: number[] } = {};
+    statKeys.forEach((key) => {
+      valuesMap[key] = [];
+    });
+
+    Object.values(player.characters).forEach((character: Character) => {
+      Object.entries(character.stats).forEach(([key, value]) => {
+        valuesMap[key].push(value ?? 0);
+      });
+    });
+
+    return valuesMap;
+  }, [player, statKeys]);
 
   return (
     <div className="bg-white p-4 rounded flex flex-col gap-2">
@@ -40,12 +56,12 @@ const PlayerDetails: React.FC<PlayerDetailsProps> = ({ player }) => {
           </TableHeader>
           <TableBody>
             {Object.entries(player.characters).map(([charKey, character]) => {
-              // Vérifier si les statistiques du personnage sont vides
+              // Check if the character stats are not empty
               const statsNotEmpty = Object.values(character.stats).some(
                 (value) => value !== null && value !== undefined,
               );
 
-              // Si les statistiques ne sont pas vides, afficher la ligne
+              // If stats are not empty, display the row
               if (statsNotEmpty) {
                 return (
                   <TableRow className="overflow-auto" key={charKey}>
@@ -54,14 +70,14 @@ const PlayerDetails: React.FC<PlayerDetailsProps> = ({ player }) => {
                     </TableCell>
                     {statKeys.map((statKey) => (
                       <TableCell key={statKey} className="border px-4 py-2">
-                        {character.stats[statKey]}
+                        {statValues[statKey].shift()}
                       </TableCell>
                     ))}
                   </TableRow>
                 );
               }
 
-              // Sinon, retourner null pour ne pas créer la ligne
+              // Otherwise, return null to skip creating the row
               return null;
             })}
           </TableBody>

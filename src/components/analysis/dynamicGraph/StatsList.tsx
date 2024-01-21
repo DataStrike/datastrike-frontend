@@ -1,42 +1,49 @@
 // StatsKeyList.tsx
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from "react";
+import { AnalysisMap } from "@/models/analysis/analysismaps.ts";
 
 interface StatsKeyListProps {
-  mapData: any; // Remplacez "any" par le type approprié pour vos données
+  mapData: AnalysisMap;
   onStatsSelected: (selectedStats: string[]) => void;
 }
 
-const StatsKeyList: React.FC<StatsKeyListProps> = ({ mapData, onStatsSelected }) => {
-
-  var statsKeys = {};
+const StatsKeyList: React.FC<StatsKeyListProps> = ({
+  mapData,
+  onStatsSelected,
+}) => {
+  let statsKeys = {};
   let somethingAdded = false;
 
   const [selectedStats, setSelectedStats] = useState<string[]>([]);
-  
+
   Object.values(mapData.data.rounds[0].teams).forEach((team) => {
     Object.values(team.players).forEach((player) => {
       Object.values(player.characters).forEach((character) => {
-        if (character && character.stats && Object.keys(character.stats).length > 0) {
+        if (
+          character &&
+          character.stats &&
+          Object.keys(character.stats).length > 0
+        ) {
           statsKeys = character.stats;
           somethingAdded = true;
         }
       });
-  
-      // Si quelque chose a été ajouté, sortir de la boucle externe
+
+      // If something was added, break out of the outer loop
       if (somethingAdded) {
         return;
       }
     });
-  
-    // Si quelque chose a été ajouté, sortir de la boucle externe
+
+    // If something was added, break out of the outer loop
     if (somethingAdded) {
       return;
     }
   });
 
   const handleStatsCheckboxChange = (statsKey: string) => {
-    // Mise à jour de la liste des statistiques sélectionnées
+    // Update selected stats
     const updatedSelectedStats = selectedStats.includes(statsKey)
       ? selectedStats.filter((key) => key !== statsKey)
       : [...selectedStats, statsKey];
@@ -48,16 +55,14 @@ const StatsKeyList: React.FC<StatsKeyListProps> = ({ mapData, onStatsSelected })
     onStatsSelected(updatedSelectedStats);
   };
 
-  
-
   return (
     <div>
-      <h2>Liste des Clés de Statistiques</h2>
+      <h2>Events list</h2>
       <ul>
         {Object.keys(statsKeys).map((key) => (
           <li key={key}>
             <div>
-            <input
+              <input
                 type="checkbox"
                 id={key}
                 checked={selectedStats.includes(key)}
@@ -70,7 +75,6 @@ const StatsKeyList: React.FC<StatsKeyListProps> = ({ mapData, onStatsSelected })
       </ul>
     </div>
   );
-
-}
+};
 
 export default StatsKeyList;

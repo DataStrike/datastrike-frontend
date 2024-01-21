@@ -1,26 +1,22 @@
 // AnalysisDetailed.tsx
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { mapsService } from "@/services/maps-service.ts";
+import { mapsService } from "@/services/maps-service";
 import { useNavigate, useParams } from "react-router-dom";
-import RoundList from "@/components/analysis/round/RoundList.tsx";
-import MapGraph from "@/components/analysis/map/MapGraph.tsx";
-import PlayerStatsGraph from "@/components/analysis/dynamicGraph/PlayerStatsGraph.tsx";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs.tsx";
-import { Separator } from "@/components/ui/separator.tsx";
-import PlayerList from "@/components/analysis/player/PlayerList.tsx";
-import PlayerDetails from "@/components/analysis/player/PlayerDetails.tsx";
-import { Button } from "@/components/ui/button.tsx";
+import RoundList from "@/components/analysis/round/RoundList";
+import MapGraph from "@/components/analysis/map/MapGraph";
+import PlayerStatsGraph from "@/components/analysis/dynamicGraph/PlayerStatsGraph";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
+import PlayerList from "@/components/analysis/player/PlayerList";
+import PlayerDetails from "@/components/analysis/player/PlayerDetails";
+import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import { Player, Round } from "@/models/analysis/analysismaps";
 
 export function AnalysisDetailed() {
-  const [selectedRound, setSelectedRound] = useState(null);
-  const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const [selectedRound, setSelectedRound] = useState<Round | null>(null);
+  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
   const { mapId } = useParams();
   const navigate = useNavigate();
 
@@ -29,19 +25,19 @@ export function AnalysisDetailed() {
     queryFn: () => mapsService.getMap(mapId),
   });
 
-  const handleRoundClick = (round) => {
+  const handleRoundClick = (round: Round) => {
     setSelectedRound(round);
     setSelectedPlayer(null); // Reset selectedPlayer when a new round is clicked
   };
 
-  const handlePlayerClick = (player) => {
+  const handlePlayerClick = (player: Player) => {
     setSelectedPlayer(player);
   };
 
   return (
     <div className="flex flex-col gap-4">
       <Button
-        variant={"ghost"}
+        variant="ghost"
         className="w-fit pl-3"
         onClick={() => {
           navigate("/analysis");
@@ -72,7 +68,7 @@ export function AnalysisDetailed() {
             <Separator className="my-4" />
             <PlayerStatsGraph mapData={map} />
           </TabsContent>
-          <TabsContent value={"rounds"}>
+          <TabsContent value="rounds">
             <div className="flex flex-col gap-4">
               <RoundList
                 rounds={map.data.rounds}

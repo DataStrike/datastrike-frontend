@@ -7,10 +7,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select.tsx";
+import { Round } from "@/models/analysis/analysismaps.ts";
 
 interface RoundListProps {
-  rounds: any[]; // Add the correct type for rounds
-  onRoundClick: (round: any) => void;
+  rounds: Round[]; // Add the correct type for rounds
+  onRoundClick: (round: Round) => void;
 }
 
 const RoundList: React.FC<RoundListProps> = ({ rounds, onRoundClick }) => {
@@ -32,8 +33,8 @@ const RoundList: React.FC<RoundListProps> = ({ rounds, onRoundClick }) => {
         />
       </SelectTrigger>
       <SelectContent>
-        {rounds.map((round, index) => (
-          <SelectItem key={round.id} value={index.toString()}>
+        {rounds.map((_, index) => (
+          <SelectItem key={`round-${index}`} value={index.toString()}>
             {`Round ${index + 1}`}
           </SelectItem>
         ))}

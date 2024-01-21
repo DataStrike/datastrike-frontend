@@ -1,18 +1,98 @@
-import React, { useState, useEffect } from 'react';
-import PlayerList from './PlayerList';
-import StatsList from './StatsList';
-import PlayerGraph from './DynamicGraph';
+import React, { useState, useEffect } from "react";
+import PlayerList from "./PlayerList";
+import StatsList from "./StatsList";
+import PlayerGraph from "./DynamicGraph";
+import {
+  AnalysisMap,
+  GraphDataStats,
+  Player,
+} from "@/models/analysis/analysismaps.ts";
 
 interface PlayerStatsGraphProps {
-  mapData: any; // Remplacez "any" par le type approprié pour vos données
+  mapData: AnalysisMap;
 }
 
 const PlayerStatsGraph: React.FC<PlayerStatsGraphProps> = ({ mapData }) => {
-  const [selectedPlayers, setSelectedPlayers] = useState<string[]>([]);
+  const [selectedPlayers, setSelectedPlayers] = useState<Player[]>([]);
   const [selectedStats, setSelectedStats] = useState<string[]>([]);
-  const [dataGraph, setDataGraph] = useState<{ [key: string]: any }>({});
+  const [dataGraph, setDataGraph] = useState<{
+    [playerName: string]: GraphDataStats[];
+  }>({});
 
-  const handlePlayersSelected = (players: string[]) => {
+  useEffect(() => {
+    const filteredPlayersData = mapData.data.rounds.reduce(
+      (filteredData, round, index) => {
+        for (const [, team] of Object.entries(round.teams)) {
+          for (const [, player] of Object.entries(team.players)) {
+            if (
+              selectedPlayers.some(
+                (selectedPlayer) => selectedPlayer.name === player.name,
+              )
+            ) {
+              const aggregatedStats: { [key: string]: number } = {};
+
+              for (const character of Object.values(player.characters)) {
+                if (character.stats) {
+                  for (const [key, value] of Object.entries(character.stats)) {
+                    const numericValue = parseFloat(value as string);
+                    aggregatedStats[key] =
+                      (aggregatedStats[key] || 0) + numericValue;
+                  }
+                }
+              }
+
+              if (
+                Object.values(aggregatedStats).some((value) => !isNaN(value))
+              ) {
+                filteredData[player.name] = filteredData[player.name] || [];
+                filteredData[player.name].push({
+                  round: index,
+                  stats: aggregatedStats,
+                });
+              }
+            }
+          }
+        }
+        return filteredData;
+      },
+      {} as { [key: string]: GraphDataStats[] },
+    );
+
+    const filteredDataGraph = filterStatsByKeys(filteredPlayersData);
+    setDataGraph(filteredDataGraph);
+  }, [mapData, selectedPlayers, selectedStats]);
+
+  const filterStatsByKeys = (filteredPlayersData: {
+    [key: string]: GraphDataStats[];
+  }): { [key: string]: GraphDataStats[] } => {
+    const result: { [key: string]: GraphDataStats[] } = {};
+
+    for (const [playerName, statsByRound] of Object.entries(
+      filteredPlayersData,
+    )) {
+      const filteredStatsByRound = statsByRound.map(({ round, stats }) => {
+        const filteredStats: { [key: string]: number } = {};
+        selectedStats.forEach((key) => {
+          if (stats[key] !== undefined) {
+            filteredStats[key] = stats[key];
+          }
+        });
+        return { round, stats: filteredStats };
+      });
+
+      if (
+        Object.values(filteredStatsByRound[0].stats).some(
+          (value) => !isNaN(value),
+        )
+      ) {
+        result[playerName] = filteredStatsByRound;
+      }
+    }
+
+    return result;
+  };
+
+  const handlePlayersSelected = (players: Player[]) => {
     setSelectedPlayers(players);
   };
 
@@ -20,79 +100,19 @@ const PlayerStatsGraph: React.FC<PlayerStatsGraphProps> = ({ mapData }) => {
     setSelectedStats(stats);
   };
 
-  useEffect(() => {
-    let listeJoueursFiltres = {};
-
-    mapData.data.rounds.forEach((round, index) => {
-      for (const [nomEquipe, equipe] of Object.entries(round.teams)) {
-        for (const [nomJoueur, joueur] of Object.entries(equipe.players)) {
-          if (selectedPlayers.includes(joueur.name)) {
-            const statsAgregats = {};
-            for (const character of Object.values(joueur.characters)) {
-              if (character.stats && Object.keys(character.stats).length > 0) {
-                const statsNumeriques = {};
-                for (const [key, value] of Object.entries(character.stats)) {
-                  statsNumeriques[key] = parseFloat(value);
-                }
-                  
-                for (const [key, value] of Object.entries(statsNumeriques)) {
-                  if (statsAgregats[key]) {
-                    statsAgregats[key] += value;
-                  } else {
-                    statsAgregats[key] = value;
-                  }
-                }
-              }
-            }
-            if (Object.keys(statsAgregats).length > 0) {
-              if (!listeJoueursFiltres[joueur.name]) {
-                listeJoueursFiltres[joueur.name] = [];
-              }
-              listeJoueursFiltres[joueur.name].push({
-                round: index,
-                stats: statsAgregats,
-              });
-            }
-          }
-        }
-      }
-    });
-
-    listeJoueursFiltres = filtrerStatsParCles(listeJoueursFiltres);
-    setDataGraph(listeJoueursFiltres);
-  }, [mapData, selectedPlayers, selectedStats]);
-
-  function filtrerStatsParCles(listeJoueursFiltres) {
-    const resultatsFiltres = {};
-
-    for (const [nomJoueur, statsParRound] of Object.entries(listeJoueursFiltres)) {
-      const statsFiltres = statsParRound.map(({ round, stats }) => {
-        const statsFiltresJoueur = {};
-        selectedStats.forEach((key) => {
-          if (stats[key] !== undefined) {
-            statsFiltresJoueur[key] = stats[key];
-          }
-        });
-        return { round, stats: statsFiltresJoueur };
-      });
-
-      if (Object.keys(statsFiltres[0].stats).length > 0) {
-        resultatsFiltres[nomJoueur] = statsFiltres;
-      }
-    }
-
-    return resultatsFiltres;
-  }
-
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-      <div style={{ flex: 1, marginRight: '16px' }}>
-        <PlayerList mapData={mapData} onPlayersSelected={handlePlayersSelected} />
-        
+    <div style={{ display: "flex", justifyContent: "space-around" }}>
+      <div style={{ flex: 1, marginRight: "16px" }}>
+        <PlayerList
+          mapData={mapData}
+          onPlayersSelected={handlePlayersSelected}
+        />
       </div>
       <StatsList mapData={mapData} onStatsSelected={handleStatsSelected} />
       <div style={{ flex: 2 }}>
-      {Object.keys(dataGraph).length > 0 && selectedStats && <PlayerGraph data={dataGraph} selectedStats={selectedStats}/>}
+        {Object.keys(dataGraph).length > 0 && selectedStats.length > 0 && (
+          <PlayerGraph data={dataGraph} selectedStats={selectedStats} />
+        )}
       </div>
     </div>
   );

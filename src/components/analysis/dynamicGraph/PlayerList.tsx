@@ -1,51 +1,78 @@
 // PlayerList.tsx
-
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { AnalysisMap, Player, Team } from "@/models/analysis/analysismaps";
 
 interface PlayerListProps {
-  mapData: any; // Remplacez "any" par le type approprié pour vos données
-  onPlayersSelected: (selectedPlayers: string[]) => void;
+  mapData: AnalysisMap;
+  onPlayersSelected: (selectedPlayers: Player[]) => void;
 }
 
 const PlayerList: React.FC<PlayerListProps> = ({
   mapData,
   onPlayersSelected,
 }) => {
-  const players = {};
-  const [selectedPlayers, setSelectedPlayers] = useState<string[]>([]);
+  const [selectedPlayers, setSelectedPlayers] = useState<Player[]>([]);
+  const [players, setPlayers] = useState<Player[]>([]);
 
-  Object.values(mapData.data.rounds[0].teams).map((team: any) =>
-    Object.values(team.players).map(
-      (player: any) => (players[player.name] = player.name),
-    ),
-  );
+  useEffect(() => {
+    const uniquePlayers = extractUniquePlayers(mapData);
+    setPlayers(uniquePlayers);
+  }, [mapData]);
 
-  const handleStatsCheckboxChange = (statsKey: string) => {
-    // Mise à jour de la liste des statistiques sélectionnées
-    const updatedSelectedStats = selectedPlayers.includes(statsKey)
-      ? selectedPlayers.filter((key) => key !== statsKey)
-      : [...selectedPlayers, statsKey];
+  const extractUniquePlayers = (mapData: AnalysisMap): Player[] => {
+    const uniquePlayers: Player[] = [];
 
-    setSelectedPlayers(updatedSelectedStats);
-    onPlayersSelected(updatedSelectedStats);
+    mapData.data.rounds.forEach((round) => {
+      Object.values(round.teams).forEach((team: Team) => {
+        Object.values(team.players).forEach((player: Player) => {
+          if (!uniquePlayers.some((p) => p.name === player.name)) {
+            uniquePlayers.push(player);
+          }
+        });
+      });
+    });
+
+    return uniquePlayers;
+  };
+
+  const handlePlayerCheckboxChange = (playerName: string) => {
+    const updatedSelectedPlayers: Player[] = [...selectedPlayers];
+    const playerIndex = updatedSelectedPlayers.findIndex(
+      (player) => player.name === playerName,
+    );
+
+    if (playerIndex === -1) {
+      updatedSelectedPlayers.push(
+        players.find((player) => player.name === playerName) as Player,
+      );
+    } else {
+      updatedSelectedPlayers.splice(playerIndex, 1);
+    }
+
+    setSelectedPlayers(updatedSelectedPlayers);
+    onPlayersSelected(updatedSelectedPlayers);
   };
 
   return (
     <div>
-      <h2>Liste des Joueurs</h2>
-      <ul>
-        {Object.keys(players).map((key) => (
-          <li key={key}>
-            <input
-              type="checkbox"
-              id={key}
-              checked={selectedPlayers.includes(key)}
-              onChange={() => handleStatsCheckboxChange(key)}
-            />
-            <label htmlFor={key}>{key}</label>
-          </li>
-        ))}
-      </ul>
+      <h2>Players list</h2>
+      {players.length > 0 && (
+        <ul>
+          {players.map((player) => (
+            <li key={player.name}>
+              <input
+                type="checkbox"
+                id={player.name}
+                name={player.name}
+                value={player.name}
+                checked={selectedPlayers.some((p) => p.name === player.name)}
+                onChange={() => handlePlayerCheckboxChange(player.name)}
+              />
+              <label htmlFor={player.name}>{player.name}</label>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
