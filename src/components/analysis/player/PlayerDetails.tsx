@@ -1,5 +1,14 @@
 // PlayerDetails.tsx
-import React, { useMemo } from 'react';
+import React, { useMemo } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table.tsx";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area.tsx";
 
 interface PlayerDetailsProps {
   player: any; // Ajoutez le type correct pour les joueurs
@@ -15,39 +24,50 @@ const PlayerDetails: React.FC<PlayerDetailsProps> = ({ player }) => {
   }, [player]);
 
   return (
-    <div className="bg-white p-4 rounded shadow overflow-x-auto">
+    <div className="bg-white p-4 rounded flex flex-col gap-2">
       <h2 className="text-lg font-bold mb-4">Player Details</h2>
-      <table className="table-auto min-w-full">
-        <thead>
-          <tr>
-            <th className="border px-4 py-2">Character</th>
-            {statKeys.map((statKey) => (
-              <th key={statKey} className="border px-4 py-2">{statKey}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {Object.entries(player.characters).map(([charKey, character]) => {
-            // Vérifier si les statistiques du personnage sont vides
-            const statsNotEmpty = Object.values(character.stats).some((value) => value !== null && value !== undefined);
-            
-            // Si les statistiques ne sont pas vides, afficher la ligne
-            if (statsNotEmpty) {
-              return (
-                <tr key={charKey}>
-                  <td className="border px-4 py-2">{charKey}</td>
-                  {statKeys.map((statKey) => (
-                    <td key={statKey} className="border px-4 py-2">{character.stats[statKey]}</td>
-                  ))}
-                </tr>
+      <ScrollArea className="whitespace-nowrap rounded-md border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="border px-4 py-2">Character</TableHead>
+              {statKeys.map((statKey) => (
+                <TableHead key={statKey} className="border px-4 py-2">
+                  {statKey}
+                </TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {Object.entries(player.characters).map(([charKey, character]) => {
+              // Vérifier si les statistiques du personnage sont vides
+              const statsNotEmpty = Object.values(character.stats).some(
+                (value) => value !== null && value !== undefined,
               );
-            }
 
-            // Sinon, retourner null pour ne pas créer la ligne
-            return null;
-          })}
-        </tbody>
-      </table>
+              // Si les statistiques ne sont pas vides, afficher la ligne
+              if (statsNotEmpty) {
+                return (
+                  <TableRow className="overflow-auto" key={charKey}>
+                    <TableCell className="border px-4 py-2">
+                      {charKey}
+                    </TableCell>
+                    {statKeys.map((statKey) => (
+                      <TableCell key={statKey} className="border px-4 py-2">
+                        {character.stats[statKey]}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                );
+              }
+
+              // Sinon, retourner null pour ne pas créer la ligne
+              return null;
+            })}
+          </TableBody>
+        </Table>
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
     </div>
   );
 };

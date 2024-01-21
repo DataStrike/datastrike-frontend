@@ -29,7 +29,7 @@ export function Analysis() {
 
   const { data: maps } = useQuery({
     queryKey: ["maps", team.id],
-    queryFn: () => mapsService.getMaps(team.id),
+    queryFn: () => mapsService.getMapList(team.id),
   });
 
   useEffect(() => {
@@ -133,7 +133,9 @@ export function Analysis() {
                 <CardDescription>Add filters to your research</CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col">
-                <span className="opacity-40 text-sm">Filters coming soon...</span>
+                <span className="opacity-40 text-sm">
+                  Filters coming soon...
+                </span>
               </CardContent>
             </Card>
           </div>

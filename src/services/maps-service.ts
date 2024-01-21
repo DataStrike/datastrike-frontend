@@ -2,7 +2,7 @@ import ky from "ky";
 import { BASE_URL } from "@/utils/constants.ts";
 import { AnalysisMap } from "@/models/analysis/analysismaps.ts";
 
-async function getMaps(teamId: number): Promise<AnalysisMap[]> {
+async function getMapList(teamId: number): Promise<AnalysisMap[]> {
   if (!teamId) {
     throw new Error("Team id is required");
   }
@@ -20,7 +20,20 @@ async function addAnalysisMaps(teamId: number, maps: FormData): Promise<void> {
   });
 }
 
+async function getMap(mapId: string | undefined): Promise<AnalysisMap> {
+  if (!mapId) {
+    throw new Error("Map id is required");
+  }
+
+  return await ky
+    .get(`${BASE_URL}/maps/${mapId}`, {
+      credentials: "include",
+    })
+    .json();
+}
+
 export const mapsService = {
   addAnalysisMaps,
-  getMaps,
+  getMapList,
+  getMap,
 };
