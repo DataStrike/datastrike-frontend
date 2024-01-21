@@ -1,6 +1,13 @@
 // PlayerList.tsx
 import React, { useEffect, useState } from "react";
 import { AnalysisMap, Player, Team } from "@/models/analysis/analysismaps";
+import { Checkbox } from "@/components/ui/checkbox.tsx";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card.tsx";
 
 interface PlayerListProps {
   mapData: AnalysisMap;
@@ -54,26 +61,29 @@ const PlayerList: React.FC<PlayerListProps> = ({
   };
 
   return (
-    <div>
-      <h2>Players list</h2>
-      {players.length > 0 && (
-        <ul>
-          {players.map((player) => (
-            <li key={player.name}>
-              <input
-                type="checkbox"
-                id={player.name}
-                name={player.name}
-                value={player.name}
-                checked={selectedPlayers.some((p) => p.name === player.name)}
-                onChange={() => handlePlayerCheckboxChange(player.name)}
-              />
-              <label htmlFor={player.name}>{player.name}</label>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+    <Card className="w-fit h-fit">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-4">
+        <CardTitle>Players list</CardTitle>
+      </CardHeader>
+      <CardContent className="h-fit">
+        {players.length > 0 && (
+          <ul>
+            {players.map((player) => (
+              <li key={player.name}>
+                <Checkbox
+                  id={player.name}
+                  name={player.name}
+                  value={player.name}
+                  checked={selectedPlayers.some((p) => p.name === player.name)}
+                  onClick={() => handlePlayerCheckboxChange(player.name)}
+                />
+                <label htmlFor={player.name}>{player.name}</label>
+              </li>
+            ))}
+          </ul>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 

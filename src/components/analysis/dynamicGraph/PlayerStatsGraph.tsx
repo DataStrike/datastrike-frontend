@@ -101,15 +101,16 @@ const PlayerStatsGraph: React.FC<PlayerStatsGraphProps> = ({ mapData }) => {
   };
 
   return (
-    <div style={{ display: "flex", justifyContent: "space-around" }}>
-      <div style={{ flex: 1, marginRight: "16px" }}>
+    <div className="flex gap-4">
+      <div className="flex gap-2">
         <PlayerList
           mapData={mapData}
           onPlayersSelected={handlePlayersSelected}
         />
+        <StatsList mapData={mapData} onStatsSelected={handleStatsSelected} />
       </div>
-      <StatsList mapData={mapData} onStatsSelected={handleStatsSelected} />
-      <div style={{ flex: 2 }}>
+
+      <div className="flex-1 pr-4">
         {Object.keys(dataGraph).length > 0 && selectedStats.length > 0 && (
           <PlayerGraph data={dataGraph} selectedStats={selectedStats} />
         )}

@@ -35,10 +35,10 @@ export function AnalysisDetailed() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-3">
       <Button
         variant="ghost"
-        className="w-fit pl-3"
+        className="w-fit pl-3 -mb-2"
         onClick={() => {
           navigate("/analysis");
         }}

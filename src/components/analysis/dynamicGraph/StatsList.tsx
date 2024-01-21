@@ -2,6 +2,14 @@
 
 import React, { useState } from "react";
 import { AnalysisMap } from "@/models/analysis/analysismaps.ts";
+import { Checkbox } from "@/components/ui/checkbox.tsx";
+import { capitalize } from "@/utils/functions.ts";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card.tsx";
 
 interface StatsKeyListProps {
   mapData: AnalysisMap;
@@ -56,24 +64,25 @@ const StatsKeyList: React.FC<StatsKeyListProps> = ({
   };
 
   return (
-    <div>
-      <h2>Events list</h2>
-      <ul>
-        {Object.keys(statsKeys).map((key) => (
-          <li key={key}>
-            <div>
-              <input
-                type="checkbox"
+    <Card className="w-fit max-h-full overflow-auto">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-4">
+        <CardTitle>Stats list</CardTitle>
+      </CardHeader>
+      <CardContent className="overflow-auto">
+        <ul>
+          {Object.keys(statsKeys).map((key) => (
+            <li key={key}>
+              <Checkbox
                 id={key}
                 checked={selectedStats.includes(key)}
-                onChange={() => handleStatsCheckboxChange(key)}
+                onClick={() => handleStatsCheckboxChange(key)}
               />
-              <label htmlFor={key}>{key}</label>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
+              <label htmlFor={key}>{capitalize(key)}</label>
+            </li>
+          ))}
+        </ul>
+      </CardContent>
+    </Card>
   );
 };
 

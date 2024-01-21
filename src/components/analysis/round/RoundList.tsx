@@ -1,5 +1,5 @@
 // RoundList.tsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -10,12 +10,20 @@ import {
 import { Round } from "@/models/analysis/analysismaps.ts";
 
 interface RoundListProps {
-  rounds: Round[]; // Add the correct type for rounds
+  rounds: Round[];
   onRoundClick: (round: Round) => void;
 }
 
 const RoundList: React.FC<RoundListProps> = ({ rounds, onRoundClick }) => {
   const [selectedRound, setSelectedRound] = useState<number | null>(null);
+
+  // If there is only one round, select it by default
+  useEffect(() => {
+    if (rounds.length === 1) {
+      setSelectedRound(0);
+      onRoundClick(rounds[0]);
+    }
+  }, []);
 
   return (
     <Select
@@ -25,7 +33,7 @@ const RoundList: React.FC<RoundListProps> = ({ rounds, onRoundClick }) => {
         onRoundClick(rounds[selectedRoundIndex]);
       }}
     >
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="w-[120px]">
         <SelectValue
           placeholder={`Round ${
             selectedRound !== null ? selectedRound + 1 : ""
