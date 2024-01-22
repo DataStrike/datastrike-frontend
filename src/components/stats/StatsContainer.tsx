@@ -1,36 +1,36 @@
-import { Fragment, ReactNode } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card.tsx";
+import { nbAvgGames, winRate } from "@/utils/stats.ts";
+import { Clock, KanbanSquare, PercentIcon } from "lucide-react";
+import StatsCard from "@/components/stats/StatsCard.tsx";
+import { TrackerResult } from "@/models/tracker/columns.tsx";
 
 interface Props {
-  children?: ReactNode;
-  cardTitle: string;
-  value?: any;
-  description?: string;
+  trackerResultList: TrackerResult[];
 }
 
-export function StatsContainer({
-  children: icon,
-  cardTitle,
-  value,
-  description,
-}: Props) {
+export function StatsContainer({ trackerResultList }: Props) {
   return (
-    <Card className="w-fit">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1.5 p-4">
-        <CardTitle className="text-sm font-medium mr-12">{cardTitle}</CardTitle>
-        <Fragment>{icon}</Fragment>
-      </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold">{value}</div>
-        <p className="text-xs text-muted-foreground">{description}</p>
-      </CardContent>
-    </Card>
+    <div className="flex gap-4">
+      <StatsCard
+        cardTitle="Win Rate"
+        value={winRate(trackerResultList)}
+        description="Win rate overall "
+      >
+        <PercentIcon className="h-4 w-4" />
+      </StatsCard>
+      <StatsCard
+        cardTitle="Total Games"
+        value={trackerResultList.length}
+        description="Total games played"
+      >
+        <KanbanSquare className="h-4 w-4" />
+      </StatsCard>
+      <StatsCard
+        cardTitle="Nb average games"
+        value={nbAvgGames(trackerResultList)}
+        description="Games per day"
+      >
+        <Clock className="h-4 w-4" />
+      </StatsCard>
+    </div>
   );
 }
-
-export default StatsContainer;
