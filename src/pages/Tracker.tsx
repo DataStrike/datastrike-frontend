@@ -193,7 +193,7 @@ export function Tracker() {
                 <TrackerDatatable columns={columns} data={trackerResultList!} />
               )}
             </TabsContent>
-            <TabsContent className="w-full h-[800px]" value="stats">
+            <TabsContent className="w-full h-full" value="stats">
               {isFetching ? (
                 <Skeleton className="h-4 w-[250px]" />
               ) : (
@@ -203,7 +203,7 @@ export function Tracker() {
               )}
             </TabsContent>
 
-            <TabsContent className="w-full h-[800px]" value="charts">
+            <TabsContent className="w-full h-full" value="charts">
               {isFetching ? (
                 <Skeleton className="h-4 w-[250px]" />
               ) : (
