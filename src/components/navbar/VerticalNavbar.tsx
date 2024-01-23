@@ -1,5 +1,10 @@
 import { TableIcon } from "@radix-ui/react-icons";
-import { ScatterChart, UserIcon, UsersRoundIcon } from "lucide-react";
+import {
+  FileLineChart,
+  ScatterChart,
+  UserIcon,
+  UsersRoundIcon,
+} from "lucide-react";
 import { NavbarButton } from "@/components/navbar/NavbarButton.tsx";
 import { User } from "@/models/models.ts";
 import overwatch from "@/assets/overwatch.svg";
@@ -37,6 +42,14 @@ export function VerticalNavbar(props: Props) {
           onNavigate={handleNavigation}
         >
           <ScatterChart className="w-6 h-6" />
+        </NavbarButton>
+        <NavbarButton
+          isSelected={selected === "/stats"}
+          label="Stats"
+          route="/stats"
+          onNavigate={handleNavigation}
+        >
+          <FileLineChart className="w-6 h-6" />
         </NavbarButton>
         <NavbarButton
           isSelected={selected === "/teams"}
