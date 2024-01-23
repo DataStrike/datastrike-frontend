@@ -1,4 +1,4 @@
-import { Fragment, ReactNode } from "react";
+import { ReactNode } from "react";
 import {
   Card,
   CardContent,
@@ -7,23 +7,18 @@ import {
 } from "@/components/ui/card.tsx";
 
 interface Props {
-  children?: ReactNode;
+  icon?: ReactNode;
   cardTitle: string;
-  value?: any;
+  value?: string | number;
   description?: string;
 }
 
-export function StatsCard({
-  children: icon,
-  cardTitle,
-  value,
-  description,
-}: Props) {
+export function StatsCard({ icon, cardTitle, value, description }: Props) {
   return (
     <Card className="w-fit">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1.5 p-4">
         <CardTitle className="text-sm font-medium mr-12">{cardTitle}</CardTitle>
-        <Fragment>{icon}</Fragment>
+        {icon && <>{icon}</>}
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">{value}</div>
