@@ -29,17 +29,7 @@ const onDeleteTrackerResult = async (trackerResultId: number) => {
 export const columns: ColumnDef<TrackerResult>[] = [
   {
     accessorKey: "opponentTeamName",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Team
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: "Team",
   },
   {
     accessorKey: "date",
@@ -62,17 +52,7 @@ export const columns: ColumnDef<TrackerResult>[] = [
   },
   {
     accessorKey: "mapName",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Map
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: "Map",
     cell: ({ row }) => {
       const map = row.original.mapName;
       return <div>{capitalize(map)}</div>;
@@ -88,17 +68,7 @@ export const columns: ColumnDef<TrackerResult>[] = [
   },
   {
     accessorKey: "result",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Result
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: "Result",
     cell: ({ row }) => {
       const result: string = row.original.result;
 
