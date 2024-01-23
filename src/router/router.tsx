@@ -8,6 +8,8 @@ import { Analysis } from "@/pages/Analysis.tsx";
 import { Teams } from "@/pages/Teams.tsx";
 import Profile from "@/pages/Profile.tsx";
 import { AnalysisDetailed } from "@/pages/AnalysisDetailed.tsx";
+import Stats from "@/pages/Stats.tsx";
+import { PlayerStats } from "@/pages/PlayerStats.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -45,6 +47,14 @@ export const router = createBrowserRouter([
           {
             path: "/profile",
             element: <Profile />,
+          },
+          {
+            path: "/stats",
+            element: <Stats />,
+          },
+          {
+            path: "/stats/player/:playerId",
+            element: <PlayerStats />,
           },
         ],
       },
