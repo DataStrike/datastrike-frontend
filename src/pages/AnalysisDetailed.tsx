@@ -35,7 +35,7 @@ export function AnalysisDetailed() {
   };
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 h-full">
       <Button
         variant="ghost"
         className="w-fit pl-3 -mb-2"
@@ -61,7 +61,7 @@ export function AnalysisDetailed() {
             </TabsTrigger>
           </TabsList>
           <TabsContent
-            className="w-full h-[80vh] overflow-auto flex-col"
+            className="w-full h-full overflow-auto flex-col"
             value="map"
           >
             <MapGraph mapData={map} />

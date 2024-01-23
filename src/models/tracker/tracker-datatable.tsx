@@ -52,7 +52,7 @@ export function TrackerDatatable<TData, TValue>({
   });
   return (
     <div className="rounded-md border overflow-auto">
-      <div className="flex items-center m-2 p-2 w-80">
+      <div className="flex gap-4 items-center m-2 p-2 w-fit">
         <Input
           placeholder="Filter by team name"
           value={
@@ -63,6 +63,14 @@ export function TrackerDatatable<TData, TValue>({
             table
               .getColumn("opponentTeamName")
               ?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
+        <Input
+          placeholder="Filter by map"
+          value={(table.getColumn("mapName")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("mapName")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />

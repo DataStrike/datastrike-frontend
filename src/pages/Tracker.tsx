@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { MapsContainer } from "@/components/ui/MapsContainer.tsx";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "@radix-ui/react-icons";
-import { KanbanSquare, PercentIcon, SaveIcon } from "lucide-react";
+import { SaveIcon } from "lucide-react";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getTeams } from "@/services/teams-service";
@@ -34,7 +34,6 @@ import { WinRateDoughnut } from "@/components/charts/tracker/WinRateDoughnut.tsx
 import { WinRateOverTime } from "@/components/charts/tracker/WinRateOverTime.tsx";
 import ChartContainer from "@/components/charts/ChartContainer.tsx";
 import { StatsContainer } from "@/components/stats/StatsContainer.tsx";
-import { winRate } from "@/utils/stats.ts";
 
 const formSchema = z.object({
   opponentTeamName: z.string(),
@@ -57,7 +56,7 @@ export function Tracker() {
     setTeam(teams[0]);
   }
 
-  const { data, isFetching } = useQuery({
+  const { data: trackerResultList, isFetching } = useQuery({
     queryKey: ["tracker", team.id],
     queryFn: () => trackerService.getTrackerResults(team.id),
   });
@@ -68,7 +67,7 @@ export function Tracker() {
     // Invalidate the query so that it refetches with the new team
     await queryClient.invalidateQueries({ queryKey: ["tracker", team.id] });
   };
-  const updateMap = (index: number, field: string, value: any) => {
+  const updateMap = (index: number, field: string, value: string | number) => {
     const updatedMaps = [...maps];
     updatedMaps[index] = {
       ...updatedMaps[index],
@@ -109,9 +108,6 @@ export function Tracker() {
       vodLink: values.vodLink ? values.vodLink : "",
       maps,
     };
-
-    console.log("Tracker results:", trackerResults);
-
     await trackerService.addTrackerResult(team.id, trackerResults);
 
     await queryClient.invalidateQueries({ queryKey: ["tracker", team.id] });
@@ -194,41 +190,29 @@ export function Tracker() {
               {isFetching ? (
                 <Skeleton className="h-4 w-[250px]" />
               ) : (
-                <TrackerDatatable columns={columns} data={data!} />
+                <TrackerDatatable columns={columns} data={trackerResultList!} />
               )}
             </TabsContent>
-            <TabsContent className="w-full h-[800px]" value="stats">
+            <TabsContent className="w-full h-full" value="stats">
               {isFetching ? (
                 <Skeleton className="h-4 w-[250px]" />
               ) : (
-                <div className="flex gap-4">
-                  <StatsContainer
-                    cardTitle="Win Rate"
-                    value={winRate(data)}
-                    description="Win rate overall "
-                  >
-                    <PercentIcon className="h-4 w-4" />
-                  </StatsContainer>
-                  <StatsContainer
-                    cardTitle="Total Games"
-                    value={data!.length}
-                    description="Total games played"
-                  >
-                    <KanbanSquare className="h-4 w-4" />
-                  </StatsContainer>
-                </div>
+                trackerResultList && (
+                  <StatsContainer trackerResultList={trackerResultList} />
+                )
               )}
             </TabsContent>
-            <TabsContent className="w-full h-[800px]" value="charts">
+
+            <TabsContent className="w-full h-full" value="charts">
               {isFetching ? (
                 <Skeleton className="h-4 w-[250px]" />
               ) : (
                 <div className="flex flex-col gap-4">
                   <ChartContainer cardTitle="Win Rate">
-                    <WinRateDoughnut data={data!} />
+                    <WinRateDoughnut data={trackerResultList!} />
                   </ChartContainer>
                   <ChartContainer cardTitle="Win Rate over time">
-                    <WinRateOverTime data={data!} />
+                    <WinRateOverTime data={trackerResultList!} />
                   </ChartContainer>
                 </div>
               )}
