@@ -51,10 +51,13 @@ export function AnalysisDetailed() {
       </div>
 
       {map && (
-        <Tabs defaultValue="map">
+        <Tabs defaultValue="timeline">
           <TabsList className="w-[400px]">
-            <TabsTrigger className="w-full" value="map">
-              Map
+            <TabsTrigger className="w-full" value="timeline">
+              Timeline
+            </TabsTrigger>
+            <TabsTrigger className="w-full" value="graph">
+              Graph
             </TabsTrigger>
             <TabsTrigger className="w-full" value="rounds">
               Rounds
@@ -62,10 +65,13 @@ export function AnalysisDetailed() {
           </TabsList>
           <TabsContent
             className="w-full h-full overflow-auto flex-col"
-            value="map"
+            value="timeline"
           >
             <MapGraph mapData={map} />
-            <Separator className="my-4" />
+          </TabsContent>
+          <TabsContent value="graph"
+            className="w-full h-full overflow-auto flex-col"
+          >
             <PlayerStatsGraph mapData={map} />
           </TabsContent>
           <TabsContent value="rounds">

@@ -22,6 +22,7 @@ export interface Data {
   team2_name: string;
   team2_score: number;
   team_id: number;
+  stats_graph: { [playerName: string]: GraphDataStats[] };
 }
 
 export interface DataEvent {
