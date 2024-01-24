@@ -20,72 +20,42 @@ const PlayerStatsGraph: React.FC<PlayerStatsGraphProps> = ({ mapData }) => {
   }>({});
 
   useEffect(() => {
-    const filteredPlayersData = mapData.data.rounds.reduce(
-      (filteredData, round, index) => {
-        for (const [, team] of Object.entries(round.teams)) {
-          for (const [, player] of Object.entries(team.players)) {
-            if (
-              selectedPlayers.some(
-                (selectedPlayer) => selectedPlayer.name === player.name,
-              )
-            ) {
-              const aggregatedStats: { [key: string]: number } = {};
 
-              for (const character of Object.values(player.characters)) {
-                if (character.stats) {
-                  for (const [key, value] of Object.entries(character.stats)) {
-                    const numericValue = parseFloat(value as string);
-                    aggregatedStats[key] =
-                      (aggregatedStats[key] || 0) + numericValue;
-                  }
-                }
-              }
-
-              if (
-                Object.values(aggregatedStats).some((value) => !isNaN(value))
-              ) {
-                filteredData[player.name] = filteredData[player.name] || [];
-                filteredData[player.name].push({
-                  round: index,
-                  stats: aggregatedStats,
-                });
-              }
-            }
-          }
-        }
-        return filteredData;
-      },
-      {} as { [key: string]: GraphDataStats[] },
+    const filteredData = filterDataByPlayersAndStats(
+      mapData.data.stats_graph,
+      selectedPlayers.map((player) => player.name),
+      selectedStats
     );
-
-    const filteredDataGraph = filterStatsByKeys(filteredPlayersData);
-    setDataGraph(filteredDataGraph);
+   
+    setDataGraph(filteredData);
   }, [mapData, selectedPlayers, selectedStats]);
 
-  const filterStatsByKeys = (filteredPlayersData: {
-    [key: string]: GraphDataStats[];
-  }): { [key: string]: GraphDataStats[] } => {
-    const result: { [key: string]: GraphDataStats[] } = {};
+  const filterDataByPlayersAndStats = (
+    data: { [playerName: string]: GraphDataStats[] },
+    selectedPlayers: string[],
+    selectedStats: string[]
+  ): { [playerName: string]: GraphDataStats[] } => {
+    const result: { [playerName: string]: GraphDataStats[] } = {};
 
-    for (const [playerName, statsByRound] of Object.entries(
-      filteredPlayersData,
-    )) {
-      const filteredStatsByRound = statsByRound.map(({ round, stats }) => {
-        const filteredStats: { [key: string]: number } = {};
-        selectedStats.forEach((key) => {
-          if (stats[key] !== undefined) {
-            filteredStats[key] = stats[key];
-          }
+    for (const [playerName, statsByRound] of Object.entries(data)) {
+      if (selectedPlayers.includes(playerName)) {
+        const filteredStatsByRound = statsByRound.map(({ round, stats }) => {
+          const filteredStats: { [key: string]: number } = {};
+          selectedStats.forEach((key) => {
+            if (stats[key] !== undefined) {
+              filteredStats[key] = stats[key];
+            }
+          });
+          return { round, stats: filteredStats };
         });
-        return { round, stats: filteredStats };
-      });
 
-      if (
-        Object.values(filteredStatsByRound[0].stats).some(
-          (value) => !isNaN(value),
-        )
-      ) {
-        result[playerName] = filteredStatsByRound;
+        if (
+          Object.values(filteredStatsByRound[0].stats).some(
+            (value) => !isNaN(value)
+          )
+        ) {
+          result[playerName] = filteredStatsByRound;
+        }
       }
     }
 

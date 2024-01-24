@@ -6,6 +6,7 @@ import deathIcon from "@/assets/analysis/death.png";
 import killIcon from "@/assets/analysis/kill.png";
 import ultimateIcon from "@/assets/analysis/ultimate.png";
 import objectiveIcon from "@/assets/analysis/objectif.png";
+import swapHeroIcon from "@/assets/analysis/swapHero.png";
 import { AnalysisMap, DataEvent } from "@/models/analysis/analysismaps.ts";
 import { capitalize } from "@/utils/functions.ts";
 
@@ -51,6 +52,9 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
       const ultimatePoint = new Image();
       ultimatePoint.src = ultimateIcon;
 
+      const swapHeroPoint = new Image();
+      swapHeroPoint.src = swapHeroIcon;
+
       const FirstRound = mapData.data.rounds[0];
 
       const playerNames: string[] = [];
@@ -83,7 +87,10 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
                 return objectivePoint;
               } else if (event.type === "ultimate") {
                 return ultimatePoint;
-              } else {
+              } else if (event.type === "hero_swap") {
+                return swapHeroPoint;
+              }
+              else {
                 return undefined; // Return undefined for other cases
               }
             }),
