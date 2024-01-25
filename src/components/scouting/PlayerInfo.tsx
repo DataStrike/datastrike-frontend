@@ -1,5 +1,5 @@
 // PlayerInfo.tsx
-import { PlayerInfos } from "@/services/stats-service.ts";
+import { PlayerInfos } from "@/services/scouting-service.ts";
 import { LockIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -13,7 +13,7 @@ const PlayerInfo: React.FC<Props> = ({ player }) => {
     <>
       <div
         className="w-36 h-36"
-        onClick={() => navigate(`/stats/player/${player.player_id}`)}
+        onClick={() => navigate(`/scouting/player/${player.player_id}`)}
       >
         <img
           alt="avatar"

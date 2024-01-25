@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { statsService } from "@/services/stats-service.ts";
+import { scoutingService } from "@/services/scouting-service.ts";
 import { HeroStats, PlayerData } from "@/models/stats/models.ts";
 import {
   Table,
@@ -12,17 +12,17 @@ import {
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 
-export function PlayerStats() {
+export function ScoutingPlayer() {
   const [playerData, setPlayerData] = useState<PlayerData | null>(null);
   const { playerId } = useParams();
   const navigate = useNavigate();
 
   const getPlayerSummary = async (playerId: string) => {
     try {
-      const data: PlayerData = await statsService.getPlayerStats(playerId);
+      const data: PlayerData = await scoutingService.getPlayerStats(playerId);
       setPlayerData(data);
     } catch (error) {
-      console.error("Error fetching player stats:", error);
+      console.error("Error fetching player scouting:", error);
     }
   };
 
@@ -42,7 +42,7 @@ export function PlayerStats() {
         variant="ghost"
         className="w-fit pl-3 -mb-2"
         onClick={() => {
-          navigate("/stats");
+          navigate("/scouting");
         }}
       >
         <ArrowLeft className="w-4 h-4 mr-2" />
@@ -53,7 +53,7 @@ export function PlayerStats() {
       </div>
 
       <div className="flex gap-2 w-full">
-        {/* Display hero-specific stats */}
+        {/* Display hero-specific scouting */}
         {playerData?.heroes && (
           <HeroStatsContainer heroData={playerData.heroes || {}} />
         )}
