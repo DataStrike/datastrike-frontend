@@ -80,6 +80,11 @@ export function Scouting() {
             className="w-56"
             placeholder={"Ex : Xx-Genji-xX"}
             onChange={(e) => setPlayerNameInput(e.target.value)}
+            onKeyUp={(e) => {
+              if (e.key === "Enter") {
+                searchPlayer();
+              }
+            }}
           ></Input>
           <Button onClick={searchPlayer}>Search</Button>
         </div>
