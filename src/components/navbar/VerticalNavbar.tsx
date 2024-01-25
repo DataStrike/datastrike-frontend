@@ -44,9 +44,9 @@ export function VerticalNavbar(props: Props) {
           <ScatterChart className="w-6 h-6" />
         </NavbarButton>
         <NavbarButton
-          isSelected={selected === "/stats"}
-          label="Stats"
-          route="/stats"
+          isSelected={selected === "/scouting"}
+          label="Scouting"
+          route="/scouting"
           onNavigate={handleNavigation}
         >
           <FileLineChart className="w-6 h-6" />
