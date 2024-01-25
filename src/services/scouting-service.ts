@@ -19,6 +19,14 @@ export type PlayerSummary = {
   results: PlayerInfos[];
 };
 
+export type StatsParams = {
+  gamemode?: GameMode;
+  platform?: Platform;
+};
+
+export type GameMode = "competitive" | "quickplay";
+export type Platform = "pc" | "console";
+
 export const PLAYERS_LIMIT = 50;
 
 async function getHeroes(): Promise<CharacterStats[]> {
@@ -28,8 +36,34 @@ async function getPlayerSummary(playerId: string): Promise<any> {
   return await ky.get(`${STATS_URL}/players/${playerId}/summary`).json();
 }
 
-async function getPlayerStats(playerId: string): Promise<any> {
-  return await ky.get(`${STATS_URL}/players/${playerId}/stats/summary`).json();
+async function getPlayerStats(
+  playerId: string,
+  params: StatsParams = {},
+): Promise<any> {
+  if (
+    params.gamemode &&
+    !["competitive", "quickplay"].includes(params.gamemode)
+  ) {
+    throw new Error("Invalid gamemode");
+  }
+
+  // Validate platform if provided
+  if (params.platform && !["pc", "console"].includes(params.platform)) {
+    throw new Error("Invalid platform");
+  }
+
+  // Build URL with optional parameters
+  let url = `${STATS_URL}/players/${playerId}/stats/summary`;
+
+  if (params.gamemode) {
+    url += `?gamemode=${params.gamemode}`;
+  }
+
+  // Append platform to the URL if provided
+  if (params.platform) {
+    url += `${params.gamemode ? "&" : "?"}platform=${params.platform}`;
+  }
+  return await ky.get(url).json();
 }
 async function searchPlayers(
   playerName: string,
