@@ -22,17 +22,16 @@ import {
 } from "@/components/ui/select.tsx";
 import errorMessage from "@/components/ui/errorMessage.tsx";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
-import PlayerStatsChart from "@/components/scouting/charts/PlayerStatsChart.tsx";
+import { capitalize } from "@/utils/functions.ts";
+import { StatsContainer } from "@/components/scouting/StatsContainer.tsx";
 
 export function ScoutingPlayer() {
   const { playerId } = useParams();
   const navigate = useNavigate();
 
   // State variables for dynamic gamemode and platform
-  const [gamemode, setGamemode] = useState<
-    "competitive" | "quickplay" | undefined
-  >();
-  const [platform, setPlatform] = useState<"pc" | "console" | undefined>();
+  const [gamemode, setGamemode] = useState<GameMode | undefined>();
+  const [platform, setPlatform] = useState<Platform | undefined>();
 
   const {
     data: playersStats,
@@ -61,18 +60,20 @@ export function ScoutingPlayer() {
         <ArrowLeft className="w-4 h-4 mr-2" />
         Back
       </Button>
-      <div className="flex justify-between">
-        <div className="text-2xl font-semibold">Player stats</div>
+
+      <div className="flex gap-4">
+        <div className="text-2xl font-semibold">
+          <span>{playerId}</span>
+        </div>
       </div>
 
       <div className="flex gap-2 items-center">
-        <span>{playerId}</span>
         <Select
           value={gamemode || ""}
           onValueChange={(e) => setGamemode(e as GameMode)}
         >
           <SelectTrigger className="w-40">
-            {gamemode || "Select Gamemode"}
+            {gamemode || "All Gamemodes"}
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="competitive">Competitive</SelectItem>
@@ -85,7 +86,7 @@ export function ScoutingPlayer() {
           onValueChange={(e) => setPlatform(e as Platform)}
         >
           <SelectTrigger className="w-40">
-            {platform || "Select Platform"}
+            {platform || "All Platforms"}
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="pc">PC</SelectItem>
@@ -120,9 +121,10 @@ export function ScoutingPlayer() {
             className="w-full h-full overflow-auto flex-col"
             value="general"
           >
-            <PlayerStatsChart data={playersStats.general} />
             {playersStats?.general && (
-              <pre>{JSON.stringify(playersStats.general, null, 2)}</pre>
+              <div className={"flex flex-col gap-4"}>
+                <StatsContainer stats={playersStats.general} />
+              </div>
             )}
           </TabsContent>
 
@@ -130,17 +132,29 @@ export function ScoutingPlayer() {
             className="w-full h-full overflow-auto flex-col"
             value="heroes"
           >
-            {playersStats?.heroes && (
-              <pre>{JSON.stringify(playersStats.heroes, null, 2)}</pre>
-            )}
+            <div className="flex flex-col gap-2">
+              {playersStats?.heroes &&
+                Object.entries(playersStats.heroes).map(([hero, stats]) => (
+                  <div key={hero} className={"flex flex-col gap-2"}>
+                    <div className="font-bold"> {capitalize(hero)}</div>
+                    <StatsContainer stats={stats} />
+                  </div>
+                ))}
+            </div>
           </TabsContent>
           <TabsContent
             className="w-full h-full overflow-auto flex-col"
             value="roles"
           >
-            {playersStats?.roles && (
-              <pre>{JSON.stringify(playersStats.roles, null, 2)}</pre>
-            )}
+            <div className="flex flex-col gap-2">
+              {playersStats?.roles &&
+                Object.entries(playersStats.roles).map(([role, stats]) => (
+                  <div key={role} className={"flex flex-col gap-2"}>
+                    <div className="font-bold"> {capitalize(role)}</div>
+                    <StatsContainer stats={stats} />
+                  </div>
+                ))}
+            </div>
           </TabsContent>
         </Tabs>
       )}

@@ -56,12 +56,12 @@ const PlayerDetails: React.FC<PlayerDetailsProps> = ({ player }) => {
           </TableHeader>
           <TableBody>
             {Object.entries(player.characters).map(([charKey, character]) => {
-              // Check if the character stats are not empty
+              // Check if the character scouting are not empty
               const statsNotEmpty = Object.values(character.stats).some(
                 (value) => value !== null && value !== undefined,
               );
 
-              // If stats are not empty, display the row
+              // If scouting are not empty, display the row
               if (statsNotEmpty) {
                 return (
                   <TableRow className="overflow-auto" key={charKey}>

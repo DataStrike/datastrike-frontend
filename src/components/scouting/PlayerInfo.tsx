@@ -13,7 +13,7 @@ const PlayerInfo: React.FC<Props> = ({ player }) => {
     <>
       <div
         className={
-          "w-36 h-36 border p-2 rounded-lg cursor-pointer transition-all" +
+          "w-36 h-36 shadow p-2 rounded-lg cursor-pointer transition-all" +
           (player.privacy === "private"
             ? " opacity-20 pointer-events-none"
             : " hover:shadow-lg")

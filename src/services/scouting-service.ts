@@ -1,5 +1,6 @@
 import ky from "ky";
 import { STATS_URL } from "@/utils/constants.ts";
+import { PlayerData } from "@/models/scouting/models.ts";
 export type CharacterStats = {
   key: string;
   name: string;
@@ -39,7 +40,7 @@ async function getPlayerSummary(playerId: string): Promise<any> {
 async function getPlayerStats(
   playerId: string,
   params: StatsParams = {},
-): Promise<any> {
+): Promise<PlayerData> {
   if (
     params.gamemode &&
     !["competitive", "quickplay"].includes(params.gamemode)
