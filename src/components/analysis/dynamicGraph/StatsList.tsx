@@ -51,7 +51,7 @@ const StatsKeyList: React.FC<StatsKeyListProps> = ({
   });
 
   const handleStatsCheckboxChange = (statsKey: string) => {
-    // Update selected stats
+    // Update selected scouting
     const updatedSelectedStats = selectedStats.includes(statsKey)
       ? selectedStats.filter((key) => key !== statsKey)
       : [...selectedStats, statsKey];

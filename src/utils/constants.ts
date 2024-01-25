@@ -1,4 +1,5 @@
 export const BASE_URL = "http://localhost:3333";
+export const STATS_URL = "https://overfast-api.tekrop.fr";
 
 export const GRAPH_COLORS = [
   "#1f77b4",
