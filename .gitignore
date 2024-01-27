@@ -24,3 +24,4 @@ packages-lock.json
 *.sw?
 
 .env
+.env.production

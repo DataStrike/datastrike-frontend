@@ -1,7 +1,7 @@
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
-export default defineConfig({ 
+export default defineConfig({
   base: '/',
   plugins: [react()],
   resolve: {
@@ -11,6 +11,9 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: ["@/*"],
+  },
+  define: {
+    "process.env": process.env,
   },
   build: {
     outDir: 'dist',
