@@ -33,7 +33,7 @@ import {
 import { WinRateDoughnut } from "@/components/charts/tracker/WinRateDoughnut.tsx";
 import { WinRateOverTime } from "@/components/charts/tracker/WinRateOverTime.tsx";
 import ChartContainer from "@/components/charts/ChartContainer.tsx";
-import { StatsContainer } from "@/components/stats/StatsContainer.tsx";
+import { StatsContainer } from "@/components/tracker/stats/StatsContainer.tsx";
 
 const formSchema = z.object({
   opponentTeamName: z.string(),

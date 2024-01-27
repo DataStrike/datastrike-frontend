@@ -8,6 +8,8 @@ import { Analysis } from "@/pages/Analysis.tsx";
 import { Teams } from "@/pages/Teams.tsx";
 import Profile from "@/pages/Profile.tsx";
 import { AnalysisDetailed } from "@/pages/AnalysisDetailed.tsx";
+import Scouting from "@/pages/Scouting.tsx";
+import { ScoutingPlayer } from "@/pages/ScoutingPlayer.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -45,6 +47,14 @@ export const router = createBrowserRouter([
           {
             path: "/profile",
             element: <Profile />,
+          },
+          {
+            path: "/scouting",
+            element: <Scouting />,
+          },
+          {
+            path: "/scouting/player/:playerId",
+            element: <ScoutingPlayer />,
           },
         ],
       },
