@@ -1,11 +1,11 @@
-import StatsCard from "@/components/tracker/stats/StatsCard.tsx";
+import StatsCard from "@/components/stats/StatsCard.tsx";
 import {
   Clock,
   GamepadIcon,
   KanbanSquareDashedIcon,
   PercentIcon,
 } from "lucide-react";
-import StatsCardList from "@/components/tracker/stats/StatsCardList.tsx";
+import StatsCardList from "@/components/stats/StatsCardList.tsx";
 import { Data } from "@/models/scouting/models.ts";
 
 interface Props {

@@ -1,6 +1,7 @@
 import { TableIcon } from "@radix-ui/react-icons";
 import {
   FileLineChart,
+  LockIcon,
   ScatterChart,
   UserIcon,
   UsersRoundIcon,
@@ -67,6 +68,16 @@ export function VerticalNavbar(props: Props) {
         >
           <UserIcon className="w-6 h-6" />
         </NavbarButton>
+        {props.user?.isAdmin && (
+          <NavbarButton
+            isSelected={selected === "/admin"}
+            label="Admin"
+            route="/admin"
+            onNavigate={handleNavigation}
+          >
+            <LockIcon className="w-6 h-6" />
+          </NavbarButton>
+        )}
       </div>
 
       <div className="text-white inline-flex justify-between items-end pl-2 mt-auto">

@@ -1,8 +1,8 @@
 import { nbAvgGames, topPlayedMaps, winRate } from "@/utils/stats.ts";
 import { Clock, KanbanSquare, MedalIcon, PercentIcon } from "lucide-react";
-import StatsCard from "@/components/tracker/stats/StatsCard.tsx";
+import StatsCard from "@/components/stats/StatsCard.tsx";
 import { TrackerResult } from "@/models/tracker/columns.tsx";
-import StatsCardList from "@/components/tracker/stats/StatsCardList.tsx";
+import StatsCardList from "@/components/stats/StatsCardList.tsx";
 
 interface Props {
   trackerResultList: TrackerResult[];
