@@ -52,7 +52,7 @@ export function AdminUserDatatable<TData, TValue>({
   });
   return (
     <div className="rounded-md border overflow-auto">
-      <div className="flex items-center m-2 p-2 w-80">
+      <div className="flex items-center m-2 p-2 w-40">
         <Input
           placeholder="Filter by user name"
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}

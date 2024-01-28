@@ -31,7 +31,7 @@ export function AdminTrackerResultsDatatable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([
     {
       desc: false,
-      id: "opponentTeamName",
+      id: "createdAt",
     },
   ]);
   const table = useReactTable({
