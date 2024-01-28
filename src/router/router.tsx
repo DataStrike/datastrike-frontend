@@ -10,6 +10,7 @@ import Profile from "@/pages/Profile.tsx";
 import { AnalysisDetailed } from "@/pages/AnalysisDetailed.tsx";
 import Scouting from "@/pages/Scouting.tsx";
 import { ScoutingPlayer } from "@/pages/ScoutingPlayer.tsx";
+import Admin from "@/pages/Admin.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -51,6 +52,10 @@ export const router = createBrowserRouter([
           {
             path: "/scouting",
             element: <Scouting />,
+          },
+          {
+            path: "/admin",
+            element: <Admin />,
           },
           {
             path: "/scouting/player/:playerId",
