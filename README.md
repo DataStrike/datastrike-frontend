@@ -1,30 +1,24 @@
-# React + TypeScript + Vite
+# Datastrike frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 🚀 Project
+This is the frontend part of Datastrike: an esport-oriented Overwatch tool. You can track, analyze, and scout data.
 
-Currently, two official plugins are available:
+## 🧬 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 📖 Tracking
+Track your team's results with a nice and easy user interface. Add multiple maps from your scrim or official game and get some nice stats and charts about it.
 
-## Expanding the ESLint configuration
+### 📊 Analysis
+Analyze your games with the generated log files from [ScrimTime](https://workshop.codes/DKEEH). All you have to do is import your log files, we handle the rest. 🫡\
+Once imported, you'll get access to features such as timelines, and specific data by selecting stats/users and all the row data from the players.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### 🔎 Scouting
+Our scouting functionality allows you to explore (thanks to [OverFast API](https://overfast-api.tekrop.fr/) by [@TeKroP](https://github.com/TeKrop)) data from Blizzard.\
+For public profiles, you'll be able to retrieve general stats such as winrate, KDA, and detailed stats on each hero, role, etc.
 
-- Configure the top-level `parserOptions` property like this:
+### 📆 Multiple teams
+We know it's common for someone to be part of multiple teams. Don't worry, our tool is 100% compatible with it, allowing you to switch very fast between your teams and showing you the data accordingly.
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## 🧑‍💻 Credits
+- [ZaT](https://github.com/orgs/DataStrike/people/Zat-Code)
+- [Rémi](https://github.com/RemiSaurel)
