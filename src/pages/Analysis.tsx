@@ -18,8 +18,7 @@ import {
 } from "@/components/ui/card.tsx";
 import { mapsService } from "@/services/maps-service.ts";
 import { queryClient } from "@/pages/Layout.tsx";
-import {BASE_URL} from "@/utils/constants";
-
+import {WEBSOCKET_URL} from "@/utils/constants";
 
 export function Analysis() {
   const [files, setFiles] = useState<File[]>([]);
@@ -49,7 +48,7 @@ export function Analysis() {
   useEffect(() => {
     // Connect to the server only if there is a team id
     if (team.id) {
-      const socket = io(BASE_URL, {path: '/ws'});
+      const socket = io(WEBSOCKET_URL);
 
       socket.connect();
 
