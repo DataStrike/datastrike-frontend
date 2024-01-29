@@ -31,7 +31,7 @@ export function AdminMapsDatatable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([
     {
       desc: false,
-      id: "team2Name",
+      id: "createdAt",
     },
   ]);
   const table = useReactTable({

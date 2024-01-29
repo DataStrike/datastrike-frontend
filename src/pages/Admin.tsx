@@ -37,7 +37,7 @@ export function Admin() {
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 max-h-[90vh]">
       <div className="text-2xl font-semibold">Admin</div>
       {data && (
         <Tabs defaultValue={"general"}>
@@ -52,45 +52,45 @@ export function Admin() {
 
           <TabsContent value={"general"}>
             <div className="flex gap-4">
-              <StatsCard cardTitle={"Users"} value={data.users.length} />
-              <StatsCard cardTitle={"Teams"} value={data.teams.length} />
+              <StatsCard cardTitle={"Users"} value={data.stats.nbUsers} />
+              <StatsCard cardTitle={"Teams"} value={data.stats.nbTeams} />
               <StatsCard
                 cardTitle={"Tracker Results"}
-                value={data.trackerResults.length}
+                value={data.stats.nbTrackerResults}
               />
-              <StatsCard cardTitle={"Maps"} value={data.maps.length} />
+              <StatsCard cardTitle={"Maps"} value={data.stats.nbMaps} />
             </div>
           </TabsContent>
-          <TabsContent value={"details"}>
-            <div className="flex flex-col w-full gap-6">
-              <div className="flex flex-grow w-full gap-4">
+          <TabsContent value={"details"} className="h-screen">
+            <div className="flex flex-col w-full gap-6 h-full">
+              <div className="flex flex-grow w-full gap-4 h-1/3">
                 <TableContainer title={"Users"}>
                   <AdminUserDatatable
                     columns={userColumns}
-                    data={data.users}
+                    data={data.data.users}
                   ></AdminUserDatatable>
                 </TableContainer>
 
                 <TableContainer title={"Teams"}>
                   <AdminTeamsDatatable
                     columns={teamsColumns}
-                    data={data.teams}
+                    data={data.data.teams}
                   ></AdminTeamsDatatable>
                 </TableContainer>
               </div>
 
-              <div className="flex flex-grow w-full gap-4">
+              <div className="flex flex-grow w-full gap-4 pb-4 h-1/2">
                 <TableContainer title={"Tracker results"}>
                   <AdminTrackerResultsDatatable
                     columns={trackerColumns}
-                    data={data.trackerResults}
+                    data={data.data.trackerResults}
                   ></AdminTrackerResultsDatatable>
                 </TableContainer>
 
                 <TableContainer title={"Maps results"}>
                   <AdminMapsDatatable
                     columns={mapsColumns}
-                    data={data.maps}
+                    data={data.data.maps}
                   ></AdminMapsDatatable>
                 </TableContainer>
               </div>

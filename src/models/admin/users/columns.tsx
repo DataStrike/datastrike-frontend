@@ -1,19 +1,13 @@
 import { Button } from "@/components/ui/button.tsx";
 import { ArrowUpDown } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
+import { AdminUser } from "@/services/admin-service.ts";
 
-type User = {
-  id: number;
-  name: string;
-  email: string;
-  avatar_url: string;
-  isAdmin: boolean;
-  created_at: string;
-  updated_at: string;
-  role_id: number;
-};
-
-export const userColumns: ColumnDef<User>[] = [
+export const userColumns: ColumnDef<AdminUser>[] = [
+  {
+    accessorKey: "id",
+    header: "ID",
+  },
   {
     accessorKey: "name",
     header: ({ column }) => {
@@ -33,29 +27,11 @@ export const userColumns: ColumnDef<User>[] = [
     header: "Email",
   },
   {
-    accessorKey: "isAdmin",
-    header: "Admin",
-    cell: ({ row }) => {
-      const isAdmin = row.original.isAdmin;
-      return <div>{isAdmin ? "Yes" : "No"}</div>;
-    },
-  },
-  {
     accessorKey: "created_at",
     header: "Created at",
     cell: ({ row }) => {
-      const date = row.original.created_at;
-      const formattedDate = date.slice(0, 10);
-      return <div>{formattedDate}</div>;
-    },
-  },
-  {
-    accessorKey: "updated_at",
-    header: "Updated at",
-    cell: ({ row }) => {
-      const date = row.original.updated_at;
-      const formattedDate = date.slice(0, 10);
-      return <div>{formattedDate}</div>;
+      const date = row.original.createdAt;
+      return <div>{date}</div>;
     },
   },
 ];

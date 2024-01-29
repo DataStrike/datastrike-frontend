@@ -1,34 +1,33 @@
 import { Button } from "@/components/ui/button.tsx";
 import { ArrowUpDown } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
-import { TrackerResult } from "@/models/tracker/columns.tsx";
+import { AdminTrackerResult } from "@/services/admin-service.ts";
 
-export const trackerColumns: ColumnDef<TrackerResult>[] = [
+export const trackerColumns: ColumnDef<AdminTrackerResult>[] = [
   {
     accessorKey: "id",
     header: "ID",
   },
   {
-    accessorKey: "team_id",
+    accessorKey: "teamId",
     header: "Team ID",
   },
   {
-    accessorKey: "date",
+    accessorKey: "createdAt",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Date
+          Created at
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => {
-      const date = row.original.date;
-      const formattedDate = date.slice(0, 19);
-      return <div>{formattedDate}</div>;
+      const date = row.original.createdAt;
+      return <div>{date}</div>;
     },
   },
 ];

@@ -1,29 +1,28 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { AnalysisMap } from "@/models/analysis/analysismaps.ts";
 import { Button } from "@/components/ui/button.tsx";
 import { ArrowUpDown } from "lucide-react";
-export const mapsColumns: ColumnDef<AnalysisMap>[] = [
+import { AdminMap } from "@/services/admin-service.ts";
+export const mapsColumns: ColumnDef<AdminMap>[] = [
   {
     accessorKey: "id",
     header: "ID",
   },
   {
-    accessorKey: "date",
+    accessorKey: "createdAt",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Date
+          Created at
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => {
-      const date = row.original.date;
-      const formattedDate = date.slice(0, 19);
-      return <div>{formattedDate}</div>;
+      const date = row.original.createdAt;
+      return <div>{date}</div>;
     },
   },
 ];
