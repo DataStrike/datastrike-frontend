@@ -7,7 +7,7 @@ interface Props {
 }
 export function FeatureCard({ icon, title, description }: Props) {
   return (
-    <div className="bg-white border rounded-lg p-6 w-full max-w-[500px] transition-all hover:shadow-lg hover:-translate-y-2 lg:w-[500px]">
+    <div className="bg-white border rounded-lg cursor-default p-6 w-full max-w-[500px] transition-all hover:shadow hover:-translate-y-2 lg:w-[500px]">
       <div className={"bg-neutral-200 w-fit p-3 rounded-xl"}>
         {icon && <>{icon}</>}
       </div>
