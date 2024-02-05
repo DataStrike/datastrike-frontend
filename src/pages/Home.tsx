@@ -7,6 +7,7 @@ import { FeatureCard } from "@/components/landing/FeatureCard.tsx";
 import { ScatterChart, UsersRoundIcon, TableIcon } from "lucide-react";
 import overwatch from "@/assets/overwatch.svg";
 import { Button } from "@/components/ui/button.tsx";
+import FooterCategory from "@/components/landing/FooterCategory.tsx";
 const FEATURES = [
   {
     title: "Tracker",
@@ -27,6 +28,24 @@ const FEATURES = [
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
 
     icon: <UsersRoundIcon size={48} />,
+  },
+];
+
+const COMMUNITY_LINKS = [
+  {
+    title: "Discord",
+    link: "https://discord.gg",
+  },
+  {
+    title: "Github",
+    link: "https://github.com",
+  },
+];
+
+const HELP_LINKS = [
+  {
+    title: "Doc",
+    link: "https://doc.com",
   },
 ];
 
@@ -56,10 +75,14 @@ const Home: React.FC = () => {
           </h2>
           <div
             className={
-              "bg-blue-900 hidden absolute top-32 right-0 lg:block lg:w-[500px] xl:w-[670px]"
+              "bg-blue-900 hidden absolute top-32 rounded-lg right-0 lg:block lg:w-[500px] xl:w-[670px]"
             }
           >
-            <img src={tracker} alt="tracker" className={"object-fill"} />
+            <img
+              src={tracker}
+              alt="tracker"
+              className={"object-fill rounded-lg"}
+            />
           </div>
           <Separator className="w-80 my-4" />
           <div className="flex flex-col items-start gap-2">
@@ -104,7 +127,12 @@ const Home: React.FC = () => {
             ))}
           </div>
         </div>
-        <footer className="h-48 mt-16 absolute w-full left-0 border-t bg-gray-50"></footer>
+        <footer className="h-fit mt-16 absolute w-full left-0 border-t bg-gray-50">
+          <div className="flex justify-center gap-48 w-3/5 m-auto pb-10">
+            <FooterCategory title={"Help"} links={HELP_LINKS} />
+            <FooterCategory title={"Community"} links={COMMUNITY_LINKS} />
+          </div>
+        </footer>
       </div>
     </div>
   );
