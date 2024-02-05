@@ -11,8 +11,8 @@ export default function StepCard({
   description,
 }: Props) {
   return (
-    <div className={"flex flex-col gap-2"}>
-      <div className="bg-white border rounded-lg cursor-default w-full h-60 max-w-[500px] transition-all hover:shadow hover:-translate-y-2">
+    <div className={"flex flex-col justify-center items-center gap-2"}>
+      <div className="bg-white border rounded-lg cursor-default w-full h-full max-w-[500px] transition-all hover:shadow hover:-translate-y-2">
         {img && (
           <img className={"object-cover rounded-lg"} src={img} alt={""}></img>
         )}
@@ -27,7 +27,7 @@ export default function StepCard({
         </span>{" "}
         {stepTitle}
       </div>
-      <div className="text-gray-600 mt-2">{description}</div>
+      <div className="text-gray-600 mt-2 text-center">{description}</div>
     </div>
   );
 }
