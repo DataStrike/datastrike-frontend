@@ -68,7 +68,7 @@ const Home: React.FC = () => {
           </div>
         </div>
 
-        <div className="lg:mt-48 flex flex-col gap-24">
+        <div className="flex flex-col mt-16 gap-24 lg:mt-48 ">
           <MainComponent />
         </div>
         <footer className="h-fit mt-16 absolute w-full left-0 border-t bg-gray-50">
