@@ -42,9 +42,9 @@ export function ButtonWithIcon({ icon, label, route }: Props) {
   };
 
   return (
-    <Button onClick={() => authenticateWithRoute(route)}>
+    <Button className="h-12" onClick={() => authenticateWithRoute(route)}>
       <img src={`${icon}.svg`} alt={label} className="w-6 h-6 mr-2" />
-      {label}
+      <span>{label}</span>
     </Button>
   );
 }
