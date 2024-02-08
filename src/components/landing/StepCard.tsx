@@ -21,7 +21,7 @@ export default function StepCard({
           ></img>
         )}
       </div>
-      <div className="flex flex-col gap1 flex-grow">
+      <div className="flex flex-col gap-1 flex-grow">
         <div className="text-xl flex font-semibold mt-4">
           <span
             className={
