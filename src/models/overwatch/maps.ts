@@ -1,8 +1,8 @@
 export type MapName =
-  | "Antarctic Peninsula"
-  | "Blizzard World"
+  | "Antarctic peninsula"
+  | "Blizzard world"
   | "Busan"
-  | "Circuit Royal"
+  | "Circuit royal"
   | "Colosseo"
   | "Dorado"
   | "Eichenwalde"
@@ -10,26 +10,26 @@ export type MapName =
   | "Hanamura"
   | "Havana"
   | "Hollywood"
-  | "Horizon Lunar Colony"
+  | "Horizon lunar colony"
   | "Ilios"
   | "Junkertown"
-  | "King's Row"
-  | "Lijiang Tower"
+  | "King's row"
+  | "Lijiang tower"
   | "Midtown"
   | "Nepal"
-  | "New Junk City"
-  | "New Queen Street"
+  | "New junk city"
+  | "New queen street"
   | "Numbani"
   | "Oasis"
   | "Paraiso"
   | "Paris"
   | "Rialto"
   | "Route 66"
-  | "Shambali Monastery"
+  | "Shambali monastery"
   | "Suravasa"
-  | "Temple of Anubis"
-  | "Volskaya Industries"
-  | "Watchpoint: Gibraltar";
+  | "Temple of anubis"
+  | "Volskaya industries"
+  | "Watchpoint: gibraltar";
 
 export type MapType = "Push" | "Control" | "Escort" | "Hybrid" | "Flashpoint";
 
@@ -50,39 +50,40 @@ export type FormDataTrackerResult = {
 export type MapResult = {
   map_name: MapName | "";
   us_score: number;
+  us_payload?: number;
   them_score: number;
+  them_payload?: number;
   replay_code: string;
 };
 
 export const OW_MAPS: MapData = {
   Control: [
-    "Antarctic Peninsula",
+    "Antarctic peninsula",
     "Busan",
     "Ilios",
-    "Lijiang Tower",
+    "Lijiang tower",
     "Nepal",
     "Oasis",
   ],
   Escort: [
-    "Circuit Royal",
+    "Circuit royal",
     "Dorado",
     "Havana",
     "Junkertown",
     "Rialto",
     "Route 66",
-    "Shambali Monastery",
-    "Watchpoint: Gibraltar",
+    "Shambali monastery",
+    "Watchpoint: gibraltar",
   ],
-  Flashpoint: ["New Junk City", "Suravasa"],
-
+  Flashpoint: ["New junk city", "Suravasa"],
   Hybrid: [
-    "Blizzard World",
+    "Blizzard world",
     "Eichenwalde",
     "Hollywood",
-    "King's Row",
+    "King's row",
     "Midtown",
     "Numbani",
     "Paraiso",
   ],
-  Push: ["Colosseo", "Esperanca", "New Queen Street"],
+  Push: ["Colosseo", "Esperanca", "New queen street"],
 };
