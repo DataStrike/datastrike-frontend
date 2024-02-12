@@ -21,13 +21,13 @@ export function StatsCardList({ icon, cardTitle, data }: StatsCardListProps) {
       </CardHeader>
       <CardContent>
         {data &&
-          data.map((item) => (
-            <>
+          data.map((item, key) => (
+            <div key={key}>
               <div className="flex w-full justify-between font-bold">
                 <div className="mr-6">{capitalize(item[0])}:</div>
                 <div>{item[1]}</div>
               </div>
-            </>
+            </div>
           ))}
       </CardContent>
     </Card>
