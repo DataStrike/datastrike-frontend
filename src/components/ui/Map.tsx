@@ -65,18 +65,14 @@ export function Map({ deleteMap, isLast, map, updateMap }: Props) {
         <div className="flex grow gap-2">
           <Input
             className="px-2"
-            type="number"
-            min="0"
-            placeholder="Payload us"
-            onChange={(e) => updateMap("us_payload", e.target.value)}
+            placeholder="Info us"
+            onChange={(e) => updateMap("us_info", e.target.value)}
           />
           <Separator className="h-10" orientation="vertical" />
           <Input
             className="px-2"
-            type="number"
-            min="0"
-            placeholder="Payload them"
-            onChange={(e) => updateMap("them_payload", e.target.value)}
+            placeholder="Info them"
+            onChange={(e) => updateMap("them_info", e.target.value)}
           />
         </div>
       ) : null}

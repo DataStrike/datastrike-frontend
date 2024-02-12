@@ -50,9 +50,9 @@ export type FormDataTrackerResult = {
 export type MapResult = {
   map_name: MapName | "";
   us_score: number;
-  us_payload?: number;
+  us_info?: string;
   them_score: number;
-  them_payload?: number;
+  them_info?: string;
   replay_code: string;
 };
 
