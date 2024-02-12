@@ -15,20 +15,6 @@ async function getTrackerResults(teamId: number): Promise<TrackerResult[]> {
     .json();
 }
 
-async function getTrackerResult(
-  trackerResultId: number,
-): Promise<TrackerResult> {
-  if (!trackerResultId) {
-    throw new Error("Tracker result id is required");
-  }
-
-  return await ky
-    .get(`${BASE_URL}/trackers/${trackerResultId}`, {
-      credentials: "include",
-    })
-    .json();
-}
-
 async function addTrackerResult(
   teamId: number,
   trackerResult: FormDataTrackerResult,
@@ -41,9 +27,11 @@ async function addTrackerResult(
     .json();
 }
 
-async function deleteTrackerResult(trackerResultId: number): Promise<void> {
+async function deleteTrackerResult(
+  trackerResultId: number,
+): Promise<void> {
   return await ky
-    .delete(`${BASE_URL}/trackers/${trackerResultId}`, {
+    .delete(`${BASE_URL}/tracker/${trackerResultId}`, {
       credentials: "include",
     })
     .json();
@@ -53,5 +41,4 @@ export const trackerService = {
   getTrackerResults,
   addTrackerResult,
   deleteTrackerResult,
-  getTrackerResult,
 };
