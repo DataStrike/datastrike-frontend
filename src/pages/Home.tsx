@@ -3,7 +3,7 @@ import { ButtonWithIcon } from "@/components/ui/buttonWithIcon.tsx";
 import React from "react";
 import { Separator } from "@/components/ui/separator.tsx";
 import tracker from "@/assets/tracker.png";
-import overwatch from "@/assets/overwatch.svg";
+import logo from "@/assets/logo.png";
 import FooterCategory from "@/components/landing/FooterCategory.tsx";
 import MainComponent from "@/components/landing/MainComponent.tsx";
 
@@ -30,7 +30,7 @@ const Home: React.FC = () => {
     <div className="flex flex-col gap-2 m-auto w-4/5 overflow-y-auto xl:w-3/5">
       <nav className="h-24 font-bold flex items-center justify-between p-4 pl-0">
         <div className={"flex items-center gap-3"}>
-          <img src={overwatch} alt="Datastrike" className="w-10 h-10" />
+          <img src={logo} alt="Datastrike" className="w-10 h-10" />
           <span className="text-lg">Datastrike</span>
         </div>
         <div className={"flex gap-8"}></div>

@@ -13,6 +13,8 @@ export type TrackerResult = {
   mapName: string;
   usScore: number;
   themScore: number;
+  usInfo: string;
+  themInfo: string;
   result: RESULT;
   info: string;
   replayCode: string;
@@ -61,17 +63,36 @@ export const columns: ColumnDef<TrackerResult>[] = [
   {
     accessorKey: "usScore",
     header: "Us",
+    cell: ({ row }) => {
+      const usScore = row.original.usScore;
+      const usInfo = row.original.usInfo;
+      return (
+        <div>
+          {usScore}
+          {usInfo && ` (${usInfo})`}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "themScore",
     header: "Them",
+    cell: ({ row }) => {
+      const themScore = row.original.themScore;
+      const themInfo = row.original.themInfo;
+      return (
+        <div>
+          {themScore}
+          {themInfo && ` (${themInfo})`}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "result",
     header: "Result",
     cell: ({ row }) => {
       const result: string = row.original.result;
-
       return result === "W" ? (
         <div className="text-xl">🟢</div>
       ) : result === "D" ? (

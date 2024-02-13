@@ -31,7 +31,7 @@ export function MapSelector({ selectedMap, onSelect }: Props) {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-between"
+          className="w-full justify-between p-2"
         >
           {selectedMap ? capitalize(selectedMap) : "Select map..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
