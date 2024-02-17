@@ -9,16 +9,20 @@ import { SelectTeamComponent } from "@/components/team/SelectTeamComponent.tsx";
 import { Team } from "@/models/teams/columns.tsx";
 import { useQuery } from "@tanstack/react-query";
 import { getTeams } from "@/services/teams-service.ts";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card.tsx";
 import { mapsService } from "@/services/maps-service.ts";
 import { queryClient } from "@/pages/Layout.tsx";
-import {WEBSOCKET_URL} from "@/utils/constants";
+import { WEBSOCKET_URL } from "@/utils/constants";
+import { HelpCircleIcon } from "lucide-react";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog.tsx";
+import { Separator } from "@/components/ui/separator.tsx";
+import WorkshopInstructions from "@/components/analysis/WorkshopInstructions.tsx";
 
 export function Analysis() {
   const [files, setFiles] = useState<File[]>([]);
@@ -116,6 +120,30 @@ export function Analysis() {
       {!teams || (teams.length == 0 && <div>No team detected.</div>)}
       {/* AnalysisList prend toute la largeur */}
       <div className="flex flex-col gap-4">
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button className="w-fit" variant={"secondary"}>
+              <HelpCircleIcon className="h-4 w-4 mr-2" />
+              How does it work ?
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="w-full p-4 lg:w-1/2 xl:w-1/3">
+            <DialogHeader>
+              <DialogTitle>Setup to analyze your data</DialogTitle>
+            </DialogHeader>
+            <div className="w-fit">
+              Make sure to follow these steps to get the .txt log files :
+              <Separator className={"my-2"} />
+              <WorkshopInstructions />
+            </div>
+            <DialogClose asChild>
+              <Button type="button" className="w-24 ml-auto">
+                Close
+              </Button>
+            </DialogClose>
+          </DialogContent>
+        </Dialog>
+
         <div className="flex">
           <Input
             id="picture"
@@ -126,21 +154,7 @@ export function Analysis() {
           />
           <Button onClick={handleFileUpload}> Upload files</Button>
         </div>
-
         <div className="flex h-full gap-4">
-          <div className="w-56">
-            <Card className="w-full h-[600px]">
-              <CardHeader className="pt-4 px-4 ">
-                <CardTitle>Filters</CardTitle>
-                <CardDescription>Add filters to your research</CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-col">
-                <span className="opacity-40 text-sm">
-                  Filters coming soon...
-                </span>
-              </CardContent>
-            </Card>
-          </div>
           {maps && <AnalysisList maps={maps} />}
         </div>
       </div>

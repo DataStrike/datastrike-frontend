@@ -3,7 +3,8 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Trash2Icon } from "lucide-react";
 import { MapSelector } from "@/components/ui/MapSelector";
-import { MapResult } from "@/models/overwatch/maps.ts";
+import { MapName, MapResult, OW_MAPS } from "@/models/overwatch/maps.ts";
+import { capitalize } from "@/utils/functions.ts";
 
 interface Props {
   deleteMap: () => void;
@@ -12,18 +13,30 @@ interface Props {
   updateMap: (field: string, value: any) => void;
 }
 
+const findMapType = (mapName: MapName | "") => {
+  if (mapName === "") return "";
+  for (const [mapType, mapList] of Object.entries(OW_MAPS)) {
+    if (mapList.includes(capitalize(mapName) as MapName)) {
+      return mapType;
+    }
+  }
+};
+
 export function Map({ deleteMap, isLast, map, updateMap }: Props) {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex gap-2">
-        <div className="grow">
-          <MapSelector
-            selectedMap={map.map_name}
-            onSelect={(value) => updateMap("map_name", value)}
-          />
-        </div>
+        <MapSelector
+          selectedMap={map.map_name}
+          onSelect={(value) => updateMap("map_name", value)}
+        />
         {isLast && (
-          <Button size="icon" variant="destructive" onClick={deleteMap}>
+          <Button
+            size="icon"
+            className={"grow"}
+            variant="destructive"
+            onClick={deleteMap}
+          >
             <Trash2Icon className="h-4 w-4" />
           </Button>
         )}
@@ -47,6 +60,22 @@ export function Map({ deleteMap, isLast, map, updateMap }: Props) {
           onChange={(e) => updateMap("them_score", e.target.value)}
         />
       </div>
+      {findMapType(map.map_name) === "Push" ||
+      findMapType(map.map_name) === "Hybrid" ? (
+        <div className="flex grow gap-2">
+          <Input
+            className="px-2"
+            placeholder="Info us"
+            onChange={(e) => updateMap("us_info", e.target.value)}
+          />
+          <Separator className="h-10" orientation="vertical" />
+          <Input
+            className="px-2"
+            placeholder="Info them"
+            onChange={(e) => updateMap("them_info", e.target.value)}
+          />
+        </div>
+      ) : null}
       <Input
         className="px-2"
         type="text"

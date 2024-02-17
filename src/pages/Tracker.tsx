@@ -134,7 +134,7 @@ export function Tracker() {
 
       {teams && teams.length > 0 && (
         <div className="flex flex-col gap-4 w-full lg:flex-row">
-          <Card className="h-full w-64 lg:w-60">
+          <Card className="h-full w-72">
             <CardHeader>
               <CardTitle>Add a result</CardTitle>
               <CardDescription>Add a result to your stats</CardDescription>

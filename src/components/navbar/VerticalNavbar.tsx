@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { NavbarButton } from "@/components/navbar/NavbarButton.tsx";
 import { User } from "@/models/models.ts";
-import overwatch from "@/assets/overwatch.svg";
+import logo from "@/assets/logo_inverted.png";
 import { useState } from "react";
 
 interface Props {
@@ -24,7 +24,7 @@ export function VerticalNavbar(props: Props) {
   return (
     <div className="bg-neutral-800 w-40 h-full p-2 flex flex-col">
       <div className="flex justify-center pt-4">
-        <img src={overwatch} alt="Datastrike" className="w-10 h-10 " />
+        <img src={logo} alt="Datastrike" className="w-10 h-10 " />
       </div>
 
       <div className="flex flex-col items-start gap-1.5 mt-12 text-white">
