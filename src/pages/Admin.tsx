@@ -65,7 +65,7 @@ export function Admin() {
           </TabsContent>
           <TabsContent value={"details"} className="h-screen">
             <div className="flex flex-col w-full gap-6 h-full">
-              <div>
+              <div className={"flex w-full gap-4 h-1/3"}>
                 <TableContainer title={"Users"}>
                   <AdminUserDatatable
                     columns={userColumns}
@@ -74,7 +74,7 @@ export function Admin() {
                 </TableContainer>
               </div>
 
-              <div className="flex  w-full gap-4 h-1/3">
+              <div className="flex w-full gap-4 h-1/3">
                 <TableContainer title={"Teams"}>
                   <AdminTeamsDatatable
                     columns={teamsColumns}
