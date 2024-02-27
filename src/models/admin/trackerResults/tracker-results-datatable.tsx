@@ -1,5 +1,6 @@
 import {
   ColumnDef,
+  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -18,6 +19,7 @@ import {
 } from "@/components/ui/table";
 
 import { useState } from "react";
+import { Input } from "@/components/ui/input.tsx";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -34,19 +36,41 @@ export function AdminTrackerResultsDatatable<TData, TValue>({
       id: "createdAt",
     },
   ]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting,
+      columnFilters,
     },
   });
   return (
     <div className="rounded-md border overflow-auto">
+      <div className="flex items-center m-2 p-2 w-80">
+        <Input
+          placeholder="Filter by ID"
+          value={(table.getColumn("id")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("id")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
+        <Input
+          placeholder="Filter by team id"
+          value={(table.getColumn("teamId")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("teamId")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
+      </div>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

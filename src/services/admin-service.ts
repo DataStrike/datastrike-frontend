@@ -19,6 +19,13 @@ export interface AdminTeam {
   name: string;
 }
 
+export interface AdminTeamUser {
+  id: number;
+  userId: number;
+  teamId: number;
+  role: string;
+}
+
 export interface AdminUser {
   id: number;
   createdAt: string;
@@ -31,6 +38,7 @@ interface AdminDetailedData {
   teams: AdminTeam[];
   maps: AdminMap[];
   trackerResults: AdminTrackerResult[];
+  team_users: AdminTeamUser[];
 }
 interface AdminStats {
   nbTeams: number;

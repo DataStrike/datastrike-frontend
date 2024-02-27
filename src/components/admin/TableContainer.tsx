@@ -5,7 +5,7 @@ interface Props {
 }
 export function TableContainer({ children, title }: Props) {
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-grow flex-col gap-1">
       <span className="text-xl font-bold">{title}</span>
       <Fragment>{children}</Fragment>
     </div>

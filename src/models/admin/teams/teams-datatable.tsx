@@ -54,6 +54,14 @@ export function AdminTeamsDatatable<TData, TValue>({
     <div className="rounded-md border overflow-auto">
       <div className="flex items-center m-2 p-2 w-80">
         <Input
+          placeholder="Filter by ID"
+          value={(table.getColumn("id")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("id")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
+        <Input
           placeholder="Filter by team name"
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
