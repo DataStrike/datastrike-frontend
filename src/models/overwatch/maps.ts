@@ -25,6 +25,7 @@ export type MapName =
   | "Paris"
   | "Rialto"
   | "Route 66"
+  | "Samoa"
   | "Shambali monastery"
   | "Suravasa"
   | "Temple of anubis"
@@ -64,6 +65,7 @@ export const OW_MAPS: MapData = {
     "Lijiang tower",
     "Nepal",
     "Oasis",
+    "Samoa",
   ],
   Escort: [
     "Circuit royal",
