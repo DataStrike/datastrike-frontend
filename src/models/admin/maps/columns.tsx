@@ -8,6 +8,10 @@ export const mapsColumns: ColumnDef<AdminMap>[] = [
     header: "ID",
   },
   {
+    accessorKey: "teamId",
+    header: "Team ID",
+  },
+  {
     accessorKey: "createdAt",
     header: ({ column }) => {
       return (
