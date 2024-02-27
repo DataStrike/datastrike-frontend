@@ -9,3 +9,21 @@ export async function getTeams(): Promise<Team[]> {
     })
     .json();
 }
+
+async function kickUser(teamId: number, userId: number): Promise<void> {
+  await ky.delete(`${BASE_URL}/teams/${teamId}/users/${userId}`, {
+    credentials: "include",
+  });
+}
+
+export async function markAdmin(teamId: number, userId: number): Promise<void> {
+  await ky.put(`${BASE_URL}/teams/${teamId}/users/${userId}`, {
+    credentials: "include",
+  });
+}
+
+export const teamsService = {
+  getTeams,
+  kickUser,
+  markAdmin,
+};

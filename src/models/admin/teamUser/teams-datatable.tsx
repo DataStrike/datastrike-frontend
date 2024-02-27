@@ -19,14 +19,14 @@ import {
 } from "@/components/ui/table";
 
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/input.tsx";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function AdminUserDatatable<TData, TValue>({
+export function AdminTeamUsersDatatable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -62,10 +62,18 @@ export function AdminUserDatatable<TData, TValue>({
           className="max-w-sm"
         />
         <Input
-          placeholder="Filter by user name"
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter by user id"
+          value={(table.getColumn("userId")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
+            table.getColumn("userId")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
+        <Input
+          placeholder="Filter by team id"
+          value={(table.getColumn("teamId")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("teamId")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
