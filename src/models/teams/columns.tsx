@@ -16,13 +16,12 @@ import { queryClient } from "@/pages/Layout.tsx";
 import { useState } from "react";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog.tsx";
-import { Separator } from "@/components/ui/separator.tsx";
+import { teamsService } from "@/services/teams-service.ts";
 
 export type Team = {
   id: number;
@@ -36,6 +35,7 @@ interface SpoilerProps {
   code: string;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 const Spoiler = ({ code }: SpoilerProps) => {
   const [revealed, setRevealed] = useState(false);
 
@@ -65,8 +65,18 @@ const leaveTeam = async (code: string) => {
   toast.success("Left team successfully");
 };
 
-const markAdmin = async (userId: number) => {
-  console.log("Marking user as admin", userId);
+const markAdmin = async (teamId: number, userId: number) => {
+  await teamsService.markAdmin(teamId, userId);
+
+  await queryClient.invalidateQueries({ queryKey: ["teams"] });
+  toast.success("Marked admin successfully");
+};
+
+const kickUser = async (teamId: number, userId: number) => {
+  await teamsService.kickUser(teamId, userId);
+
+  await queryClient.invalidateQueries({ queryKey: ["teams"] });
+  toast.success("Kicked user successfully");
 };
 
 export const columns: ColumnDef<Team>[] = [
@@ -134,20 +144,28 @@ export const columns: ColumnDef<Team>[] = [
                             <span>{player.name}</span>
                             <div className="flex gap-2">
                               {!player.isAdmin && (
-                                <Button
-                                  size={"icon"}
-                                  variant={"default"}
-                                  onClick={() => markAdmin(player.id)}
-                                >
-                                  <StarIcon className="h-4 w-4" />
-                                </Button>
+                                <>
+                                  <Button
+                                    variant={"default"}
+                                    onClick={() =>
+                                      markAdmin(team.id, player.id)
+                                    }
+                                  >
+                                    <StarIcon className="h-4 w-4 mr-2" />
+                                    Make admin
+                                  </Button>
+
+                                  <Button
+                                    variant={"destructive"}
+                                    onClick={() => kickUser(team.id, player.id)}
+                                  >
+                                    <TrashIcon className="h-4 w-4 mr-2" />
+                                    Kick
+                                  </Button>
+                                </>
                               )}
-                              <Button size={"icon"} variant={"destructive"}>
-                                <TrashIcon className="h-4 w-4" />
-                              </Button>
                             </div>
                           </div>
-                          <Separator />
                         </div>
                       ))}
                     </div>
