@@ -27,7 +27,7 @@ export interface Data {
 
 export interface DataEvent {
   type: string;
-  timestamp: string;
+  timestamp: number;
   player: string;
   description: string;
 }
