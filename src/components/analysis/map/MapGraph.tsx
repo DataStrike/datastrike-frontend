@@ -232,6 +232,7 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
                       <span>{parseDescription(event.description).player1}</span>
                       <span>{parseDescription(event.description).action}</span>
                       <span>{parseDescription(event.description).player2}</span>
+                      <span>{parseDescription(event.description).keyword}</span>
                     </div>
                     <p></p>
                   </div>
