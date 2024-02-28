@@ -9,6 +9,13 @@ import objectiveIcon from "@/assets/analysis/objectif.png";
 import swapHeroIcon from "@/assets/analysis/swapHero.png";
 import { AnalysisMap, DataEvent } from "@/models/analysis/analysismaps.ts";
 import { capitalize } from "@/utils/functions.ts";
+import { detectFights } from "@/utils/analysis/timeline.ts";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card.tsx";
 
 interface MapGraphProps {
   mapData: AnalysisMap;
@@ -89,8 +96,7 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
                 return ultimatePoint;
               } else if (event.type === "hero_swap") {
                 return swapHeroPoint;
-              }
-              else {
+              } else {
                 return undefined; // Return undefined for other cases
               }
             }),
@@ -184,10 +190,34 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
     }
   }, [mapData]);
 
+  const fights = detectFights(mapData.data, 10);
+
   return (
-    <div className="w-4/5">
+    <div className="w-full">
       <h2 className="text-xl font-bold">Timeline</h2>
-      <canvas ref={chartRef} />
+      <div className="w-5/6">
+        <canvas ref={chartRef} />
+      </div>
+      <h2 className="text-xl font-bold">Fights</h2>
+      <div className="flex gap-4 w-full flex-wrap">
+        {fights.map((fight, index) => (
+          <Card className="w-fit h-fit" key={index}>
+            {fight.at(0)!.timestamp && (
+              <CardHeader>
+                <CardTitle>{fight.at(0)!.timestamp}s</CardTitle>
+              </CardHeader>
+            )}
+            <CardContent>
+              {fight.map((event, index) => (
+                <div key={index}>
+                  <p>{event.timestamp}</p>
+                  <p>{event.description}</p>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 };
