@@ -9,13 +9,18 @@ import objectiveIcon from "@/assets/analysis/objectif.png";
 import swapHeroIcon from "@/assets/analysis/swapHero.png";
 import { AnalysisMap, DataEvent } from "@/models/analysis/analysismaps.ts";
 import { capitalize } from "@/utils/functions.ts";
-import { detectFights } from "@/utils/analysis/timeline.ts";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card.tsx";
+  detectFights,
+  detectFirstDeaths,
+  detectFirstKills,
+  parseDescription,
+} from "@/utils/analysis/timeline.ts";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion.tsx";
 
 interface MapGraphProps {
   mapData: AnalysisMap;
@@ -38,6 +43,10 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
       backgroundColor: `rgba(135, 137, 140, ${0.1 + 0.1 * index})`,
     }),
   );
+
+  /*const playerNames = Object.values(mapData.data.rounds[0].teams).map((team) =>
+    Object.values(team.players).map((player) => player.name),
+  );*/
 
   useEffect(() => {
     let chartInstance: Chart | undefined;
@@ -102,7 +111,7 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
             }),
             showLine: false,
             data: playerEvents.map((event: DataEvent) => ({
-              x: parseFloat(event.timestamp),
+              x: event.timestamp,
               y: playerName,
               description: event.description,
               type: event.type,
@@ -134,6 +143,14 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
                 type: "category",
                 labels: playerNames,
                 offset: true,
+                ticks: {
+                  color: (context) => {
+                    return context.index < 5 ? "#314abf" : "#ca3c3c";
+                  },
+                  font: {
+                    size: 14,
+                  },
+                },
               },
             },
             plugins: {
@@ -191,6 +208,8 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
   }, [mapData]);
 
   const fights = detectFights(mapData.data, 10);
+  const firstKillers = detectFirstKills(fights);
+  const firstDeaths = detectFirstDeaths(fights);
 
   return (
     <div className="w-full">
@@ -200,23 +219,43 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
       </div>
       <h2 className="text-xl font-bold">Fights</h2>
       <div className="flex gap-4 w-full flex-wrap">
-        {fights.map((fight, index) => (
-          <Card className="w-fit h-fit" key={index}>
-            {fight.at(0)!.timestamp && (
-              <CardHeader>
-                <CardTitle>{fight.at(0)!.timestamp}s</CardTitle>
-              </CardHeader>
-            )}
-            <CardContent>
-              {fight.map((event, index) => (
-                <div key={index}>
-                  <p>{event.timestamp}</p>
-                  <p>{event.description}</p>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        ))}
+        <Accordion className={"w-80"} type="single" collapsible>
+          {fights.map((fight, index) => (
+            <AccordionItem value={"item-" + index} key={index}>
+              {fight.at(0)!.timestamp && (
+                <AccordionTrigger>{fight.at(0)!.timestamp}s</AccordionTrigger>
+              )}
+              <AccordionContent>
+                {fight.map((event, index) => (
+                  <div key={index}>
+                    <div className="flex gap-2">
+                      <span>{parseDescription(event.description).player1}</span>
+                      <span>{parseDescription(event.description).action}</span>
+                      <span>{parseDescription(event.description).player2}</span>
+                    </div>
+                    <p></p>
+                  </div>
+                ))}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+        <div>
+          <h2 className="text-xl font-bold">First Killers</h2>
+          <div>
+            {firstKillers.map((player, index) => (
+              <p key={index}>{player}</p>
+            ))}
+          </div>
+        </div>
+        <div>
+          <h2 className="text-xl font-bold">First Deaths</h2>
+          <div>
+            {firstDeaths.map((player, index) => (
+              <p key={index}>{player}</p>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
