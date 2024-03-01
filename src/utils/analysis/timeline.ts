@@ -102,7 +102,11 @@ export function detectFirstDeaths(fights: DataEvent[][]) {
   });
 }
 
-export function getFightMetaData(fight: DataEvent[]) {
+export interface FightMetaData {
+  nbKills: number;
+  nbUltimates: number;
+}
+export function getFightMetaData(fight: DataEvent[]): FightMetaData {
   const nbKills = fight.filter((event) => event.type === "kill").length;
   const nbUltimates = fight.filter((event) => event.type === "ultimate").length;
   return { nbKills, nbUltimates };
