@@ -27,7 +27,7 @@ export interface Data {
 
 export interface DataEvent {
   type: string;
-  timestamp: string;
+  timestamp: number;
   player: string;
   description: string;
 }
@@ -35,8 +35,8 @@ export interface DataEvent {
 export interface Round {
   class_name: string;
   teams: Record<string, Team>;
-  start_time: string;
-  end_time: string;
+  start_time: number;
+  end_time: number;
   objective_captured?: ObjectiveCaptured[];
   objective_progress?: ObjectiveProgress[];
 }

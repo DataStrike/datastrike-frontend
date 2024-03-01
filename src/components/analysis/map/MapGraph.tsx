@@ -2,14 +2,13 @@ import React, { useEffect, useRef } from "react";
 import Chart, { TooltipItem } from "chart.js/auto";
 import zoomPlugin from "chartjs-plugin-zoom";
 import annotationPlugin, { AnnotationOptions } from "chartjs-plugin-annotation";
-import deathIcon from "@/assets/analysis/death.png";
-import killIcon from "@/assets/analysis/kill.png";
-import ultimateIcon from "@/assets/analysis/ultimate.png";
-import objectiveIcon from "@/assets/analysis/objectif.png";
-import swapHeroIcon from "@/assets/analysis/swapHero.png";
+import deathIcon from "@/assets/analysis/death.svg";
+import killIcon from "@/assets/analysis/kill.svg";
+import ultimateIcon from "@/assets/analysis/ultimate.svg";
+import objectiveIcon from "@/assets/analysis/objective.svg";
+import swapHeroIcon from "@/assets/analysis/swapHero.svg";
 import { AnalysisMap, DataEvent } from "@/models/analysis/analysismaps.ts";
 import { capitalize } from "@/utils/functions.ts";
-
 interface MapGraphProps {
   mapData: AnalysisMap;
 }
@@ -89,14 +88,13 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
                 return ultimatePoint;
               } else if (event.type === "hero_swap") {
                 return swapHeroPoint;
-              }
-              else {
+              } else {
                 return undefined; // Return undefined for other cases
               }
             }),
             showLine: false,
             data: playerEvents.map((event: DataEvent) => ({
-              x: parseFloat(event.timestamp),
+              x: event.timestamp,
               y: playerName,
               description: event.description,
               type: event.type,
@@ -128,6 +126,14 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
                 type: "category",
                 labels: playerNames,
                 offset: true,
+                ticks: {
+                  color: (context) => {
+                    return context.index < 5 ? "#314abf" : "#ca3c3c";
+                  },
+                  font: {
+                    size: 14,
+                  },
+                },
               },
             },
             plugins: {
@@ -185,9 +191,11 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
   }, [mapData]);
 
   return (
-    <div className="w-4/5">
+    <div className="w-full">
       <h2 className="text-xl font-bold">Timeline</h2>
-      <canvas ref={chartRef} />
+      <div className="w-5/6">
+        <canvas ref={chartRef} />
+      </div>
     </div>
   );
 };
