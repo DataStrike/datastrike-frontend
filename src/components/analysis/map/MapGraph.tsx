@@ -2,26 +2,13 @@ import React, { useEffect, useRef } from "react";
 import Chart, { TooltipItem } from "chart.js/auto";
 import zoomPlugin from "chartjs-plugin-zoom";
 import annotationPlugin, { AnnotationOptions } from "chartjs-plugin-annotation";
-import deathIcon from "@/assets/analysis/death.png";
-import killIcon from "@/assets/analysis/kill.png";
-import ultimateIcon from "@/assets/analysis/ultimate.png";
-import objectiveIcon from "@/assets/analysis/objectif.png";
-import swapHeroIcon from "@/assets/analysis/swapHero.png";
+import deathIcon from "@/assets/analysis/death.svg";
+import killIcon from "@/assets/analysis/kill.svg";
+import ultimateIcon from "@/assets/analysis/ultimate.svg";
+import objectiveIcon from "@/assets/analysis/objective.svg";
+import swapHeroIcon from "@/assets/analysis/swapHero.svg";
 import { AnalysisMap, DataEvent } from "@/models/analysis/analysismaps.ts";
 import { capitalize } from "@/utils/functions.ts";
-import {
-  detectFights,
-  detectFirstDeaths,
-  detectFirstKills,
-  parseDescription,
-} from "@/utils/analysis/timeline.ts";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion.tsx";
-
 interface MapGraphProps {
   mapData: AnalysisMap;
 }
@@ -43,10 +30,6 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
       backgroundColor: `rgba(135, 137, 140, ${0.1 + 0.1 * index})`,
     }),
   );
-
-  /*const playerNames = Object.values(mapData.data.rounds[0].teams).map((team) =>
-    Object.values(team.players).map((player) => player.name),
-  );*/
 
   useEffect(() => {
     let chartInstance: Chart | undefined;
@@ -207,56 +190,11 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
     }
   }, [mapData]);
 
-  const fights = detectFights(mapData.data, 10);
-  const firstKillers = detectFirstKills(fights);
-  const firstDeaths = detectFirstDeaths(fights);
-
   return (
     <div className="w-full">
       <h2 className="text-xl font-bold">Timeline</h2>
       <div className="w-5/6">
         <canvas ref={chartRef} />
-      </div>
-      <h2 className="text-xl font-bold">Fights</h2>
-      <div className="flex gap-4 w-full flex-wrap">
-        <Accordion className={"w-80"} type="single" collapsible>
-          {fights.map((fight, index) => (
-            <AccordionItem value={"item-" + index} key={index}>
-              {fight.at(0)!.timestamp && (
-                <AccordionTrigger>{fight.at(0)!.timestamp}s</AccordionTrigger>
-              )}
-              <AccordionContent>
-                {fight.map((event, index) => (
-                  <div key={index}>
-                    <div className="flex gap-2">
-                      <span>{parseDescription(event.description).player1}</span>
-                      <span>{parseDescription(event.description).action}</span>
-                      <span>{parseDescription(event.description).player2}</span>
-                      <span>{parseDescription(event.description).keyword}</span>
-                    </div>
-                    <p></p>
-                  </div>
-                ))}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-        <div>
-          <h2 className="text-xl font-bold">First Killers</h2>
-          <div>
-            {firstKillers.map((player, index) => (
-              <p key={index}>{player}</p>
-            ))}
-          </div>
-        </div>
-        <div>
-          <h2 className="text-xl font-bold">First Deaths</h2>
-          <div>
-            {firstDeaths.map((player, index) => (
-              <p key={index}>{player}</p>
-            ))}
-          </div>
-        </div>
       </div>
     </div>
   );
