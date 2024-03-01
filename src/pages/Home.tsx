@@ -27,7 +27,7 @@ const HELP_LINKS = [
 
 const Home: React.FC = () => {
   return (
-    <div className="flex flex-col gap-2 m-auto w-4/5 overflow-y-auto xl:w-3/5">
+    <div className="flex flex-col gap-2 m-auto w-4/5 overflow-y-auto overflow-x-hidden xl:w-3/5">
       <nav className="h-24 font-bold flex items-center justify-between p-4 pl-0">
         <div className={"flex items-center gap-3"}>
           <img src={logo} alt="Datastrike" className="w-10 h-10" />
@@ -39,7 +39,7 @@ const Home: React.FC = () => {
       <div className="mt-24">
         <div className="h-[40vh]">
           <h1 className="text-6xl font-semibold">Explore</h1>
-          <h2 className="text-lg mt-2 w-80">
+          <h2 className="text-lg mt-2 w-72">
             Best analysis and results tracking tool, all your data in one place.
           </h2>
           <div
