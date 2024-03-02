@@ -44,11 +44,13 @@ export function CompsContainer({ data }: Props) {
 
           // each played time for the character
           character.played_time.forEach((time) => {
-            if (time.end) {
+            const start = Number(time.start);
+            const end = Number(time.end);
+            if (end - start > 0.5) {
               currentRecord = {
                 character: character.name,
-                start_time: Number(time.start),
-                end_time: Number(time.end),
+                start_time: start,
+                end_time: end,
               };
               compositions[roundIndex][team.name][player.name].push(
                 currentRecord,
