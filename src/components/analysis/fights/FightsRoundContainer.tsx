@@ -100,7 +100,7 @@ export function FightsRoundContainer({ fights, index, fightsMetaData }: Props) {
                         </TableRow>
                       </TableHeader>
                       {fight.map((event) => (
-                        <TableBody key={event.player}>
+                        <TableBody key={event.timestamp}>
                           <TableRow>
                             <TableCell>
                               {parseDescription(event.description).player1}
