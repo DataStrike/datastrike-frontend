@@ -87,7 +87,7 @@ export function FightsRoundContainer({ fights, index, fightsMetaData }: Props) {
                 <AccordionItem
                   className={"border-b-0"}
                   value={"item-" + index}
-                  key={index}
+                  key={"item-" + index}
                 >
                   <AccordionTrigger>See more</AccordionTrigger>
                   <AccordionContent>
@@ -101,7 +101,7 @@ export function FightsRoundContainer({ fights, index, fightsMetaData }: Props) {
                         </TableRow>
                       </TableHeader>
                       {fight.map((event) => (
-                        <TableBody>
+                        <TableBody key={event.player}>
                           <TableRow>
                             <TableCell>
                               {parseDescription(event.description).player1}

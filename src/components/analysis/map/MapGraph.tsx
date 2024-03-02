@@ -20,7 +20,7 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
   Chart.register(annotationPlugin);
 
   const annotationOptions: AnnotationOptions[] = mapData.data.rounds.map(
-    (round: { start_time: string; end_time: string }, index: number) => ({
+    (round, index: number) => ({
       type: "box",
       drawTime: "beforeDatasetsDraw",
       xScaleID: "x",
