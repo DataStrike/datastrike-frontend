@@ -97,7 +97,6 @@ export function FightsRoundContainer({ fights, index, fightsMetaData }: Props) {
                           <TableHead>Player 1</TableHead>
                           <TableHead>Action</TableHead>
                           <TableHead>Player 2</TableHead>
-                          <TableHead>Keyword</TableHead>
                         </TableRow>
                       </TableHeader>
                       {fight.map((event) => (
@@ -111,9 +110,6 @@ export function FightsRoundContainer({ fights, index, fightsMetaData }: Props) {
                             </TableCell>
                             <TableCell>
                               {parseDescription(event.description).player2}
-                            </TableCell>
-                            <TableCell>
-                              {parseDescription(event.description).keyword}
                             </TableCell>
                           </TableRow>
                         </TableBody>
