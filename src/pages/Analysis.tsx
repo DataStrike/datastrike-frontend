@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/dialog.tsx";
 import { Separator } from "@/components/ui/separator.tsx";
 import WorkshopInstructions from "@/components/analysis/WorkshopInstructions.tsx";
+import { selectTeam } from "@/utils/functions.ts";
 
 export function Analysis() {
   const [files, setFiles] = useState<File[]>([]);
@@ -40,12 +41,13 @@ export function Analysis() {
 
   useEffect(() => {
     if (teams && teams.length > 0 && !team.id) {
-      setTeam(teams[0]);
+      selectTeam(teams, team, setTeam, localStorage);
     }
-  }, [teams, team]);
+  }, [teams, team, setTeam]);
 
   const updateTeam = async (team: Team) => {
     setTeam(team);
+    localStorage.setItem("lastSelectedTeam", team.name);
     await queryClient.invalidateQueries({ queryKey: ["maps", team.id] });
   };
 
