@@ -87,7 +87,7 @@ export function FightsRoundContainer({ fights, index, fightsMetaData }: Props) {
                 <AccordionItem
                   className={"border-b-0"}
                   value={"item-" + index}
-                  key={index}
+                  key={"item-" + index}
                 >
                   <AccordionTrigger>See more</AccordionTrigger>
                   <AccordionContent>
@@ -97,11 +97,10 @@ export function FightsRoundContainer({ fights, index, fightsMetaData }: Props) {
                           <TableHead>Player 1</TableHead>
                           <TableHead>Action</TableHead>
                           <TableHead>Player 2</TableHead>
-                          <TableHead>Keyword</TableHead>
                         </TableRow>
                       </TableHeader>
                       {fight.map((event) => (
-                        <TableBody>
+                        <TableBody key={event.player}>
                           <TableRow>
                             <TableCell>
                               {parseDescription(event.description).player1}
@@ -111,9 +110,6 @@ export function FightsRoundContainer({ fights, index, fightsMetaData }: Props) {
                             </TableCell>
                             <TableCell>
                               {parseDescription(event.description).player2}
-                            </TableCell>
-                            <TableCell>
-                              {parseDescription(event.description).keyword}
                             </TableCell>
                           </TableRow>
                         </TableBody>

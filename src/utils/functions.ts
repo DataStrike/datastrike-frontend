@@ -1,3 +1,5 @@
+import { Team } from "@/models/teams/columns.tsx";
+
 export const capitalize = (str: string): string => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
@@ -58,4 +60,26 @@ export const countOccurrences = (array: string[]) => {
     acc[curr] = (acc[curr] || 0) + 1;
     return acc;
   }, {});
+};
+
+export const selectTeam = (
+  teams: Team[],
+  team: Team,
+  setTeam: (team: Team) => void,
+  localStorage: Storage | Window["localStorage"],
+) => {
+  if (teams && teams.length > 0 && !team.id) {
+    const lastSelectedTeam = localStorage.getItem("lastSelectedTeam");
+    const selectedTeam = lastSelectedTeam
+      ? teams.find((t) => t.name === lastSelectedTeam)
+      : null;
+
+    if (selectedTeam) {
+      setTeam(selectedTeam);
+      localStorage.setItem("lastSelectedTeam", selectedTeam.name);
+    } else {
+      setTeam(teams[0]);
+      localStorage.setItem("lastSelectedTeam", teams[0].name);
+    }
+  }
 };

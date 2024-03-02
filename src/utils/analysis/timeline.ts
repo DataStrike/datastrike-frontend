@@ -78,8 +78,8 @@ export function detectFights(data: Data, time: number): Fights[] {
 // Parse the description of an event to extract the character name
 // ex: NafK kill Nazakoh
 export function parseDescription(description: string) {
-  const [player1, action, player2, keyword] = description.split(" ", 4);
-  return { player1, action, player2, keyword };
+  const [player1, action, player2] = description.split(" ", 3);
+  return { player1, action, player2 };
 }
 
 // Get the name of the first player to get a kill in each fight
