@@ -7,11 +7,13 @@ import killIcon from "@/assets/analysis/kill.svg";
 import ultimateIcon from "@/assets/analysis/ultimate.svg";
 import objectiveIcon from "@/assets/analysis/objective.svg";
 import swapHeroIcon from "@/assets/analysis/swapHero.svg";
+
 import { AnalysisMap, DataEvent } from "@/models/analysis/analysismaps.ts";
 import { capitalize } from "@/utils/functions.ts";
 interface MapGraphProps {
   mapData: AnalysisMap;
 }
+
 
 const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
   const chartRef = useRef<HTMLCanvasElement>(null);
@@ -56,16 +58,34 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
 
       const FirstRound = mapData.data.rounds[0];
 
-      const playerNames: string[] = [];
+      var playerNames: string[] = [];
+      const roles: { [key: string]: string } = {};
 
-      Object.values(FirstRound.teams).map((team) =>
-        Object.values(team.players).map((player) =>
-          playerNames.push(player.name),
-        ),
-      );
+      Object.values(FirstRound.teams).forEach((team) => {
+        Object.values(team.players).forEach((player) => {
+          playerNames.push(player.name);
+          roles[player.name] = player.role;
+        });
+      });
+      
+      // Diviser les joueurs en deux groupes selon leur équipe
+      const team1Players = playerNames.slice(0, 5);
+      const team2Players = playerNames.slice(5);
 
+      const sortByRole = (a: string, b: string) => {
+        const roleOrder = { "Tank": 0, "DPS": 1, "Support": 2 };
+        console.info(a, roles[a], roleOrder[roles[a]], b, roles[b], roleOrder[roles[b]])
+        return roleOrder[roles[a]] - roleOrder[roles[b]];
+      };
+
+      team1Players.sort(sortByRole);
+      team2Players.sort(sortByRole);
+      
+      // Concaténer les deux groupes triés pour obtenir la liste finale de joueurs
+      playerNames = [...team1Players, ...team2Players];
+      // console.info(sortedPlayers);
       if (mapData && mapData.data) {
-        const playerData = playerNames.map((playerName) => {
+        const playerData =playerNames.map((playerName) => {
           const playerEvents = mapData.data.events.filter(
             (event: { player: string }) => event.player === playerName,
           );
@@ -95,7 +115,7 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
             showLine: false,
             data: playerEvents.map((event: DataEvent) => ({
               x: event.timestamp,
-              y: playerName,
+              y:  playerName,
               description: event.description,
               type: event.type,
             })),
@@ -132,6 +152,11 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
                   },
                   font: {
                     size: 14,
+                  },
+                  callback: (value, index) => {
+                    const playerName = playerNames[index]; 
+                    const playerRole = roles[playerName]; 
+                    return `${playerName} - ${playerRole}`; 
                   },
                 },
               },
