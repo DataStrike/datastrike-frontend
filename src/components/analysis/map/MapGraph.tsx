@@ -8,14 +8,16 @@ import ultimateIcon from "@/assets/analysis/ultimate.svg";
 import objectiveIcon from "@/assets/analysis/objective.svg";
 import swapHeroIcon from "@/assets/analysis/swapHero.svg";
 
-import {generateImageHeroes, generateImageUltimate} from "@/utils/generateImageObjects.ts";
+import {
+  generateImageHeroes,
+  generateImageUltimate,
+} from "@/utils/generateImageObjects.ts";
 
 import { AnalysisMap, DataEvent } from "@/models/analysis/analysismaps.ts";
 import { capitalize } from "@/utils/functions.ts";
 interface MapGraphProps {
   mapData: AnalysisMap;
 }
-
 
 const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
   const chartRef = useRef<HTMLCanvasElement>(null);
@@ -63,10 +65,13 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
 
       const FirstRound = mapData.data.rounds[0];
 
-      var playerNames: string[] = [];
+      let playerNames: string[] = [];
       const roles: { [key: string]: string } = {};
 
-      const getHeroIcon = (heroName: string, heroesIcons) => {
+      const getHeroIcon = (
+        heroName: string,
+        heroesIcons: Record<string, HTMLImageElement>,
+      ) => {
         if (heroName != undefined) {
           heroName = heroName.replace(/[\s:]/g, "")
           heroName = heroName.replace(".", "")
@@ -75,21 +80,22 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
             return heroIcon;
           }
           return heroesIcons["default"];
-      }
-      return heroesIcons["default"];
-      
+        }
+        return heroesIcons["default"];
       };
 
-      const getUltimateIcon = (heroName: string, ultimateIcons) => {
+      const getUltimateIcon = (
+        heroName: string,
+        ultimateIcons: Record<string, HTMLImageElement>,
+      ) => {
         if (heroName != undefined) {
           const heroIcon = ultimateIcons[heroName.replace(/[\s:]/g, "")];
           if (heroIcon) {
             return heroIcon;
           }
           return ultimateIcons["default"];
-      }
-      return ultimateIcons["default"];
-      
+        }
+        return ultimateIcons["default"];
       };
 
       Object.values(FirstRound.teams).forEach((team) => {
@@ -98,37 +104,40 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
           roles[player.name] = player.role;
         });
       });
-      
+
       // Diviser les joueurs en deux groupes selon leur équipe
       const team1Players = playerNames.slice(0, 5);
       const team2Players = playerNames.slice(5);
 
       const sortByRole = (a: string, b: string) => {
-        const roleOrder = { "Tank": 0, "DPS": 1, "Support": 2 };
-        console.info(a, roles[a], roleOrder[roles[a]], b, roles[b], roleOrder[roles[b]])
+        const roleOrder: { [key: string]: number } = {
+          Tank: 0,
+          DPS: 1,
+          Support: 2,
+        };
         return roleOrder[roles[a]] - roleOrder[roles[b]];
       };
 
       team1Players.sort(sortByRole);
       team2Players.sort(sortByRole);
-      
+
       // Concaténer les deux groupes triés pour obtenir la liste finale de joueurs
       playerNames = [...team1Players, ...team2Players];
       // console.info(sortedPlayers);
       if (mapData && mapData.data) {
-        const playerData =playerNames.map((playerName) => {
+        const playerData = playerNames.map((playerName) => {
           const playerEvents = mapData.data.events.filter(
-            (event: { player: string }) => event.player === playerName,
+            (event) => event.player === playerName,
           );
           return {
             label: playerName,
             backgroundColor: `rgba(75, 192, 192, 0.2)`,
             borderColor: `rgba(75, 192, 192, 1)`,
             borderWidth: 1,
-            pointRadius: playerEvents.map((event: { type: string }) =>
+            pointRadius: playerEvents.map((event) =>
               event.type === "kill" ? 10 : 5,
             ),
-            pointStyle: playerEvents.map((event: { type: string }) => {
+            pointStyle: playerEvents.map((event) => {
               if (event.type === "death") {
                 return DeathPoint;
               } else if (event.type === "kill") {
@@ -137,24 +146,23 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
                 return objectivePoint;
               } else if (event.type === "ultimate") {
                 const ultimateIcon = getUltimateIcon(event.hero, ultimateIcons);
-                return ultimateIcon !== undefined ? ultimateIcon : ultimatePoint;
+                return ultimateIcon !== undefined
+                  ? ultimateIcon
+                  : ultimatePoint;
               } else if (event.type === "hero_swap") {
-                
-                const heroIcon = getHeroIcon(event.hero,  heroesIcons);
+                const heroIcon = getHeroIcon(event.hero, heroesIcons);
                 return heroIcon !== undefined ? heroIcon : swapHeroIcon;
-              }
-              else if (event.type === "hero_spawn") {
-                const heroIcon = getHeroIcon(event.hero,  heroesIcons);
+              } else if (event.type === "hero_spawn") {
+                const heroIcon = getHeroIcon(event.hero, heroesIcons);
                 return heroIcon !== undefined ? heroIcon : swapHeroIcon;
-                }
-               else {
+              } else {
                 return undefined; // Return undefined for other cases
               }
             }),
             showLine: false,
             data: playerEvents.map((event: DataEvent) => ({
               x: event.timestamp,
-              y:  playerName,
+              y: playerName,
               description: event.description,
               type: event.type,
             })),
@@ -192,10 +200,10 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
                   font: {
                     size: 14,
                   },
-                  callback: (value, index) => {
-                    const playerName = playerNames[index]; 
-                    const playerRole = roles[playerName]; 
-                    return `${playerName} - ${playerRole}`; 
+                  callback: (_, index) => {
+                    const playerName = playerNames[index];
+                    const playerRole = roles[playerName];
+                    return `${playerName} - ${playerRole}`;
                   },
                 },
               },
@@ -252,7 +260,7 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
         }
       };
     }
-  }, [mapData]);
+  }, [annotationOptions, mapData]);
 
   return (
     <div className="w-full">

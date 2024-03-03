@@ -30,6 +30,7 @@ export interface DataEvent {
   timestamp: number;
   player: string;
   description: string;
+  hero: string;
 }
 
 export interface Round {
@@ -51,6 +52,7 @@ export interface Player {
   class_name: string;
   name: string;
   characters: Record<string, Character>;
+  role: string;
 }
 
 export interface Character {
