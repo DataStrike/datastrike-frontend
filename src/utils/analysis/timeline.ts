@@ -120,3 +120,18 @@ export const getKeyValuesInfos = (countsObject: { [key: string]: number }) => {
     }))
     .sort((a, b) => b.value - a.value);
 };
+
+interface TeamPlayer {
+  team1: string[];
+  team2: string[];
+}
+export const getPlayerNames = (data: Data): TeamPlayer => {
+  const rounds = data.rounds;
+  const team1 = rounds[0].teams["Team 1"].players;
+  const team2 = rounds[0].teams["Team 2"].players;
+
+  const team1Players = Object.keys(team1);
+  const team2Players = Object.keys(team2);
+
+  return { team1: team1Players, team2: team2Players };
+};
