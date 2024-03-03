@@ -8,6 +8,8 @@ import ultimateIcon from "@/assets/analysis/ultimate.svg";
 import objectiveIcon from "@/assets/analysis/objective.svg";
 import swapHeroIcon from "@/assets/analysis/swapHero.svg";
 
+import {generateImageHeroes, generateImageUltimate} from "@/utils/generateImageObjects.ts";
+
 import { AnalysisMap, DataEvent } from "@/models/analysis/analysismaps.ts";
 import { capitalize } from "@/utils/functions.ts";
 interface MapGraphProps {
@@ -41,6 +43,9 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
         chartInstance.destroy();
       }
 
+      const heroesIcons = generateImageHeroes();
+      const ultimateIcons = generateImageUltimate();
+
       const DeathPoint = new Image();
       DeathPoint.src = deathIcon;
 
@@ -60,6 +65,30 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
 
       var playerNames: string[] = [];
       const roles: { [key: string]: string } = {};
+
+      const getHeroIcon = (heroName: string, heroesIcons) => {
+        if (heroName != undefined) {
+          const heroIcon = heroesIcons[heroName.replace(/[\s:]/g, "")];
+          if (heroIcon) {
+            return heroIcon;
+          }
+          return heroesIcons["default"];
+      }
+      return heroesIcons["default"];
+      
+      };
+
+      const getUltimateIcon = (heroName: string, ultimateIcons) => {
+        if (heroName != undefined) {
+          const heroIcon = ultimateIcons[heroName.replace(/[\s:]/g, "")];
+          if (heroIcon) {
+            return heroIcon;
+          }
+          return ultimateIcons["default"];
+      }
+      return ultimateIcons["default"];
+      
+      };
 
       Object.values(FirstRound.teams).forEach((team) => {
         Object.values(team.players).forEach((player) => {
@@ -105,10 +134,18 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
               } else if (event.type === "objective") {
                 return objectivePoint;
               } else if (event.type === "ultimate") {
-                return ultimatePoint;
+                const ultimateIcon = getUltimateIcon(event.hero, ultimateIcons);
+                return ultimateIcon !== undefined ? ultimateIcon : ultimatePoint;
               } else if (event.type === "hero_swap") {
-                return swapHeroPoint;
-              } else {
+                
+                const heroIcon = getHeroIcon(event.hero,  heroesIcons);
+                return heroIcon !== undefined ? heroIcon : swapHeroIcon;
+              }
+              else if (event.type === "hero_spawn") {
+                const heroIcon = getHeroIcon(event.hero,  heroesIcons);
+                return heroIcon !== undefined ? heroIcon : swapHeroIcon;
+                }
+               else {
                 return undefined; // Return undefined for other cases
               }
             }),
