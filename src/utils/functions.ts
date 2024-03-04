@@ -83,3 +83,17 @@ export const selectTeam = (
     }
   }
 };
+
+export const getHeroIcon = (
+  heroName: string,
+  heroesIcons: Record<string, HTMLImageElement>,
+) => {
+  if (heroName != undefined) {
+    const heroIcon = heroesIcons[heroName.replace(/[\s:]/g, "")];
+    if (heroIcon) {
+      return heroIcon;
+    }
+    return heroesIcons["default"];
+  }
+  return heroesIcons["default"];
+};
