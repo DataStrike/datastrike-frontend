@@ -8,7 +8,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table.tsx";
-import { secToMin } from "@/utils/functions.ts";
+import { getHeroIcon, secToMin } from "@/utils/functions.ts";
+import { generateImageHeroes } from "@/utils/generateImageObjects.ts";
 
 interface Props {
   data: Data;
@@ -68,19 +69,34 @@ export function CompsContainer({ data }: Props) {
     ];
 
     const heroes: Heroes[] = [];
-    let currentHero: Heroes = { name: "", start: 0, end: 0 };
-    playerEvents.forEach((event) => {
+    let currentHero: Heroes | null = null;
+
+    playerEvents.forEach((event, index) => {
       if (event.type === "hero_spawn") {
+        if (currentHero) {
+          if (currentHero.name === event.hero) {
+            heroes.shift();
+          }
+          currentHero.end = Number(event.timestamp);
+          heroes.push({ ...currentHero }); // Push a copy of currentHero
+        }
+
         currentHero = {
           name: event.hero,
           start: Number(event.timestamp),
           end: Infinity,
         };
       } else if (event.type === "hero_swap") {
-        currentHero.end = Number(event.timestamp);
-        if (currentHero.start !== currentHero.end) {
-          heroes.push(currentHero);
+        if (event.timestamp == 0) {
+          // Remove the first hero if the player swaps before the game starts
+          heroes.shift();
         }
+
+        if (currentHero) {
+          currentHero.end = Number(event.timestamp);
+          heroes.push({ ...currentHero }); // Push a copy of currentHero
+        }
+
         currentHero = {
           name: event.hero,
           start: Number(event.timestamp),
@@ -88,9 +104,11 @@ export function CompsContainer({ data }: Props) {
         };
       }
     });
-    if (heroes.length === 0 || currentHero.end === Infinity) {
+
+    if (currentHero) {
       heroes.push(currentHero);
     }
+
     return heroes;
   };
 
@@ -221,6 +239,8 @@ interface TableComponentProps {
   }[];
 }
 const TableComponent = ({ allCompositions }: TableComponentProps) => {
+  const heroesIcons = generateImageHeroes();
+
   return (
     <>
       <Table>
@@ -240,20 +260,29 @@ const TableComponent = ({ allCompositions }: TableComponentProps) => {
               <TableCell>{secToMin(comp.start)}</TableCell>
               <TableCell>{secToMin(comp.end)}</TableCell>
               <TableCell>
-                {comp.team1.map((player, index) => (
-                  <span key={index}>
-                    {player.player} - {player.hero}
-                    <br />
-                  </span>
-                ))}
+                <div className="flex items-center">
+                  {comp.team1.map((player, index) => (
+                    <img
+                      key={index}
+                      src={getHeroIcon(player.hero, heroesIcons).src}
+                      alt={player.hero}
+                      className="h-10 w-10"
+                    />
+                  ))}
+                </div>
               </TableCell>
+
               <TableCell>
-                {comp.team2.map((player, index) => (
-                  <span key={index}>
-                    {player.player} - {player.hero}
-                    <br />
-                  </span>
-                ))}
+                <div className="flex items-center">
+                  {comp.team2.map((player, index) => (
+                    <img
+                      key={index}
+                      src={getHeroIcon(player.hero, heroesIcons).src}
+                      alt={player.hero}
+                      className="h-10 w-10"
+                    />
+                  ))}
+                </div>
               </TableCell>
             </TableRow>
           ))}
