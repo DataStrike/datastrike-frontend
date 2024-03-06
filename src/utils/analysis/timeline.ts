@@ -1,4 +1,4 @@
-import { Data, DataEvent } from "@/models/analysis/analysismaps.ts";
+import { Data, DataEvent, Player } from "@/models/analysis/analysismaps.ts";
 
 export interface Fights {
   roundNumber: number;
@@ -125,13 +125,27 @@ interface TeamPlayer {
   team1: string[];
   team2: string[];
 }
+interface Team {
+  [playerName: string]: Player;
+}
+const sortByRole = (team: Team) => {
+  const roleOrder: { [key: string]: number } = {
+    Tank: 0,
+    DPS: 1,
+    Support: 2,
+  };
+  return (a: string, b: string) => {
+    return roleOrder[team[a].role] - roleOrder[team[b].role];
+  };
+};
+
 export const getPlayerNames = (data: Data): TeamPlayer => {
   const rounds = data.rounds;
   const team1 = rounds[0].teams["Team 1"].players;
   const team2 = rounds[0].teams["Team 2"].players;
 
-  const team1Players = Object.keys(team1);
-  const team2Players = Object.keys(team2);
+  const sortedTeam1Players = Object.keys(team1).sort(sortByRole(team1));
+  const sortedTeam2Players = Object.keys(team2).sort(sortByRole(team2));
 
-  return { team1: team1Players, team2: team2Players };
+  return { team1: sortedTeam1Players, team2: sortedTeam2Players };
 };
