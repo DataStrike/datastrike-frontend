@@ -37,6 +37,10 @@ interface Composition {
   end: number;
 }
 
+const insertHeroIsOk = (start: number, end: number) => {
+  return start < end;
+};
+
 export function CompsContainer({ data }: Props) {
   const players = getPlayerNames(data);
 
@@ -94,7 +98,10 @@ export function CompsContainer({ data }: Props) {
 
         if (currentHero) {
           currentHero.end = Number(event.timestamp);
-          heroes.push({ ...currentHero }); // Push a copy of currentHero
+
+          if (insertHeroIsOk(currentHero.start, currentHero.end)) {
+            heroes.push({ ...currentHero }); // Push a copy of currentHero
+          }
         }
 
         currentHero = {
@@ -109,6 +116,24 @@ export function CompsContainer({ data }: Props) {
       heroes.push(currentHero);
     }
 
+    // For each heroes, if the end of i > start of i+1, end of i = start of i+1
+
+    heroes.forEach((hero, index) => {
+      if (index < heroes.length - 1) {
+        if (hero.end > heroes[index + 1].start) {
+          hero.end = heroes[index + 1].start;
+        }
+      }
+      // If 2 same heroes are played, remove the second one and update the end of the first one
+      if (index < heroes.length - 1) {
+        if (hero.name === heroes[index + 1].name) {
+          // Remove the second hero and update the end of the first one with the end of the second one
+          heroes[index].end = heroes[index + 1].end;
+          heroes.splice(index + 1, 1);
+        }
+      }
+    });
+
     return heroes;
   };
 
@@ -119,7 +144,6 @@ export function CompsContainer({ data }: Props) {
   ): Composition[] => {
     const compositions: Composition[] = [];
     const uniqueTimers: number[] = [];
-    console.log(teamCompositions);
     // Get all the unique start or end times
     teamCompositions.forEach((player) => {
       player.heroes.forEach((hero) => {
@@ -164,7 +188,6 @@ export function CompsContainer({ data }: Props) {
   const compoTeam1 = getCompositionsByTeam(allCompositionRecords[0]);
   const compoTeam2 = getCompositionsByTeam(allCompositionRecords[1]);
 
-  console.log(compoTeam1, compoTeam2);
   const determineAllCompositions = () => {
     const allTimers = [
       ...compoTeam1.map((comp) => comp.start),
@@ -254,38 +277,61 @@ const TableComponent = ({ allCompositions }: TableComponentProps) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {allCompositions.map((comp, index) => (
-            <TableRow key={index}>
-              <TableCell>{index + 1}</TableCell>
-              <TableCell>{secToMin(comp.start)}</TableCell>
-              <TableCell>{secToMin(comp.end)}</TableCell>
-              <TableCell>
-                <div className="flex items-center">
-                  {comp.team1.map((player, index) => (
-                    <img
-                      key={index}
-                      src={getHeroIcon(player.hero, heroesIcons).src}
-                      alt={player.hero}
-                      className="h-10 w-10"
-                    />
-                  ))}
-                </div>
-              </TableCell>
+          {allCompositions.map((comp, i) => {
+            const previousComp = allCompositions[i - 1];
+            return (
+              <TableRow key={i}>
+                <TableCell>{i + 1}</TableCell>
+                <TableCell>{secToMin(comp.start)}</TableCell>
+                <TableCell>{secToMin(comp.end)}</TableCell>
+                <TableCell>
+                  <div className="flex items-center">
+                    {comp.team1.map((player, j) => {
+                      let isSameAsPrevious = false;
+                      if (previousComp) {
+                        isSameAsPrevious = previousComp.team1.some(
+                          (p) => p.hero === player.hero,
+                        );
+                      }
+                      return (
+                        <img
+                          key={j}
+                          src={getHeroIcon(player.hero, heroesIcons).src}
+                          alt={player.hero}
+                          className={`h-10 w-10 ${
+                            isSameAsPrevious ? "opacity-30" : ""
+                          }`}
+                        />
+                      );
+                    })}
+                  </div>
+                </TableCell>
 
-              <TableCell>
-                <div className="flex items-center">
-                  {comp.team2.map((player, index) => (
-                    <img
-                      key={index}
-                      src={getHeroIcon(player.hero, heroesIcons).src}
-                      alt={player.hero}
-                      className="h-10 w-10"
-                    />
-                  ))}
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
+                <TableCell>
+                  <div className="flex items-center">
+                    {comp.team2.map((player, j) => {
+                      let isSameAsPrevious = false;
+                      if (previousComp) {
+                        isSameAsPrevious = previousComp.team2.some(
+                          (p) => p.hero === player.hero,
+                        );
+                      }
+                      return (
+                        <img
+                          key={j}
+                          src={getHeroIcon(player.hero, heroesIcons).src}
+                          alt={player.hero}
+                          className={`h-10 w-10 ${
+                            isSameAsPrevious ? "opacity-30" : ""
+                          }`}
+                        />
+                      );
+                    })}
+                  </div>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </>

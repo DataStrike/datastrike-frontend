@@ -18,7 +18,6 @@ const DynamicGraph: React.FC<DynamicGraphProps> = ({ data, selectedStats }) => {
 
   useEffect(() => {
     const players = Object.keys(data).slice(0, 10);
-    console.log("players", players);
     const colorMap: { [player: string]: string } = {};
 
     players.forEach((player, index) => {
