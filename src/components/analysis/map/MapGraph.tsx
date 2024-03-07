@@ -68,6 +68,8 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
 
       const getHeroIcon = (heroName: string, heroesIcons) => {
         if (heroName != undefined) {
+          heroName = heroName.replace(/[\s:]/g, "")
+          heroName = heroName.replace(".", "")
           const heroIcon = heroesIcons[heroName.replace(/[\s:]/g, "")];
           if (heroIcon) {
             return heroIcon;
