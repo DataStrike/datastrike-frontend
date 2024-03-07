@@ -14,7 +14,7 @@ import {
 } from "@/utils/generateImageObjects.ts";
 
 import { AnalysisMap, DataEvent } from "@/models/analysis/analysismaps.ts";
-import { capitalize } from "@/utils/functions.ts";
+import { capitalize, getHeroIcon } from "@/utils/functions.ts";
 interface MapGraphProps {
   mapData: AnalysisMap;
 }
@@ -67,22 +67,6 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
 
       let playerNames: string[] = [];
       const roles: { [key: string]: string } = {};
-
-      const getHeroIcon = (
-        heroName: string,
-        heroesIcons: Record<string, HTMLImageElement>,
-      ) => {
-        if (heroName != undefined) {
-          heroName = heroName.replace(/[\s:]/g, "")
-          heroName = heroName.replace(".", "")
-          const heroIcon = heroesIcons[heroName.replace(/[\s:]/g, "")];
-          if (heroIcon) {
-            return heroIcon;
-          }
-          return heroesIcons["default"];
-        }
-        return heroesIcons["default"];
-      };
 
       const getUltimateIcon = (
         heroName: string,
