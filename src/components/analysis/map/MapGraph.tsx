@@ -73,6 +73,8 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
         ultimateIcons: Record<string, HTMLImageElement>,
       ) => {
         if (heroName != undefined) {
+          heroName = heroName.replace(/[\s:]/g, "");
+          heroName = heroName.replace(".", "");
           const heroIcon = ultimateIcons[heroName.replace(/[\s:]/g, "")];
           if (heroIcon) {
             return heroIcon;

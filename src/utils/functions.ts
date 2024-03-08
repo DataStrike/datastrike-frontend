@@ -89,6 +89,9 @@ export const getHeroIcon = (
   heroesIcons: Record<string, HTMLImageElement>,
 ) => {
   if (heroName != undefined) {
+    heroName = heroName.replace(/[\s:]/g, "");
+    heroName = heroName.replace(".", "");
+
     const heroIcon = heroesIcons[heroName.replace(/[\s:]/g, "")];
     if (heroIcon) {
       return heroIcon;
