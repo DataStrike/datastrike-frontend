@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { Player, Round } from "@/models/analysis/analysismaps";
 import { FightsContainer } from "@/components/analysis/fights/FightsContainer.tsx";
+import { CompsContainer } from "@/components/analysis/comps/CompsContainer.tsx";
 
 export function AnalysisDetailed() {
   const [selectedRound, setSelectedRound] = useState<Round | null>(null);
@@ -53,9 +54,12 @@ export function AnalysisDetailed() {
 
       {map && (
         <Tabs defaultValue="timeline">
-          <TabsList className="w-[400px]">
+          <TabsList className="w-[500px]">
             <TabsTrigger className="w-full" value="timeline">
               Timeline
+            </TabsTrigger>
+            <TabsTrigger className="w-full" value="comps">
+              Comps
             </TabsTrigger>
             <TabsTrigger className="w-full" value="fights">
               Fights
@@ -72,6 +76,12 @@ export function AnalysisDetailed() {
             value="timeline"
           >
             <MapGraph mapData={map} />
+          </TabsContent>
+          <TabsContent
+            value="comps"
+            className="w-full h-full overflow-auto flex-col"
+          >
+            <CompsContainer data={map.data} />
           </TabsContent>
           <TabsContent
             value="fights"
