@@ -149,3 +149,8 @@ export const getPlayerNames = (data: Data): TeamPlayer => {
 
   return { team1: sortedTeam1Players, team2: sortedTeam2Players };
 };
+
+export const getEndOfGame = (data: Data) => {
+  const lastRound = data.rounds[data.rounds.length - 1];
+  return lastRound.end_time;
+};

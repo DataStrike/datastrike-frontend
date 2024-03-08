@@ -1,5 +1,5 @@
 import { Data, DataEvent } from "@/models/analysis/analysismaps.ts";
-import { getPlayerNames } from "@/utils/analysis/timeline.ts";
+import { getEndOfGame, getPlayerNames } from "@/utils/analysis/timeline.ts";
 import {
   Table,
   TableBody,
@@ -197,6 +197,9 @@ export function CompsContainer({ data }: Props) {
     ];
     const uniqueTimers = Array.from(new Set(allTimers)).sort((a, b) => a - b);
 
+    // Replace infinity with the end of the game
+    uniqueTimers[uniqueTimers.length - 1] = getEndOfGame(data);
+
     const compositions: {
       start: number;
       end: number;
@@ -212,7 +215,9 @@ export function CompsContainer({ data }: Props) {
         team2: SingleComposition[];
       } = {
         start: time,
-        end: uniqueTimers[index + 1] ? uniqueTimers[index + 1] : Infinity,
+        end: uniqueTimers[index + 1]
+          ? uniqueTimers[index + 1]
+          : getEndOfGame(data),
         team1: [],
         team2: [],
       };
@@ -235,6 +240,10 @@ export function CompsContainer({ data }: Props) {
       // Remove empty compositions
       compositions.forEach((composition, index) => {
         if (composition.team1.length === 0 && composition.team2.length === 0) {
+          compositions.splice(index, 1);
+        }
+        // Remove compositions played for 2 seconds or less
+        if (composition.end - composition.start <= 2) {
           compositions.splice(index, 1);
         }
       });
