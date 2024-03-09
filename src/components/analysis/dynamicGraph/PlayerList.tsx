@@ -12,7 +12,6 @@ import TankIcon from "@/assets/roles/tank.svg";
 import DPSIcon from "@/assets/roles/dps.svg";
 import SupportIcon from "@/assets/roles/support.svg";
 
-
 interface PlayerListProps {
   mapData: AnalysisMap;
   onPlayersSelected: (selectedPlayers: Player[]) => void;
@@ -100,23 +99,48 @@ const PlayerList: React.FC<PlayerListProps> = ({
               .map((player, index) => (
                 <React.Fragment key={player.name}>
                   {index === 0 && (
-                    <li style={{ borderBottom: "1px solid gray", marginBottom: "15px" }}>
-                      Équipe 1
+                    <li
+                      style={{
+                        borderBottom: "1px solid gray",
+                        marginBottom: "15px",
+                      }}
+                    >
+                      Team 1
                     </li>
                   )}
-                  <li style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "10px" }}>
+                  <li
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      marginBottom: "10px",
+                    }}
+                  >
                     <div style={{ display: "flex", alignItems: "center" }}>
                       <Checkbox
                         id={player.name}
                         name={player.name}
                         value={player.name}
-                        checked={selectedPlayers.some((p) => p.name === player.name)}
+                        checked={selectedPlayers.some(
+                          (p) => p.name === player.name,
+                        )}
                         onClick={() => handlePlayerCheckboxChange(player.name)}
                       />
-                      <label htmlFor={player.name} style={{ marginLeft: "5px", marginRight: "5px" }}>{player.name}</label>
+                      <label
+                        htmlFor={player.name}
+                        style={{ marginLeft: "5px", marginRight: "5px" }}
+                      >
+                        {player.name}
+                      </label>
                     </div>
-                    {getRoleIcon(player.role) && (
-                      <img src={getRoleIcon(player.role)} alt={player.role} width="20" height="20" style={{ marginLeft: "auto" }} />
+                    {player.role && getRoleIcon(player.role) && (
+                      <img
+                        src={getRoleIcon(player.role)!}
+                        alt={player.role}
+                        width="20"
+                        height="20"
+                        style={{ marginLeft: "auto" }}
+                      />
                     )}
                   </li>
                 </React.Fragment>
@@ -136,23 +160,48 @@ const PlayerList: React.FC<PlayerListProps> = ({
               .map((player, index) => (
                 <React.Fragment key={player.name}>
                   {index === 0 && (
-                    <li style={{ borderBottom: "1px solid gray", marginBottom: "15px" }}>
-                      Équipe 2
+                    <li
+                      style={{
+                        borderBottom: "1px solid gray",
+                        marginBottom: "15px",
+                      }}
+                    >
+                      Team 2
                     </li>
                   )}
-                  <li style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "10px" }}>
+                  <li
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      marginBottom: "10px",
+                    }}
+                  >
                     <div style={{ display: "flex", alignItems: "center" }}>
                       <Checkbox
                         id={player.name}
                         name={player.name}
                         value={player.name}
-                        checked={selectedPlayers.some((p) => p.name === player.name)}
+                        checked={selectedPlayers.some(
+                          (p) => p.name === player.name,
+                        )}
                         onClick={() => handlePlayerCheckboxChange(player.name)}
                       />
-                      <label htmlFor={player.name} style={{ marginLeft: "5px", marginRight: "5px" }}>{player.name}</label>
+                      <label
+                        htmlFor={player.name}
+                        style={{ marginLeft: "5px", marginRight: "5px" }}
+                      >
+                        {player.name}
+                      </label>
                     </div>
-                    {getRoleIcon(player.role) && (
-                      <img src={getRoleIcon(player.role)} alt={player.role} width="20" height="20" style={{ marginLeft: "auto" }} />
+                    {player.role && getRoleIcon(player.role) && (
+                      <img
+                        src={getRoleIcon(player.role)!}
+                        alt={player.role}
+                        width="20"
+                        height="20"
+                        style={{ marginLeft: "auto" }}
+                      />
                     )}
                   </li>
                 </React.Fragment>
