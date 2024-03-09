@@ -141,8 +141,9 @@ const sortByRole = (team: Team) => {
 
 export const getPlayerNames = (data: Data): TeamPlayer => {
   const rounds = data.rounds;
-  const team1 = rounds[0].teams["Team 1"].players;
-  const team2 = rounds[0].teams["Team 2"].players;
+  const teams = Object.values(rounds[0].teams);
+  const team1 = teams[0].players;
+  const team2 = teams[1].players;
 
   const sortedTeam1Players = Object.keys(team1).sort(sortByRole(team1));
   const sortedTeam2Players = Object.keys(team2).sort(sortByRole(team2));
