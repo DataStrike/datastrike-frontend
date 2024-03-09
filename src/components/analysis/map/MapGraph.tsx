@@ -188,7 +188,9 @@ const MapGraph: React.FC<MapGraphProps> = ({ mapData }) => {
                   },
                   callback: (_, index) => {
                     const playerName = playerNames[index];
-                    const playerRole = roles[playerName];
+                    const playerRole = roles[playerName]
+                      ? roles[playerName]
+                      : "";
                     return `${playerName} - ${playerRole}`;
                   },
                 },
