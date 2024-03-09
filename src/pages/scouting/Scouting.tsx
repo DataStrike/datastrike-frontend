@@ -2,8 +2,9 @@
 import { useQuery } from "@tanstack/react-query";
 import {
   PLAYERS_LIMIT,
-  scoutingService,
+  blizzardScoutingService,
   TEAMS_LIMIT,
+  faceitScoutingService,
 } from "@/services/scouting-service.ts";
 import { Input } from "@/components/ui/input.tsx";
 import { Button } from "@/components/ui/button.tsx";
@@ -34,7 +35,8 @@ export function Scouting() {
     refetch: refetchPlayers,
   } = useQuery({
     queryKey: ["players", playerNameQuery, offset],
-    queryFn: () => scoutingService.searchPlayers(playerNameQuery, offset),
+    queryFn: () =>
+      blizzardScoutingService.searchPlayers(playerNameQuery, offset),
     enabled: false,
   });
 
@@ -52,7 +54,7 @@ export function Scouting() {
     refetch: refetchTeams,
   } = useQuery({
     queryKey: ["teams", teamNameQuery, teamOffset],
-    queryFn: () => scoutingService.searchTeams(teamNameQuery, teamOffset),
+    queryFn: () => faceitScoutingService.searchTeams(teamNameQuery, teamOffset),
     enabled: false,
   });
 
@@ -130,35 +132,37 @@ export function Scouting() {
               </div>
             )}
             {teams && (
-              <div className="flex flex-wrap gap-4">
-                {teams.items.map((team) => (
-                  <TeamCard key={team.team_id} team={team} />
-                ))}
-              </div>
+              <>
+                <div className="flex flex-wrap gap-4">
+                  {teams.items.map((team) => (
+                    <TeamCard key={team.team_id} team={team} />
+                  ))}
+                </div>
+                <div className="flex gap-2 mt-2">
+                  <Button
+                    disabled={teamOffset === 0}
+                    onClick={() => {
+                      const newOffset = offset - TEAMS_LIMIT;
+                      if (newOffset >= 0) {
+                        setTeamOffset(newOffset);
+                      }
+                    }}
+                  >
+                    Previous
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      const newOffset = offset + TEAMS_LIMIT;
+                      if (newOffset >= 0) {
+                        setTeamOffset(newOffset);
+                      }
+                    }}
+                  >
+                    Next
+                  </Button>
+                </div>
+              </>
             )}
-            <div className="flex gap-2 mt-2">
-              <Button
-                disabled={teamOffset === 0}
-                onClick={() => {
-                  const newOffset = offset - TEAMS_LIMIT;
-                  if (newOffset >= 0) {
-                    setTeamOffset(newOffset);
-                  }
-                }}
-              >
-                Previous
-              </Button>
-              <Button
-                onClick={() => {
-                  const newOffset = offset + TEAMS_LIMIT;
-                  if (newOffset >= 0) {
-                    setTeamOffset(newOffset);
-                  }
-                }}
-              >
-                Next
-              </Button>
-            </div>
           </TabsContent>
           <TabsContent
             className="w-full h-[80vh] overflow-auto"
