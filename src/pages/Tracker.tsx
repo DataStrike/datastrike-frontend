@@ -12,7 +12,7 @@ import { MapsContainer } from "@/components/ui/MapsContainer.tsx";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { SaveIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getTeams } from "@/services/teams-service";
 import { SelectTeamComponent } from "@/components/team/SelectTeamComponent";
@@ -34,6 +34,7 @@ import { WinRateDoughnut } from "@/components/charts/tracker/WinRateDoughnut.tsx
 import { WinRateOverTime } from "@/components/charts/tracker/WinRateOverTime.tsx";
 import ChartContainer from "@/components/charts/ChartContainer.tsx";
 import { StatsContainer } from "@/components/tracker/stats/StatsContainer.tsx";
+import { selectTeam } from "@/utils/functions.ts";
 
 const formSchema = z.object({
   opponentTeamName: z.string(),
@@ -52,9 +53,11 @@ export function Tracker() {
     queryFn: getTeams,
   });
 
-  if (teams && teams.length > 0 && !team.id) {
-    setTeam(teams[0]);
-  }
+  useEffect(() => {
+    if (teams && teams.length > 0 && !team.id) {
+      selectTeam(teams, team, setTeam, localStorage);
+    }
+  }, [teams, team, setTeam]);
 
   const { data: trackerResultList, isFetching } = useQuery({
     queryKey: ["tracker", team.id],
@@ -63,6 +66,7 @@ export function Tracker() {
 
   const updateTeam = async (team: Team) => {
     setTeam(team);
+    localStorage.setItem("lastSelectedTeam", team.name);
 
     // Invalidate the query so that it refetches with the new team
     await queryClient.invalidateQueries({ queryKey: ["tracker", team.id] });

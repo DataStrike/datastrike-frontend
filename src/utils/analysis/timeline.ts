@@ -1,4 +1,4 @@
-import { Data, DataEvent } from "@/models/analysis/analysismaps.ts";
+import { Data, DataEvent, Player } from "@/models/analysis/analysismaps.ts";
 
 export interface Fights {
   roundNumber: number;
@@ -78,8 +78,8 @@ export function detectFights(data: Data, time: number): Fights[] {
 // Parse the description of an event to extract the character name
 // ex: NafK kill Nazakoh
 export function parseDescription(description: string) {
-  const [player1, action, player2, keyword] = description.split(" ", 4);
-  return { player1, action, player2, keyword };
+  const [player1, action, player2] = description.split(" ", 3);
+  return { player1, action, player2 };
 }
 
 // Get the name of the first player to get a kill in each fight
@@ -119,4 +119,38 @@ export const getKeyValuesInfos = (countsObject: { [key: string]: number }) => {
       value,
     }))
     .sort((a, b) => b.value - a.value);
+};
+
+interface TeamPlayer {
+  team1: string[];
+  team2: string[];
+}
+interface Team {
+  [playerName: string]: Player;
+}
+const sortByRole = (team: Team) => {
+  const roleOrder: { [key: string]: number } = {
+    Tank: 0,
+    DPS: 1,
+    Support: 2,
+  };
+  return (a: string, b: string) => {
+    return roleOrder[team[a].role] - roleOrder[team[b].role];
+  };
+};
+
+export const getPlayerNames = (data: Data): TeamPlayer => {
+  const rounds = data.rounds;
+  const team1 = rounds[0].teams["Team 1"].players;
+  const team2 = rounds[0].teams["Team 2"].players;
+
+  const sortedTeam1Players = Object.keys(team1).sort(sortByRole(team1));
+  const sortedTeam2Players = Object.keys(team2).sort(sortByRole(team2));
+
+  return { team1: sortedTeam1Players, team2: sortedTeam2Players };
+};
+
+export const getEndOfGame = (data: Data) => {
+  const lastRound = data.rounds[data.rounds.length - 1];
+  return lastRound.end_time;
 };

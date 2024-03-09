@@ -8,11 +8,28 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card.tsx";
+import TankIcon from "@/assets/roles/tank.svg";
+import DPSIcon from "@/assets/roles/dps.svg";
+import SupportIcon from "@/assets/roles/support.svg";
+
 
 interface PlayerListProps {
   mapData: AnalysisMap;
   onPlayersSelected: (selectedPlayers: Player[]) => void;
 }
+
+const getRoleIcon = (role: string) => {
+  switch (role.toLowerCase()) {
+    case "tank":
+      return TankIcon;
+    case "dps":
+      return DPSIcon;
+    case "support":
+      return SupportIcon;
+    default:
+      return null; // ou un logo par défaut si le rôle est inconnu
+  }
+};
 
 const PlayerList: React.FC<PlayerListProps> = ({
   mapData,
@@ -67,19 +84,79 @@ const PlayerList: React.FC<PlayerListProps> = ({
       </CardHeader>
       <CardContent className="h-fit">
         {players.length > 0 && (
-          <ul>
-            {players.map((player) => (
-              <li key={player.name}>
-                <Checkbox
-                  id={player.name}
-                  name={player.name}
-                  value={player.name}
-                  checked={selectedPlayers.some((p) => p.name === player.name)}
-                  onClick={() => handlePlayerCheckboxChange(player.name)}
-                />
-                <label htmlFor={player.name}>{player.name}</label>
-              </li>
-            ))}
+          <ul style={{ listStyle: "none", padding: 0 }}>
+            {/* Affichage des 6 premiers joueurs */}
+            {players
+              .slice(0, 5)
+              .sort((a, b) => {
+                if (a.role === "Tank" && b.role !== "Tank") return -1;
+                if (a.role !== "Tank" && b.role === "Tank") return 1;
+                if (a.role === "DPS" && b.role !== "DPS") return -1;
+                if (a.role !== "DPS" && b.role === "DPS") return 1;
+                if (a.role === "Support" && b.role !== "Support") return -1;
+                if (a.role !== "Support" && b.role === "Support") return 1;
+                return 0;
+              })
+              .map((player, index) => (
+                <React.Fragment key={player.name}>
+                  {index === 0 && (
+                    <li style={{ borderBottom: "1px solid gray", marginBottom: "15px" }}>
+                      Équipe 1
+                    </li>
+                  )}
+                  <li style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "10px" }}>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <Checkbox
+                        id={player.name}
+                        name={player.name}
+                        value={player.name}
+                        checked={selectedPlayers.some((p) => p.name === player.name)}
+                        onClick={() => handlePlayerCheckboxChange(player.name)}
+                      />
+                      <label htmlFor={player.name} style={{ marginLeft: "5px", marginRight: "5px" }}>{player.name}</label>
+                    </div>
+                    {getRoleIcon(player.role) && (
+                      <img src={getRoleIcon(player.role)} alt={player.role} width="20" height="20" style={{ marginLeft: "auto" }} />
+                    )}
+                  </li>
+                </React.Fragment>
+              ))}
+            {/* Affichage des 6 derniers joueurs */}
+            {players
+              .slice(5)
+              .sort((a, b) => {
+                if (a.role === "Tank" && b.role !== "Tank") return -1;
+                if (a.role !== "Tank" && b.role === "Tank") return 1;
+                if (a.role === "DPS" && b.role !== "DPS") return -1;
+                if (a.role !== "DPS" && b.role === "DPS") return 1;
+                if (a.role === "Support" && b.role !== "Support") return -1;
+                if (a.role !== "Support" && b.role === "Support") return 1;
+                return 0;
+              })
+              .map((player, index) => (
+                <React.Fragment key={player.name}>
+                  {index === 0 && (
+                    <li style={{ borderBottom: "1px solid gray", marginBottom: "15px" }}>
+                      Équipe 2
+                    </li>
+                  )}
+                  <li style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "10px" }}>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <Checkbox
+                        id={player.name}
+                        name={player.name}
+                        value={player.name}
+                        checked={selectedPlayers.some((p) => p.name === player.name)}
+                        onClick={() => handlePlayerCheckboxChange(player.name)}
+                      />
+                      <label htmlFor={player.name} style={{ marginLeft: "5px", marginRight: "5px" }}>{player.name}</label>
+                    </div>
+                    {getRoleIcon(player.role) && (
+                      <img src={getRoleIcon(player.role)} alt={player.role} width="20" height="20" style={{ marginLeft: "auto" }} />
+                    )}
+                  </li>
+                </React.Fragment>
+              ))}
           </ul>
         )}
       </CardContent>
