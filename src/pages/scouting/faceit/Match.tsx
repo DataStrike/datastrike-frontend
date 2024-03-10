@@ -213,6 +213,7 @@ export function Match() {
                         <>
                           <div className="text-xl font-bold">
                             {matchDetails &&
+                              // @ts-ignore
                               matchDetails.teams[`faction${teamIndex + 1}`]
                                 .name}
                           </div>
