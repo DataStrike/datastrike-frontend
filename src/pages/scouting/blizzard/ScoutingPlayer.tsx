@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   GameMode,
   Platform,
-  scoutingService,
+  blizzardScoutingService,
 } from "@/services/scouting-service.ts";
 import { ArrowLeft, TrashIcon } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
@@ -40,7 +40,7 @@ export function ScoutingPlayer() {
   } = useQuery({
     queryKey: ["players", playerId, gamemode, platform], // Include gamemode and platform in the query key
     queryFn: () =>
-      scoutingService.getPlayerStats(playerId!, { gamemode, platform }),
+      blizzardScoutingService.getPlayerStats(playerId!, { gamemode, platform }),
   });
 
   const resetFilters = () => {

@@ -8,9 +8,12 @@ import { Analysis } from "@/pages/Analysis.tsx";
 import { Teams } from "@/pages/Teams.tsx";
 import Profile from "@/pages/Profile.tsx";
 import { AnalysisDetailed } from "@/pages/AnalysisDetailed.tsx";
-import Scouting from "@/pages/Scouting.tsx";
-import { ScoutingPlayer } from "@/pages/ScoutingPlayer.tsx";
+import Scouting from "@/pages/scouting/Scouting.tsx";
+import { ScoutingPlayer } from "@/pages/scouting/blizzard/ScoutingPlayer.tsx";
+import { Player } from "@/pages/scouting/faceit/Player.tsx";
 import Admin from "@/pages/Admin.tsx";
+import { Team } from "@/pages/scouting/faceit/Team.tsx";
+import { Match } from "@/pages/scouting/faceit/Match.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -54,12 +57,24 @@ export const router = createBrowserRouter([
             element: <Scouting />,
           },
           {
-            path: "/admin",
-            element: <Admin />,
+            path: "/scouting/faceit/teams/:teamId",
+            element: <Team />,
           },
           {
-            path: "/scouting/player/:playerId",
+            path: "/scouting/faceit/players/:playerId",
+            element: <Player />,
+          },
+          {
+            path: "/scouting/faceit/matches/:matchId",
+            element: <Match />,
+          },
+          {
+            path: "/scouting/blizzard/player/:playerId",
             element: <ScoutingPlayer />,
+          },
+          {
+            path: "/admin",
+            element: <Admin />,
           },
         ],
       },
