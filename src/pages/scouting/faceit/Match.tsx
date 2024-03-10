@@ -22,6 +22,7 @@ import {
   TableRow,
 } from "@/components/ui/table.tsx";
 import { PlayerStats } from "@/models/scouting/faceit/matchstats.ts";
+import { Card, CardContent, CardHeader } from "@/components/ui/card.tsx";
 interface Map {
   name: string;
   image_lg: string;
@@ -62,7 +63,7 @@ export function Match() {
   });
 
   useEffect(() => {
-    if (matchDetails) {
+    if (matchDetails && !matchDetailsLoading) {
       const picks = matchDetails.voting.map.pick;
       const maps = picks.map((pick: string) => {
         return matchDetails.voting.map.entities.find(
@@ -84,7 +85,11 @@ export function Match() {
   }, [matchDetails]);
 
   // MAPS STATS
-  const { data: matchStatsData, isFetching: matchStatsLoading } = useQuery({
+  const {
+    data: matchStatsData,
+    isFetching: matchStatsLoading,
+    error: matchStatsError,
+  } = useQuery({
     queryKey: ["matchStats", matchId],
     queryFn: () => faceitScoutingService.getFaceitMatchStats(matchId!),
   });
@@ -101,78 +106,120 @@ export function Match() {
         <ArrowLeft className="w-4 h-4 mr-2" />
         Back
       </Button>
-      {matchDetailsLoading && <div>Loading...</div>}
-      <div className="flex gap-2">
-        {!matchDetailsLoading && matchDetails && (
-          <div className="w-64 h-fit border p-4 rounded-lg">
-            <div>{matchDetails.competition_name}</div>
-            <div>{getCETTimeFormatted(matchDetails.started_at)}</div>
-            <div className={"flex flex-col gap-2 justify-center items-center"}>
-              {maps.map((map, i) => {
-                return (
-                  <div
-                    className="flex gap-4 justify-center items-center"
-                    key={i}
-                  >
-                    <div className="flex flex-col gap-2">
-                      {
-                        <img
-                          src={team1avatar}
-                          alt={"team 1 avatar"}
-                          className="h-12 w-12"
-                        />
-                      }
+      <div className="flex flex-col gap-8">
+        {!matchDetailsLoading && matchDetails && !matchStatsError && (
+          <div className={"flex flex-col gap-4 lg:flex-row"}>
+            <div className="flex flex-col gap-2">
+              <Card className="h-fit w-fit">
+                <CardHeader>
+                  <div className="flex flex-col text-center mb-1 text-neutral-500">
+                    <div className="text-2xl font-bold text-black">
+                      {matchDetails.teams.faction1.name} vs{" "}
+                      {matchDetails.teams.faction2.name}
                     </div>
-                    <MapRow
-                      map={map}
-                      detailedResults={detailedResults}
-                      index={i}
-                    />
-                    <div className="flex flex-col gap-2">
-                      {
-                        <img
-                          src={team2avatar}
-                          alt={"team 2 avatar"}
-                          className="h-12 w-12"
-                        />
-                      }
+                    <span>{matchDetails.competition_name}</span>
+                    <span> {getCETTimeFormatted(matchDetails.started_at)}</span>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div>
+                    <div className="flex gap-4 items-center justify-between">
+                      <img
+                        src={team1avatar}
+                        alt="team 1 avatar"
+                        className="h-24 w-24 rounded-lg"
+                      />
+                      <div className="text-3xl inline-flex left-0 right-0">
+                        <div>{matchDetails.results.score["faction1"]}</div>
+                        <span>-</span>
+                        <div>{matchDetails.results.score["faction2"]}</div>
+                      </div>
+                      <img
+                        src={team2avatar}
+                        alt="team 2 avatar"
+                        className="h-24 w-24 rounded-lg"
+                      />
                     </div>
                   </div>
-                );
-              })}
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="flex flex-col gap-2 justify-center w-fit">
+              {maps.map(
+                (map, i) =>
+                  detailedResults.length > i && (
+                    <Card key={i} className={"p-0"}>
+                      <CardContent className="flex gap-2 pb-0 pl-0 items-center">
+                        <div className="relative">
+                          <img
+                            src={map.image_lg}
+                            alt="map"
+                            className="h-32 brightness-[35%] rounded-lg"
+                          />
+                          <div className="absolute inset-0 flex items-center justify-center text-white font-bold text-3xl">
+                            {map.name}
+                          </div>
+                        </div>
+                        <div className="flex gap-4 justify-center items-center ml-8">
+                          <img
+                            src={team1avatar}
+                            alt="team 1 avatar"
+                            className="h-20 w-20 rounded-lg"
+                          />
+                          <MapRow
+                            map={map}
+                            detailedResults={detailedResults}
+                            index={i}
+                          />
+                          <img
+                            src={team2avatar}
+                            alt="team 2 avatar"
+                            className="h-20 w-20 rounded-lg"
+                          />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ),
+              )}
             </div>
           </div>
         )}
         <div>
-          <div>
-            {matchStatsLoading && <div>Loading...</div>}
-            <div className="flex flex-grow gap-2">
-              {!matchStatsLoading && matchStatsData && (
-                <Tabs defaultValue={"0"} className="grow">
-                  <TabsList className="w-[600px]">
-                    {matchStatsData.rounds.map((map, i) => {
-                      return (
-                        <TabsTrigger className="w-full" value={i.toString()}>
-                          {getMapFromPick(map.round_stats.Map) ? (
-                            <div>
-                              {getMapFromPick(map.round_stats.Map)?.name}
-                            </div>
-                          ) : (
-                            <div>Unknown map</div>
-                          )}
-                        </TabsTrigger>
-                      );
-                    })}
-                  </TabsList>
+          <div className="flex flex-grow gap-2">
+            {!matchStatsLoading && matchStatsData && !matchStatsError && (
+              <Tabs defaultValue={"0"} className="max-w-[1000px]">
+                <TabsList className="w-[600px]">
                   {matchStatsData.rounds.map((map, i) => {
                     return (
-                      <TabsContent value={i.toString()} key={i}>
-                        {map.teams.map((team, teamIndex) => (
+                      <TabsTrigger
+                        className="w-full"
+                        value={i.toString()}
+                        key={i}
+                      >
+                        {getMapFromPick(map.round_stats.Map) ? (
+                          <div>{getMapFromPick(map.round_stats.Map)?.name}</div>
+                        ) : (
+                          <div>Unknown map</div>
+                        )}
+                      </TabsTrigger>
+                    );
+                  })}
+                </TabsList>
+                {matchStatsData.rounds.map((map, i) => {
+                  return (
+                    <TabsContent value={i.toString()} key={i}>
+                      {map.teams.map((team, teamIndex) => (
+                        <>
+                          <div className="text-xl font-bold">
+                            {matchDetails &&
+                              matchDetails.teams[`faction${teamIndex + 1}`]
+                                .name}
+                          </div>
                           <Table key={teamIndex}>
                             <TableHeader>
                               <TableRow>
                                 <TableHead>Nickname</TableHead>
-                                {/* Map over the statOrder array to ensure the stats are rendered in the desired order */}
                                 {statOrder.map((stat, index) => (
                                   <TableHead key={index}>{stat}</TableHead>
                                 ))}
@@ -195,7 +242,6 @@ export function Match() {
                                 .map((player) => (
                                   <TableRow key={player.player_id}>
                                     <TableCell>{player.nickname}</TableCell>
-                                    {/* Map over the statOrder array to ensure the stats are rendered in the desired order */}
                                     {statOrder.map((stat, index) => (
                                       <TableCell key={index}>
                                         {player.player_stats[stat]}
@@ -205,13 +251,13 @@ export function Match() {
                                 ))}
                             </TableBody>
                           </Table>
-                        ))}
-                      </TabsContent>
-                    );
-                  })}
-                </Tabs>
-              )}
-            </div>
+                        </>
+                      ))}
+                    </TabsContent>
+                  );
+                })}
+              </Tabs>
+            )}
           </div>
         </div>
       </div>

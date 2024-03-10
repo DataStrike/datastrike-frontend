@@ -35,7 +35,6 @@ export function Player() {
         <ArrowLeft className="w-4 h-4 mr-2" />
         Back
       </Button>
-      {playerDetailsLoading && <div>Loading...</div>}
       {!playerDetailsLoading && playerDetails && (
         <div>
           <div className="flex gap-4 mb-8">
@@ -59,9 +58,8 @@ export function Player() {
       )}
 
       <h1 className="text-2xl font-bold mb-4">Player history</h1>
-      {playerHistoryLoading && <div>Loading...</div>}
       {!playerHistoryLoading && playerHistory && (
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-6 justify-center">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-6 ">
           {playerHistory.items.map((match) => (
             <MatchRow match={match} key={match.match_id} />
           ))}

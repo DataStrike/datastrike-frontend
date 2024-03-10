@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import {
   PLAYERS_LIMIT,
   blizzardScoutingService,
-  TEAMS_LIMIT,
   faceitScoutingService,
 } from "@/services/scouting-service.ts";
 import { Input } from "@/components/ui/input.tsx";
@@ -23,7 +22,6 @@ export function Scouting() {
   // FACEIT API
   const [teamNameInput, setTeamNameInput] = useState<string>("");
   const [teamNameQuery, setTeamNameQuery] = useState<string>("");
-  const [teamOffset, setTeamOffset] = useState<number>(0);
   // BLIZZARD API
   const [playerNameInput, setPlayerNameInput] = useState<string>("");
   const [playerNameQuery, setPlayerNameQuery] = useState<string>("");
@@ -53,15 +51,15 @@ export function Scouting() {
     isFetching: teamsLoading,
     refetch: refetchTeams,
   } = useQuery({
-    queryKey: ["teams", teamNameQuery, teamOffset],
-    queryFn: () => faceitScoutingService.searchTeams(teamNameQuery, teamOffset),
+    queryKey: ["teams", teamNameQuery],
+    queryFn: () => faceitScoutingService.searchTeams(teamNameQuery),
     enabled: false,
   });
 
   const searchTeams = async () => {
     setTeamNameQuery(teamNameInput);
     await queryClient.invalidateQueries({
-      queryKey: ["teams", teamNameInput, teamOffset],
+      queryKey: ["teams", teamNameInput],
     });
     await refetchTeams();
   };
@@ -78,19 +76,6 @@ export function Scouting() {
       await refetchPlayers();
     })();
   }, [offset]);
-
-  useEffect(() => {
-    // Check if offset changes, if yes then refetch
-    if (teamNameQuery === "") {
-      return;
-    }
-    (async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ["teams", teamNameInput, teamOffset],
-      });
-      await refetchTeams();
-    })();
-  }, [teamOffset]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -109,6 +94,7 @@ export function Scouting() {
             </TabsTrigger>
           </TabsList>
           <TabsContent className="w-full h-[80vh] overflow-auto" value="faceit">
+            Search players / teams on FACEIT
             <div className="flex gap-4 m-1">
               <Input
                 value={teamNameInput}
@@ -133,33 +119,13 @@ export function Scouting() {
             )}
             {teams && (
               <>
-                <div className="flex flex-wrap gap-4">
+                <span className={"text-sm text-gray-600"}>
+                  Matching with players or team name : "{teamNameQuery}"
+                </span>
+                <div className="flex flex-wrap gap-4 mt-4">
                   {teams.items.map((team) => (
                     <TeamCard key={team.team_id} team={team} />
                   ))}
-                </div>
-                <div className="flex gap-2 mt-2">
-                  <Button
-                    disabled={teamOffset === 0}
-                    onClick={() => {
-                      const newOffset = offset - TEAMS_LIMIT;
-                      if (newOffset >= 0) {
-                        setTeamOffset(newOffset);
-                      }
-                    }}
-                  >
-                    Previous
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      const newOffset = offset + TEAMS_LIMIT;
-                      if (newOffset >= 0) {
-                        setTeamOffset(newOffset);
-                      }
-                    }}
-                  >
-                    Next
-                  </Button>
                 </div>
               </>
             )}
@@ -168,6 +134,7 @@ export function Scouting() {
             className="w-full h-[80vh] overflow-auto"
             value="blizzard"
           >
+            Search players on Blizzard
             <div className="flex gap-4 m-1">
               <Input
                 value={playerNameInput}
