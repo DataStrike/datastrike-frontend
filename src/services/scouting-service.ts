@@ -9,6 +9,7 @@ import {
 } from "@/models/scouting/faceit/models.ts";
 import { MatchDetails } from "@/models/scouting/faceit/matchdetails.ts";
 import { MatchStats } from "@/models/scouting/faceit/matchstats.ts";
+import { TeamStats } from "@/models/scouting/faceit/team_stats.ts";
 export type CharacterStats = {
   key: string;
   name: string;
@@ -37,7 +38,7 @@ export type GameMode = "competitive" | "quickplay";
 export type Platform = "pc" | "console";
 
 export const PLAYERS_LIMIT = 50;
-export const TEAMS_LIMIT = 20;
+export const TEAMS_LIMIT = 50;
 export const HISTORY_LIMIT = 50;
 
 async function getHeroes(): Promise<CharacterStats[]> {
@@ -103,9 +104,17 @@ async function searchTeams(
     )
     .json();
 }
-async function getTeamStats(teamId: string): Promise<TeamDetails> {
+async function getTeamDetails(teamId: string): Promise<TeamDetails> {
   return await ky
     .get(`${FACEIT_URL}/teams/${teamId}`, {
+      headers: { Authorization: `Bearer ${FACEIT_API_KEY}` },
+    })
+    .json();
+}
+
+async function getTeamStats(teamId: string): Promise<TeamStats> {
+  return await ky
+    .get(`${FACEIT_URL}/teams/${teamId}/stats/ow2`, {
       headers: { Authorization: `Bearer ${FACEIT_API_KEY}` },
     })
     .json();
@@ -156,6 +165,7 @@ export const blizzardScoutingService = {
 
 export const faceitScoutingService = {
   searchTeams,
+  getTeamDetails,
   getTeamStats,
   getFaceitPlayerHistory,
   getFaceitPlayerDetails,
