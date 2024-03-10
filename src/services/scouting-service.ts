@@ -7,6 +7,8 @@ import {
   PlayerDetails,
   TeamDetails,
 } from "@/models/scouting/faceit/models.ts";
+import { MatchDetails } from "@/models/scouting/faceit/matchdetails.ts";
+import { MatchStats } from "@/models/scouting/faceit/matchstats.ts";
 export type CharacterStats = {
   key: string;
   name: string;
@@ -129,9 +131,17 @@ async function getFaceitPlayerHistory(
     .json();
 }
 
-async function getFaceitMatchStats(matchId: string): Promise<any> {
+async function getFaceitMatchDetails(matchId: string): Promise<MatchDetails> {
   return await ky
     .get(`${FACEIT_URL}/matches/${matchId}`, {
+      headers: { Authorization: `Bearer ${FACEIT_API_KEY}` },
+    })
+    .json();
+}
+
+async function getFaceitMatchStats(matchId: string): Promise<MatchStats> {
+  return await ky
+    .get(`${FACEIT_URL}/matches/${matchId}/stats`, {
       headers: { Authorization: `Bearer ${FACEIT_API_KEY}` },
     })
     .json();
@@ -149,5 +159,6 @@ export const faceitScoutingService = {
   getTeamStats,
   getFaceitPlayerHistory,
   getFaceitPlayerDetails,
+  getFaceitMatchDetails,
   getFaceitMatchStats,
 };
