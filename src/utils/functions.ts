@@ -100,3 +100,19 @@ export const getHeroIcon = (
   }
   return heroesIcons["default"];
 };
+
+export const getCETTimeFormatted = (timestamp: number) => {
+  // Convert timestamp to milliseconds
+  const date = new Date(timestamp * 1000);
+
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "CET",
+    timeZoneName: "shortGeneric",
+  };
+  return date.toLocaleString("fr-FR", options);
+};
