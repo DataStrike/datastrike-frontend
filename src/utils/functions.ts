@@ -112,7 +112,6 @@ export const getCETTimeFormatted = (timestamp: number) => {
     hour: "2-digit",
     minute: "2-digit",
     timeZone: "CET",
-    timeZoneName: "short",
   };
   return date.toLocaleString("fr-FR", options);
 };

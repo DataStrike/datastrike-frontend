@@ -6,7 +6,7 @@ import { Match, Team } from "@/models/scouting/faceit/models.ts";
 import default_team from "@/assets/default_team.svg";
 import default_person from "@/assets/default_person.svg";
 
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, LinkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 import { getCETTimeFormatted } from "@/utils/functions.ts";
 export function Player() {
@@ -43,14 +43,14 @@ export function Player() {
               <img
                 src={playerDetails.avatar}
                 alt="player avatar"
-                className="h-48 w-48"
+                className="h-32 w-32 rounded-lg"
               />
             )}
             {!playerDetails.avatar && (
               <img
                 src={default_person}
                 alt="player avatar"
-                className="h-48 w-48"
+                className="h-32 w-32"
               />
             )}
             <h1 className="text-3xl">{playerDetails.nickname}</h1>
@@ -79,14 +79,17 @@ const MatchRow = ({ match }: MatchRowProps) => {
   const navigate = useNavigate();
 
   return (
-    <div className="gap-2 border p-6 rounded-lg w-96">
+    <div className="gap-2 border p-6 rounded-lg w-[400px]">
+      <div className="text-center mb-1 text-neutral-500">
+        {match.competition_name}
+      </div>
       <div className="text-center mb-4 text-neutral-500">
         {getCETTimeFormatted(match.started_at)}
       </div>
       <div className="flex gap-6 items-center justify-between">
         <TeamCard team={match.teams.faction1} />
         <TeamResult score={match.results.score.faction1} />
-        <div>-</div>
+        <span className={"text-3xl"}>-</span>
         <TeamResult score={match.results.score.faction2} />
         <TeamCard team={match.teams.faction2} />
       </div>
@@ -97,7 +100,8 @@ const MatchRow = ({ match }: MatchRowProps) => {
             navigate(`/scouting/faceit/matches/${match.match_id}`);
           }}
         >
-          View match
+          <LinkIcon className="w-4 h-4 mr-2" />
+          Match details
         </Button>
       </div>
     </div>
@@ -107,8 +111,9 @@ const MatchRow = ({ match }: MatchRowProps) => {
 interface TeamResultProps {
   score: number;
 }
+
 const TeamResult = ({ score }: TeamResultProps) => {
-  return <div className="text-xl">{score}</div>;
+  return <div className="text-3xl">{score}</div>;
 };
 
 interface TeamCardProps {
@@ -117,14 +122,18 @@ interface TeamCardProps {
 
 const TeamCard = ({ team }: TeamCardProps) => {
   return (
-    <div className="flex flex-col gap-1 items-center text-wrap">
+    <div className="flex flex-col gap-1 items-center">
       {team.avatar && (
-        <img src={team.avatar} alt="team avatar" className="h-24 w-24" />
+        <img
+          src={team.avatar}
+          alt="team avatar"
+          className="max-h-24 max-w-24 rounded-lg"
+        />
       )}
       {!team.avatar && (
-        <img src={default_team} alt="team avatar" className="h-24 w-24" />
+        <img src={default_team} alt="team avatar" className="h-24 max-w-24" />
       )}
-      <div className="">{team.nickname}</div>
+      <div className="truncate text-sm">{team.nickname}</div>
     </div>
   );
 };
