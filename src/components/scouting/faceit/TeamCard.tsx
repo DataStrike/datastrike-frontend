@@ -13,7 +13,7 @@ export const TeamCard: React.FC<Props> = ({ team }) => {
     <>
       <div
         className={
-          "w-36 h-36 shadow p-2 rounded-lg cursor-pointer transition-all"
+          "w-36 h-36 shadow p-2 rounded-lg hover:shadow-xl hover:cursor-pointer transition-all"
         }
         onClick={() => navigate(`/scouting/faceit/teams/${team.team_id}`)}
       >
