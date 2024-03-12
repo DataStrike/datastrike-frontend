@@ -52,7 +52,7 @@ export function WinRateDoughnut({ data }: Props) {
   }, [data]);
 
   return (
-    <div className="w-[300px] h-[150px]">
+    <div className="w-[300px] h-[300px]">
       <canvas ref={chartRef} width="w-full" height="h-full"></canvas>
     </div>
   );
