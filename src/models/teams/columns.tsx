@@ -5,6 +5,7 @@ import {
   EditIcon,
   EyeOffIcon,
   LogOutIcon,
+  RepeatIcon,
   StarIcon,
   TrashIcon,
 } from "lucide-react";
@@ -22,6 +23,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog.tsx";
 import { teamsService } from "@/services/teams-service.ts";
+import { Tooltip } from "@radix-ui/react-tooltip";
+import {
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip.tsx";
 
 export type Team = {
   id: number;
@@ -48,9 +55,16 @@ const Spoiler = ({ code }: SpoilerProps) => {
       {revealed ? (
         <div>{code}</div>
       ) : (
-        <Button size={"icon"} onClick={toggleReveal}>
-          <EyeOffIcon className="h-4 w-4"></EyeOffIcon>
-        </Button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant={"outline"} size={"icon"} onClick={toggleReveal}>
+                <EyeOffIcon className="h-4 w-4"></EyeOffIcon>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>See code</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       )}
     </>
   );
@@ -77,6 +91,13 @@ const kickUser = async (teamId: number, userId: number) => {
 
   await queryClient.invalidateQueries({ queryKey: ["teams"] });
   toast.success("Kicked user successfully");
+};
+
+const regenerateCode = async (teamId: number) => {
+  await teamsService.regenerateCode(teamId);
+
+  await queryClient.invalidateQueries({ queryKey: ["teams"] });
+  toast.success("Code regenerated successfully");
 };
 
 export const columns: ColumnDef<Team>[] = [
@@ -113,7 +134,27 @@ export const columns: ColumnDef<Team>[] = [
     header: "Code",
     cell: ({ row }) => {
       const team = row.original;
-      return <Spoiler code={team.code} />;
+      return (
+        <div className="flex gap-2 justify-center items-center">
+          <Spoiler code={team.code} />
+          {team.isAdmin && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant={"secondary"}
+                    size={"icon"}
+                    onClick={() => regenerateCode(team.id)}
+                  >
+                    <RepeatIcon className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Regenerate code</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+        </div>
+      );
     },
   },
   {
@@ -127,11 +168,18 @@ export const columns: ColumnDef<Team>[] = [
           {team.isAdmin && (
             <>
               <Dialog>
-                <DialogTrigger asChild>
-                  <Button size={"icon"} variant={"default"}>
-                    <EditIcon className="h-4 w-4" />
-                  </Button>
-                </DialogTrigger>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <DialogTrigger asChild>
+                        <Button size={"icon"} variant={"secondary"}>
+                          <EditIcon className="h-4 w-4" />
+                        </Button>
+                      </DialogTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>Administration panel</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
                 <DialogContent className="w-full p-4 lg:w-1/2 xl:w-1/3">
                   <DialogHeader>
                     <DialogTitle>Team Administration Panel</DialogTitle>
@@ -175,13 +223,20 @@ export const columns: ColumnDef<Team>[] = [
             </>
           )}
 
-          <Button
-            variant="destructive"
-            size="icon"
-            onClick={() => leaveTeam(team.code)}
-          >
-            <LogOutIcon className="h-4 w-4" />
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="destructive"
+                  size="icon"
+                  onClick={() => leaveTeam(team.code)}
+                >
+                  <LogOutIcon className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Leave team</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       );
     },
