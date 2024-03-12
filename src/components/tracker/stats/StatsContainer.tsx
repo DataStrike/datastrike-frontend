@@ -1,4 +1,10 @@
-import { nbAvgGames, topPlayedMaps, winRate } from "@/utils/stats.ts";
+import {
+  nbAvgGames,
+  topPlayedMaps,
+  winRate,
+  winRateAllMaps,
+  winRateTopMaps,
+} from "@/utils/stats.ts";
 import { Clock, KanbanSquare, MedalIcon, PercentIcon } from "lucide-react";
 import StatsCard from "@/components/stats/StatsCard.tsx";
 import { TrackerResult } from "@/models/tracker/columns.tsx";
@@ -31,12 +37,24 @@ export function StatsContainer({ trackerResultList }: Props) {
           icon={<Clock className="h-4 w-4" />}
         ></StatsCard>
       </div>
-
       <div className="flex gap-4">
         <StatsCardList
           cardTitle="Top Played Maps"
           icon={<MedalIcon className="h-4 w-4" />}
           data={topPlayedMaps(trackerResultList, 5)}
+        ></StatsCardList>
+        <StatsCardList
+          cardTitle="WR / Top Played Maps"
+          icon={<MedalIcon className="h-4 w-4" />}
+          data={winRateTopMaps(trackerResultList)}
+        ></StatsCardList>
+      </div>
+
+      <div className="flex gap-4">
+        <StatsCardList
+          cardTitle="WR / All Maps"
+          icon={<MedalIcon className="h-4 w-4" />}
+          data={winRateAllMaps(trackerResultList)}
         ></StatsCardList>
       </div>
     </div>
