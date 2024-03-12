@@ -25,7 +25,6 @@ export function WinRateOverTime({ data }: Props) {
               wins: 0,
               losses: 0,
               draws: 0,
-              winRates: [],
             };
 
             dayData.total++;
@@ -41,9 +40,6 @@ export function WinRateOverTime({ data }: Props) {
                 break;
             }
 
-            dayData.winRates.push(
-              (dayData.wins / (dayData.total - dayData.draws)) * 100,
-            );
             acc[date] = dayData;
 
             return acc;
@@ -55,7 +51,6 @@ export function WinRateOverTime({ data }: Props) {
               wins: number;
               draws: number;
               losses: number;
-              winRates: number[];
             }
           >,
         );
@@ -64,11 +59,25 @@ export function WinRateOverTime({ data }: Props) {
         let cumulativeWins = 0;
         let cumulativeTotal = 0;
 
-        const cumulativeWinRates = Object.values(groupedData).map((dayData) => {
-          cumulativeWins += dayData.wins;
-          cumulativeTotal += dayData.total - dayData.draws;
-          return (cumulativeWins / cumulativeTotal) * 100;
-        });
+        // Sort the groupedData by their key (the date) and map the win rates
+        const cumulativeWinRates = Object.keys(groupedData)
+          .sort()
+          .map((date) => {
+            cumulativeWins += groupedData[date].wins;
+            cumulativeTotal +=
+              groupedData[date].total - groupedData[date].draws;
+            return (cumulativeWins / cumulativeTotal) * 100;
+          });
+
+        const localWinRates = Object.keys(groupedData)
+          .sort()
+          .map((date) => {
+            return (
+              (groupedData[date].wins /
+                (groupedData[date].total - groupedData[date].draws)) *
+              100
+            );
+          });
 
         const formattedLabels = Object.keys(groupedData)
           .sort()
@@ -93,9 +102,7 @@ export function WinRateOverTime({ data }: Props) {
               },
               {
                 label: "Local Win Rate",
-                data: Object.values(groupedData).map(
-                  (dayData) => dayData.winRates[dayData.winRates.length - 1],
-                ),
+                data: localWinRates,
                 pointRadius: 5,
                 borderWidth: 2,
                 pointBackgroundColor: "#FFC107",
