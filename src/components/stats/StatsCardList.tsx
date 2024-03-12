@@ -9,7 +9,7 @@ import { capitalize } from "@/utils/functions.ts";
 interface StatsCardListProps {
   icon?: ReactNode;
   cardTitle: string;
-  data: [string, number][];
+  data: [string, number][] | string[][];
 }
 
 export function StatsCardList({ icon, cardTitle, data }: StatsCardListProps) {
@@ -24,7 +24,7 @@ export function StatsCardList({ icon, cardTitle, data }: StatsCardListProps) {
           data.map((item, key) => (
             <div key={key}>
               <div className="flex w-full justify-between font-bold">
-                <div className="mr-6">{capitalize(item[0])}:</div>
+                <div className="mr-6">{capitalize(item[0])}</div>
                 <div>{item[1]}</div>
               </div>
             </div>
