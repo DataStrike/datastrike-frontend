@@ -3,8 +3,8 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Trash2Icon } from "lucide-react";
 import { MapSelector } from "@/components/ui/MapSelector";
-import { MapName, MapResult, OW_MAPS } from "@/models/overwatch/maps.ts";
-import { capitalize } from "@/utils/functions.ts";
+import { MapResult } from "@/models/overwatch/maps.ts";
+import { findMapType } from "@/utils/stats.ts";
 
 interface Props {
   deleteMap: () => void;
@@ -12,15 +12,6 @@ interface Props {
   map: MapResult;
   updateMap: (field: string, value: any) => void;
 }
-
-const findMapType = (mapName: MapName | "") => {
-  if (mapName === "") return "";
-  for (const [mapType, mapList] of Object.entries(OW_MAPS)) {
-    if (mapList.includes(capitalize(mapName) as MapName)) {
-      return mapType;
-    }
-  }
-};
 
 export function Map({ deleteMap, isLast, map, updateMap }: Props) {
   return (
