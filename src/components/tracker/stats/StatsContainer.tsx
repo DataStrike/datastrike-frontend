@@ -3,6 +3,8 @@ import {
   topPlayedMaps,
   winRate,
   winRateAllMaps,
+  winRateAllModes,
+  winRateOpponents,
   winRateTopMaps,
 } from "@/utils/stats.ts";
 import { Clock, KanbanSquare, MedalIcon, PercentIcon } from "lucide-react";
@@ -37,26 +39,44 @@ export function StatsContainer({ trackerResultList }: Props) {
           icon={<Clock className="h-4 w-4" />}
         ></StatsCard>
       </div>
+
       <div className="flex gap-4">
         <StatsCardList
-          cardTitle="Top Played Maps"
+          cardTitle="WR / Modes"
           icon={<MedalIcon className="h-4 w-4" />}
-          data={topPlayedMaps(trackerResultList, 5)}
+          data={winRateAllModes(trackerResultList)}
+          description={"Sorted by nb of games played in each mode"}
         ></StatsCardList>
         <StatsCardList
-          cardTitle="WR / Top Played Maps"
+          cardTitle="WR / Teams"
           icon={<MedalIcon className="h-4 w-4" />}
-          data={winRateTopMaps(trackerResultList)}
+          data={winRateOpponents(trackerResultList)}
+          description={"Sorted by nb of games played against them"}
         ></StatsCardList>
       </div>
 
       <div className="flex gap-4">
         <StatsCardList
+          cardTitle="Top Played Maps"
+          icon={<MedalIcon className="h-4 w-4" />}
+          data={topPlayedMaps(trackerResultList, 5)}
+          description={"Sorted by nb of games played"}
+        ></StatsCardList>
+        <StatsCardList
+          cardTitle="WR / Top Played Maps"
+          icon={<MedalIcon className="h-4 w-4" />}
+          data={winRateTopMaps(trackerResultList)}
+          description={"Sorted by nb of games played"}
+        ></StatsCardList>
+        <StatsCardList
           cardTitle="WR / All Maps"
           icon={<MedalIcon className="h-4 w-4" />}
           data={winRateAllMaps(trackerResultList)}
+          description={"Sorted by nb of games played on each map"}
         ></StatsCardList>
       </div>
+
+      <div className="flex gap-4"></div>
     </div>
   );
 }
