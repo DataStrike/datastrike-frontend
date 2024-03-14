@@ -29,6 +29,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip.tsx";
+import { Separator } from "@/components/ui/separator.tsx";
+import { Input } from "@/components/ui/input.tsx";
 
 export type Team = {
   id: number;
@@ -37,39 +39,6 @@ export type Team = {
   code: string;
   isAdmin: boolean;
 };
-
-interface SpoilerProps {
-  code: string;
-}
-
-// eslint-disable-next-line react-refresh/only-export-components
-const Spoiler = ({ code }: SpoilerProps) => {
-  const [revealed, setRevealed] = useState(false);
-
-  const toggleReveal = () => {
-    setRevealed(!revealed);
-  };
-
-  return (
-    <>
-      {revealed ? (
-        <div>{code}</div>
-      ) : (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant={"outline"} size={"icon"} onClick={toggleReveal}>
-                <EyeOffIcon className="h-4 w-4"></EyeOffIcon>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>See code</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      )}
-    </>
-  );
-};
-
 const leaveTeam = async (code: string) => {
   await ky.delete(`${BASE_URL}/teams/${code}`, {
     credentials: "include",
@@ -98,6 +67,13 @@ const regenerateCode = async (teamId: number) => {
 
   await queryClient.invalidateQueries({ queryKey: ["teams"] });
   toast.success("Code regenerated successfully");
+};
+
+const updateTeamName = async (teamId: number, name: string) => {
+  await teamsService.updateTeamName(teamId, name);
+
+  await queryClient.invalidateQueries({ queryKey: ["teams"] });
+  toast.success("Team name updated successfully");
 };
 
 export const columns: ColumnDef<Team>[] = [
@@ -163,6 +139,7 @@ export const columns: ColumnDef<Team>[] = [
     cell: ({ row }) => {
       const team = row.original;
       const players = team.players;
+
       return (
         <div className="flex justify-center gap-2">
           {team.isAdmin && (
@@ -185,37 +162,65 @@ export const columns: ColumnDef<Team>[] = [
                     <DialogTitle>Team Administration Panel</DialogTitle>
                   </DialogHeader>
                   <div className="w-full">
+                    <div className={"flex gap-2 items-end"}>
+                      <div className={"flex flex-col gap-1"}>
+                        <div>Team name</div>
+                        <Input
+                          className="flex-grow"
+                          placeholder={team.name}
+                          onChange={(event) => {
+                            team.name = event.target.value;
+                          }}
+                        />
+                      </div>
+                      <Button
+                        variant={"default"}
+                        onClick={async () => {
+                          await updateTeamName(team.id, team.name);
+                        }}
+                      >
+                        Save
+                      </Button>
+                    </div>
+                    <Separator className="my-2" />
                     <div className="flex flex-col gap-2 w-full">
-                      {players.map((player) => (
-                        <div key={player.name}>
-                          <div className="flex justify-between items-center">
-                            <span>{player.name}</span>
-                            <div className="flex gap-2">
-                              {!player.isAdmin && (
-                                <>
-                                  <Button
-                                    variant={"default"}
-                                    onClick={() =>
-                                      markAdmin(team.id, player.id)
-                                    }
-                                  >
-                                    <StarIcon className="h-4 w-4 mr-2" />
-                                    Make admin
-                                  </Button>
+                      <div className={"flex flex-col gap-1"}>
+                        <span>Players</span>
+                        <div>
+                          {players.map((player) => (
+                            <div key={player.name}>
+                              <div className="flex justify-between items-center">
+                                <span>{player.name}</span>
+                                <div className="flex gap-2">
+                                  {!player.isAdmin && (
+                                    <>
+                                      <Button
+                                        variant={"default"}
+                                        onClick={() =>
+                                          markAdmin(team.id, player.id)
+                                        }
+                                      >
+                                        <StarIcon className="h-4 w-4 mr-2" />
+                                        Make admin
+                                      </Button>
 
-                                  <Button
-                                    variant={"destructive"}
-                                    onClick={() => kickUser(team.id, player.id)}
-                                  >
-                                    <TrashIcon className="h-4 w-4 mr-2" />
-                                    Kick
-                                  </Button>
-                                </>
-                              )}
+                                      <Button
+                                        variant={"destructive"}
+                                        onClick={() =>
+                                          kickUser(team.id, player.id)
+                                        }
+                                      >
+                                        <TrashIcon className="h-4 w-4 mr-2" />
+                                        Kick
+                                      </Button>
+                                    </>
+                                  )}
+                                </div>
+                              </div>
                             </div>
-                          </div>
+                          ))}
                         </div>
-                      ))}
+                      </div>
                     </div>
                   </div>
                 </DialogContent>
@@ -242,3 +247,35 @@ export const columns: ColumnDef<Team>[] = [
     },
   },
 ];
+
+interface SpoilerProps {
+  code: string;
+}
+
+// eslint-disable-next-line react-refresh/only-export-components
+const Spoiler = ({ code }: SpoilerProps) => {
+  const [revealed, setRevealed] = useState(false);
+
+  const toggleReveal = () => {
+    setRevealed(!revealed);
+  };
+
+  return (
+    <>
+      {revealed ? (
+        <div>{code}</div>
+      ) : (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant={"outline"} size={"icon"} onClick={toggleReveal}>
+                <EyeOffIcon className="h-4 w-4"></EyeOffIcon>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>See code</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      )}
+    </>
+  );
+};
