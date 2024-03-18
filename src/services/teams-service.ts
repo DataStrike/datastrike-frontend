@@ -22,8 +22,27 @@ export async function markAdmin(teamId: number, userId: number): Promise<void> {
   });
 }
 
+export async function regenerateCode(teamId: number): Promise<void> {
+  await ky.put(`${BASE_URL}/teams/${teamId}/code`, {
+    credentials: "include",
+  });
+}
+
+export async function updateTeamName(
+  teamId: number,
+  teamName: string,
+): Promise<void> {
+  await ky.put(`${BASE_URL}/teams/${teamId}`, {
+    credentials: "include",
+    json: {
+      name: teamName,
+    },
+  });
+}
 export const teamsService = {
   getTeams,
   kickUser,
   markAdmin,
+  regenerateCode,
+  updateTeamName,
 };

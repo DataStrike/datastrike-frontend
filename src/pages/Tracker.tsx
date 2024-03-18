@@ -35,6 +35,7 @@ import { WinRateOverTime } from "@/components/charts/tracker/WinRateOverTime.tsx
 import ChartContainer from "@/components/charts/ChartContainer.tsx";
 import { StatsContainer } from "@/components/tracker/stats/StatsContainer.tsx";
 import { selectTeam } from "@/utils/functions.ts";
+import WinRateModesBarChart from "@/components/charts/tracker/WinRateModesBarChart.tsx";
 
 const formSchema = z.object({
   opponentTeamName: z.string(),
@@ -212,9 +213,14 @@ export function Tracker() {
                 <Skeleton className="h-4 w-[250px]" />
               ) : (
                 <div className="flex flex-col gap-4">
-                  <ChartContainer cardTitle="Win Rate">
-                    <WinRateDoughnut data={trackerResultList!} />
-                  </ChartContainer>
+                  <div className="flex gap-4">
+                    <ChartContainer cardTitle="Win Rate">
+                      <WinRateDoughnut data={trackerResultList!} />
+                    </ChartContainer>
+                    <ChartContainer cardTitle="Win Rate on modes">
+                      <WinRateModesBarChart data={trackerResultList!} />
+                    </ChartContainer>
+                  </div>
                   <ChartContainer cardTitle="Win Rate over time">
                     <WinRateOverTime data={trackerResultList!} />
                   </ChartContainer>
