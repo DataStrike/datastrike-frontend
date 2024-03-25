@@ -32,7 +32,7 @@ export function AdminTrackerResultsDatatable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([
     {
-      desc: false,
+      desc: true,
       id: "createdAt",
     },
   ]);

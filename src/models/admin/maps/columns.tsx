@@ -6,10 +6,12 @@ export const mapsColumns: ColumnDef<AdminMap>[] = [
   {
     accessorKey: "id",
     header: "ID",
+    filterFn: "equalsString",
   },
   {
     accessorKey: "teamId",
     header: "Team ID",
+    filterFn: "equalsString",
   },
   {
     accessorKey: "createdAt",
