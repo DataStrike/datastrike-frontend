@@ -5,6 +5,7 @@ export const teamsColumns: ColumnDef<AdminTeam>[] = [
   {
     accessorKey: "id",
     header: "ID",
+    filterFn: "equalsString",
   },
   {
     accessorKey: "name",

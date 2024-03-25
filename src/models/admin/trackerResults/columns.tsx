@@ -7,10 +7,12 @@ export const trackerColumns: ColumnDef<AdminTrackerResult>[] = [
   {
     accessorKey: "id",
     header: "ID",
+    filterFn: "equalsString",
   },
   {
     accessorKey: "teamId",
     header: "Team ID",
+    filterFn: "equalsString",
   },
   {
     accessorKey: "createdAt",

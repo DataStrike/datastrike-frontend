@@ -7,6 +7,7 @@ export const userColumns: ColumnDef<AdminUser>[] = [
   {
     accessorKey: "id",
     header: "ID",
+    filterFn: "equalsString",
   },
   {
     accessorKey: "name",
