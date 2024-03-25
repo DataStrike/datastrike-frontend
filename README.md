@@ -20,5 +20,5 @@ For public profiles, you'll be able to retrieve general stats such as winrate, K
 We know it's common for someone to be part of multiple teams. Don't worry, our tool is 100% compatible with it, allowing you to switch very fast between your teams and showing you the data accordingly.
 
 ## 🧑‍💻 Credits
-- [ZaT](https://github.com/orgs/DataStrike/people/Zat-Code)
+- [ZaT](https://github.com/Zat-Code)
 - [Rémi](https://github.com/RemiSaurel)
