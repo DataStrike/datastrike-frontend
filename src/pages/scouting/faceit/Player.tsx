@@ -6,7 +6,7 @@ import { Match, Team } from "@/models/scouting/faceit/models.ts";
 import default_team from "@/assets/default_team.svg";
 import default_person from "@/assets/default_person.svg";
 
-import { ArrowLeft, LinkIcon } from "lucide-react";
+import { ArrowLeft, LinkIcon, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 import { getCETTimeFormatted } from "@/utils/functions.ts";
 export function Player() {
@@ -56,8 +56,18 @@ export function Player() {
           </div>
         </div>
       )}
-
-      <h1 className="text-2xl font-bold mb-4">Player history</h1>
+      <h1 className="text-2xl font-bold mb-2">Player history</h1>
+      <div
+        className={
+          "border-orange-200 border bg-orange-100 p-4 w-fit rounded-lg mb-2 flex gap-2 items-center"
+        }
+      >
+        <AlertTriangle className="w-4 h-4" />
+        <span>
+          The FACEIT API results are not correct / complete. Click on a match
+          details to see the correct ones.
+        </span>
+      </div>
       {!playerHistoryLoading && playerHistory && (
         <div className="flex flex-wrap items-center gap-x-4 gap-y-6 ">
           {playerHistory.items.map((match) => (
