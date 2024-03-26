@@ -71,6 +71,8 @@ export function CompsContainer({ data }: Props) {
       ...spawnEvents.filter((event) => event.player === player),
       ...swapEvents.filter((event) => event.player === player),
     ];
+    // Sort playerEvents by timestamp
+    playerEvents.sort((a, b) => a.timestamp - b.timestamp);
 
     const heroes: Heroes[] = [];
     let currentHero: Heroes | null = null;
@@ -78,9 +80,6 @@ export function CompsContainer({ data }: Props) {
     playerEvents.forEach((event) => {
       if (event.type === "hero_spawn") {
         if (currentHero) {
-          if (currentHero.name === event.hero) {
-            heroes.shift();
-          }
           currentHero.end = Number(event.timestamp);
           heroes.push({ ...currentHero }); // Push a copy of currentHero
         }
@@ -98,7 +97,6 @@ export function CompsContainer({ data }: Props) {
 
         if (currentHero) {
           currentHero.end = Number(event.timestamp);
-
           if (insertHeroIsOk(currentHero.start, currentHero.end)) {
             heroes.push({ ...currentHero }); // Push a copy of currentHero
           }
@@ -116,23 +114,14 @@ export function CompsContainer({ data }: Props) {
       heroes.push(currentHero);
     }
 
-    // For each heroes, if the end of i > start of i+1, end of i = start of i+1
-
-    heroes.forEach((hero, index) => {
-      if (index < heroes.length - 1) {
-        if (hero.end > heroes[index + 1].start) {
-          hero.end = heroes[index + 1].start;
-        }
+    // Merge heroes that are played one after the other
+    for (let i = 0; i < heroes.length - 1; i++) {
+      if (heroes[i].name === heroes[i + 1].name) {
+        heroes[i].end = heroes[i + 1].end;
+        heroes.splice(i + 1, 1);
+        i--;
       }
-      // If 2 same heroes are played, remove the second one and update the end of the first one
-      if (index < heroes.length - 1) {
-        if (hero.name === heroes[index + 1].name) {
-          // Remove the second hero and update the end of the first one with the end of the second one
-          heroes[index].end = heroes[index + 1].end;
-          heroes.splice(index + 1, 1);
-        }
-      }
-    });
+    }
 
     return heroes;
   };
