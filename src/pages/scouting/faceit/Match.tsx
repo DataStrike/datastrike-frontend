@@ -157,7 +157,7 @@ export function Match() {
                             alt="map"
                             className="h-32 brightness-[35%] rounded-lg"
                           />
-                          <div className="absolute inset-0 flex items-center justify-center text-white font-bold text-3xl">
+                          <div className="absolute inset-0 flex items-center justify-center text-white font-bold text-2xl">
                             {map.name}
                           </div>
                         </div>

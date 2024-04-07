@@ -24,6 +24,7 @@ import {
 import { Separator } from "@/components/ui/separator.tsx";
 import WorkshopInstructions from "@/components/analysis/WorkshopInstructions.tsx";
 import { selectTeam } from "@/utils/functions.ts";
+import { toast } from "sonner";
 
 export function Analysis() {
   const [files, setFiles] = useState<File[]>([]);
@@ -58,10 +59,13 @@ export function Analysis() {
 
       socket.connect();
 
-      console.log("Connected to server");
-
-      const handleAnalysisData = async () => {
+      const handleAnalysisData = async (args: string) => {
         await queryClient.invalidateQueries({ queryKey: ["maps", team.id] });
+        if (args === "error") {
+          toast.error("Error while processing the map");
+        } else {
+          toast.success("Map processed successfully");
+        }
       };
 
       // Attach event listener for analysisData
