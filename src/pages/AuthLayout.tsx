@@ -1,8 +1,10 @@
 // AuthLayout.tsx
-import { Outlet } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth.ts";
 
-export function AuthLayout() {
+interface AuthLayoutProps {
+  children: React.ReactNode;
+}
+export function AuthLayout({ children }: AuthLayoutProps) {
   const { loading, isAuth } = useAuth();
 
   if (loading) {
@@ -17,7 +19,7 @@ export function AuthLayout() {
 
   return (
     <>
-      <Outlet />
+      {children}
     </>
   );
 }
