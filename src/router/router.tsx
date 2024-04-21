@@ -1,5 +1,4 @@
 import { createBrowserRouter } from "react-router-dom";
-import Dashboard from "@/pages/Dashboard.tsx";
 import Home from "@/pages/Home.tsx";
 import { AuthLayout } from "@/pages/AuthLayout.tsx";
 import { Layout } from "@/pages/Layout.tsx";
@@ -21,63 +20,47 @@ export const router = createBrowserRouter([
     element: <Home />,
   },
   {
-    path: "/",
-    element: <Layout />,
-    children: [
-      {
-        path: "/",
-        element: <AuthLayout />,
-        children: [
-          {
-            path: "/dashboard",
-            element: <Dashboard />,
-          },
-          {
-            path: "/tracker",
-            element: <Tracker />,
-          },
-          {
-            path: "/analysis",
-            element: <Analysis />,
-          },
-          {
-            path: "/analysis/:mapId",
-            element: <AnalysisDetailed />,
-          },
-          {
-            path: "/teams",
-            element: <Teams />,
-          },
-          {
-            path: "/profile",
-            element: <Profile />,
-          },
-          {
-            path: "/scouting",
-            element: <Scouting />,
-          },
-          {
-            path: "/scouting/faceit/teams/:teamId",
-            element: <Team />,
-          },
-          {
-            path: "/scouting/faceit/players/:playerId",
-            element: <Player />,
-          },
-          {
-            path: "/scouting/faceit/matches/:matchId",
-            element: <Match />,
-          },
-          {
-            path: "/scouting/blizzard/player/:playerId",
-            element: <ScoutingPlayer />,
-          },
-          {
-            path: "/admin",
-            element: <Admin />,
-          },
-        ],
-      },
-    ],
+    path: "tracker",
+    element: <AuthLayout><Layout><Tracker /></Layout></AuthLayout>,
+  },
+  {
+    path: "analysis",
+    element: <AuthLayout><Layout><Analysis /></Layout></AuthLayout>,
+  },
+  {
+    path: "analysis/:mapId",
+    element: <AuthLayout><Layout><AnalysisDetailed /></Layout></AuthLayout>,
+  },
+  {
+    path: "teams",
+    element: <AuthLayout><Layout><Teams /></Layout></AuthLayout>,
+  },
+  {
+    path: "profile",
+    element: <AuthLayout><Layout><Profile /></Layout></AuthLayout>,
+  },
+  {
+    path: "scouting",
+    element: <AuthLayout><Layout><Scouting /></Layout></AuthLayout>,
+  },
+  {
+    path: "scouting/faceit/teams/:teamId",
+    element: <AuthLayout><Layout><Team /></Layout></AuthLayout>,
+  },
+  {
+    path: "scouting/faceit/players/:playerId",
+    element: <AuthLayout><Layout><Player /></Layout></AuthLayout>,
+  },
+  {
+    path: "scouting/faceit/matches/:matchId",
+    element: <AuthLayout><Layout><Match /></Layout></AuthLayout>,
+  },
+  {
+    path: "scouting/blizzard/player/:playerId",
+    element: <AuthLayout><Layout><ScoutingPlayer /></Layout></AuthLayout>,
+  },
+  {
+    path: "admin",
+    element: <AuthLayout><Layout><Admin /></Layout></AuthLayout>,
   },
 ]);
