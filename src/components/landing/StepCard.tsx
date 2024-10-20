@@ -4,6 +4,7 @@ interface Props {
   stepTitle: string;
   description: string;
 }
+
 export default function StepCard({
   img,
   stepNumber,
@@ -11,27 +12,23 @@ export default function StepCard({
   description,
 }: Props) {
   return (
-    <div className={"flex flex-col w-full max-w-[400px] "}>
-      <div className="border rounded-lg cursor-default p-3 h-60 max-w-fit transition-all hover:shadow">
-        {img && (
-          <img
-            className={"object-scale-down rounded-lg h-full"}
-            src={img}
-            alt={""}
-          ></img>
-        )}
-      </div>
-      <div className="flex flex-col gap-1 flex-grow">
-        <div className="text-xl flex font-semibold mt-4">
-          <span
-            className={
-              "w-8 h-8 rounded-full text-center bg-neutral-900 text-white mr-2"
-            }
-          >
+    <div className="flex flex-col items-center w-full max-w-[400px] hover:shadow-lg p-6 rounded-lg transition-all duration-300 hover:-translate-y-2 border">
+      <div className="text-xl flex items-center justify-center font-semibold mb-5">
+          <span className="w-10 h-10 flex items-center justify-center rounded-full bg-neutral-900 text-white mr-2">
             {stepNumber}
           </span>
           {stepTitle}
         </div>
+      <div className="border rounded-lg cursor-default p-4 h-60 w-full flex items-center justify-center transition-all hover:shadow-md">
+        {img && (
+          <img
+            className="object-contain rounded-lg max-h-full w-auto"
+            src={img}
+            alt=""
+          />
+        )}
+      </div>
+      <div className="flex flex-col items-center gap-2 mt-4 w-full text-center">
         <div className="text-gray-600 mt-2">{description}</div>
       </div>
     </div>
