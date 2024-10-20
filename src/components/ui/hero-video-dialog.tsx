@@ -1,11 +1,18 @@
 "use client";
- 
+
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Play, XIcon } from "lucide-react";
- 
 import { cn } from "@/lib/utils";
- 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+
 type AnimationStyle =
   | "from-bottom"
   | "from-center"
@@ -15,7 +22,7 @@ type AnimationStyle =
   | "fade"
   | "top-in-bottom-out"
   | "left-in-right-out";
- 
+
 interface HeroVideoProps {
   animationStyle?: AnimationStyle;
   videoSrc: string;
@@ -23,7 +30,7 @@ interface HeroVideoProps {
   thumbnailAlt?: string;
   className?: string;
 }
- 
+
 const animationVariants = {
   "from-bottom": {
     initial: { y: "100%", opacity: 0 },
@@ -66,7 +73,7 @@ const animationVariants = {
     exit: { x: "100%", opacity: 0 },
   },
 };
- 
+
 export function HeroVideoDialog({
   animationStyle = "from-center",
   videoSrc,
@@ -76,9 +83,11 @@ export function HeroVideoDialog({
 }: HeroVideoProps) {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
   const selectedAnimation = animationVariants[animationStyle];
- 
+
   return (
-    <div className={cn("relative", className)}>
+    <Dialog>
+  <DialogTrigger>
+  <div className={cn("relative", className)}>
       <div
         className="relative cursor-pointer group"
         onClick={() => setIsVideoOpen(true)}
@@ -88,53 +97,42 @@ export function HeroVideoDialog({
           alt={thumbnailAlt}
           width={1920}
           height={1080}
-          className="w-full transition-all duration-200 group-hover:brightness-[0.8] ease-out rounded-md shadow-lg border"
+          className="w-full transition-all duration-200 group-hover:brightness-[0.8] ease-out rounded-md shadow-lg border opacity-80"
         />
         <div className="absolute inset-0 flex items-center justify-center group-hover:scale-100 scale-[0.9] transition-all duration-200 ease-out rounded-2xl">
-          <div className="bg-primary/10 flex items-center justify-center rounded-full backdrop-blur-md size-28">
+          <div className="bg-orange-300 flex items-center justify-center rounded-full backdrop-blur-md size-28">
             <div
-              className={`flex items-center justify-center bg-gradient-to-b from-primary/30 to-primary shadow-md rounded-full size-20 transition-all ease-out duration-200 relative group-hover:scale-[1.2] scale-100`}
+              className={`flex items-center justify-center hover:text-orange bg-gradient-to-b from-primary/30 to-primary shadow-md rounded-full size-20 transition-all ease-out duration-200 relative group-hover:scale-[1.2] scale-100`}
             >
               <Play
-                className="size-8 text-white fill-white group-hover:scale-105 scale-100 transition-transform duration-200 ease-out"
+                className="size-8 text-orange-300 fill-orange-300 group-hover:scale-105  scale-100 transition-transform duration-200 ease-out"
                 style={{
                   filter:
-                    "drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06))",
+                    "drop-shadow(0 4px 3px rgb(252 186 3 / 0.5)) drop-shadow(0 2px 2px rgb(252 186 3 / 0.5))",
                 }}
               />
             </div>
           </div>
         </div>
       </div>
-      <AnimatePresence>
-        {isVideoOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            onClick={() => setIsVideoOpen(false)}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-md"
-          >
-            <motion.div
-              {...selectedAnimation}
-              transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="relative w-full max-w-4xl aspect-video mx-4 md:mx-0"
-            >
-              <motion.button className="absolute -top-16 right-0 text-white text-xl bg-neutral-900/50 ring-1 backdrop-blur-md rounded-full p-2 dark:bg-neutral-100/50 dark:text-black">
-                <XIcon className="size-5" />
-              </motion.button>
-              <div className="size-full border-2 border-white rounded-2xl overflow-hidden isolate z-[1] relative">
-                <iframe
-                  src={videoSrc}
-                  className="size-full rounded-2xl"
-                  allowFullScreen
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                ></iframe>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
+  </DialogTrigger>
+  <DialogContent className=" h-3/4 w-3/4 max-w-full max-h-full">
+    <DialogHeader className="max-w, h-full">
+      <DialogTitle></DialogTitle>
+      <DialogDescription className=" h-full">
+      <div className="w-full h-full border-0 rounded-none overflow-hidden isolate z-[1] relative">
+              <iframe
+                src={videoSrc}
+                className="w-full h-full rounded-none"
+                allowFullScreen
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              ></iframe>
+            </div>
+      </DialogDescription>
+    </DialogHeader>
+  </DialogContent>
+</Dialog>
+  
   );
 }

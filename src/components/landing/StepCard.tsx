@@ -12,7 +12,7 @@ export default function StepCard({
   description,
 }: Props) {
   return (
-    <div className="flex flex-col items-center w-full max-w-[400px] hover:shadow-lg p-6 rounded-lg transition-all duration-300 hover:-translate-y-2 border">
+    <div className="flex flex-col items-center w-full max-w-[400px] hover:shadow-lg hover:border-color  p-6 rounded-lg transition-all duration-300 hover:-translate-y-2 border">
       <div className="text-xl flex items-center justify-center font-semibold mb-5">
           <span className="w-10 h-10 flex items-center justify-center rounded-full bg-neutral-900 text-white mr-2">
             {stepNumber}
