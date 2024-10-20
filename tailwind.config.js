@@ -1,5 +1,8 @@
+// Import tailwindcss-animate using ES module syntax
+import tailwindcssAnimate from 'tailwindcss-animate';
+
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",
@@ -75,12 +78,13 @@ module.exports = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "shiny-text": "shiny-text 8s infinite",
-        "gradient": "gradient 12s linear infinite",
+        gradient: "gradient 12s linear infinite",
       },
-      fontFamily:{
-        overwatch: ["Overwatch", "sans-serif"]
-      }
+      fontFamily: {
+        overwatch: ["Overwatch", "sans-serif"],
+      },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  // Use the imported plugin here
+  plugins: [tailwindcssAnimate],
 };
