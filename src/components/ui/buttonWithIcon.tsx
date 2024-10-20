@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import ky from "ky";
 import { BASE_URL } from "@/utils/constants.ts";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 interface Props {
   icon: string;
@@ -42,7 +43,7 @@ export function ButtonWithIcon({ icon, label, route }: Props) {
   };
 
   return (
-    <Button className="h-12" onClick={() => authenticateWithRoute(route)}>
+    <Button className="h-12 transition-transform duration-200 transform hover:scale-105" onClick={() => authenticateWithRoute(route)}>
       <img src={`${icon}.svg`} alt={label} className="w-6 h-6 mr-2" />
       <span>{label}</span>
     </Button>
