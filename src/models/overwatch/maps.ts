@@ -30,7 +30,8 @@ export type MapName =
   | "Suravasa"
   | "Temple of anubis"
   | "Volskaya industries"
-  | "Watchpoint: gibraltar";
+  | "Watchpoint: gibraltar"
+  | "Runasapi";
 
 export type MapType = "Push" | "Control" | "Escort" | "Hybrid" | "Flashpoint";
 
@@ -87,5 +88,5 @@ export const OW_MAPS: MapData = {
     "Numbani",
     "Paraiso",
   ],
-  Push: ["Colosseo", "Esperanca", "New queen street"],
+  Push: ["Colosseo", "Esperanca", "New queen street", "Runasapi"],
 };
